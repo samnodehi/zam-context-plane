@@ -20,6 +20,10 @@ coverage/
 /trace.json
 /summary.md
 
+# Live benchmark output is non-deterministic (real model calls) — do not track.
+# (The offline benchmarks/report.json IS deterministic and committed.)
+benchmarks/live-report.json
+
 # Scratch / temporary files
 scratch/
 
