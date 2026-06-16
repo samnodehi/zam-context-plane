@@ -90,9 +90,11 @@ realistic OpenClaw-modeled registry + a 14-request corpus. **Result: 63.9% mean 
 unsafe omissions, 100% router classification accuracy** (18 components, 5770-token baseline). The
 number is conservative (tools are fail-open *included* absent runtime capability info; savings come
 from safely omitting the heavy proactive/group/lifecycle scaffolds + non-matching skills + memory).
-**Remaining (optional, key-gated follow-up):** live-model answer-quality validation + the
-deterministic-vs-model classification comparison (docs/35 §6) — not required to demonstrate the core
-context-reduction value.
+**Live tier also done (docs/36; `benchmarks/live-run.mjs`):** deterministic-vs-model **classification
+agreement 85.7%** (both disagreements on the safe side — the router defaulted where the model
+narrowed) and **answer-quality preservation ~80%** (indicative). The value story is now complete:
+token savings + structural safety + a deterministic router competitive with a model + preserved
+answers. The live tier is key-gated and non-deterministic (manual, not a CI gate).
 
 ## C7 — Repo hygiene (Low) — CLOSED in Phase 1a
 Removed root clutter (`scratch-*.cjs`, `*_log.txt`, `harness-*.txt`, stray generated
