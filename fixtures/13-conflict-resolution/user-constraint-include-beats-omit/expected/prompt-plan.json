@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.base-context",
+      "action": "include",
+      "path": "required_match",
+      "reason": "requiredWhen: [\"*\"] matches all prompt families",
+      "tokensApprox": 250
+    },
+    {
+      "componentId": "skill.code-review",
+      "action": "include",
+      "path": "required_match",
+      "reason": "userConstraints.alwaysInclude: operator constraint forces include over omit decision",
+      "tokensApprox": 220
+    }
+  ],
+  "omittedComponents": [],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 8000,
+    "selectedTokensApprox": 470,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "total": 470,
+    "scaffold": 250,
+    "skills": 220
+  },
+  "riskFlags": [],
+  "failOpenReasons": [],
+  "planningWarnings": []
+}

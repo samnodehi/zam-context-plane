@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.system-rules",
+      "action": "include",
+      "path": "safety_override",
+      "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; always included regardless of injection gate",
+      "tokensApprox": 350
+    },
+    {
+      "componentId": "skill.optional-helper",
+      "action": "include",
+      "path": "fail_open",
+      "reason": "injectionSuspect: true with effective fail_open_all — Path B omit converted to include/fail_open by injection gate",
+      "tokensApprox": 180
+    }
+  ],
+  "omittedComponents": [],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 8000,
+    "selectedTokensApprox": 530,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "total": 530,
+    "scaffold": 350,
+    "skills": 180
+  },
+  "riskFlags": [],
+  "failOpenReasons": [
+    "skill.optional-helper: injectionSuspect=true, effectivePolicy=fail_open_all — Path B omit converted to include/fail_open"
+  ],
+  "planningWarnings": []
+}

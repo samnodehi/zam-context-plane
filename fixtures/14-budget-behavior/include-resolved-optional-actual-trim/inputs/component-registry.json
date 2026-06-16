@@ -1,0 +1,42 @@
+[
+  {
+    "id": "scaffold.system-core",
+    "type": "scaffold",
+    "title": "System Core",
+    "summary": "Core system scaffold; hard-protected from omission and budget trim",
+    "source": "scaffolds/system-core.md",
+    "tokensApprox": 700,
+    "charsApprox": 2800,
+    "riskLevel": "critical",
+    "requiredWhen": ["*"],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": ["scaffold", "safety"],
+    "version": "1.0.0",
+    "hash": null
+  },
+  {
+    "id": "skill.deep-explainer",
+    "type": "skill",
+    "title": "Deep Explainer",
+    "summary": "Optional deep-explanation skill; include-resolved before Budgeter; eligible for budget trim (expensive_optional)",
+    "source": "skills/deep-explainer.md",
+    "tokensApprox": 650,
+    "charsApprox": 2600,
+    "riskLevel": "low",
+    "requiredWhen": [],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 7,
+    "evidenceRequired": null,
+    "tags": ["skill", "optional"],
+    "version": "1.0.0",
+    "hash": null
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "zam": {
+    "endpoint": "library"
+  },
+  "provider": {
+    "name": "openrouter",
+    "model": "google/gemini-2.5-flash",
+    "apiKeyEnvVar": "ZAM_PROVIDER_API_KEY"
+  },
+  "workspace": {
+    "mode": "local",
+    "rootPath": "./"
+  },
+  "loop": {
+    "maxTurns": 10,
+    "timeoutMs": 300000
+  },
+  "eventStream": {
+    "persistPath": "./sessions"
+  }
+}

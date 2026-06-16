@@ -1,0 +1,60 @@
+{
+  "zam": {
+    "endpoint": "library"
+  },
+  "provider": {
+    "name": "openrouter",
+    "model": "google/gemini-3.1-flash-lite",
+    "apiKeyEnvVar": "OPENROUTER_API_KEY"
+  },
+  "workspace": {
+    "mode": "local",
+    "rootPath": "."
+  },
+  "loop": {
+    "maxTurns": 10,
+    "timeoutMs": 120000
+  },
+  "eventStream": {
+    "persistPath": "./sessions"
+  },
+  "analyzer": {
+    "enabled": true,
+    "provider": {
+      "name": "openrouter",
+      "model": "google/gemini-3.1-flash-lite",
+      "apiKeyEnvVar": "OPENROUTER_API_KEY"
+    },
+    "tier2Model": "google/gemini-3-flash-preview",
+    "confidenceThreshold": 0.85,
+    "tier2ConfidenceThreshold": 0.60,
+    "timeoutMs": 5000,
+    "fallbackOnError": "deterministic"
+  },
+  "selector": {
+    "enabled": true,
+    "provider": {
+      "name": "openrouter",
+      "model": "google/gemini-3.1-flash-lite",
+      "apiKeyEnvVar": "OPENROUTER_API_KEY"
+    },
+    "timeoutMs": 5000,
+    "fallbackOnError": "deterministic"
+  },
+  "compressor": {
+    "enabled": true,
+    "provider": {
+      "name": "openrouter",
+      "model": "google/gemini-3.1-flash-lite",
+      "apiKeyEnvVar": "OPENROUTER_API_KEY"
+    },
+    "tier2Model": "google/gemini-3-flash-preview",
+    "tokenThreshold": 4000,
+    "minTurnsBeforeCompression": 2,
+    "recompressionTurnInterval": 5,
+    "rawWindowSize": 1,
+    "confidenceThreshold": 0.75,
+    "timeoutMs": 15000,
+    "fallbackOnError": "raw_history"
+  }
+}

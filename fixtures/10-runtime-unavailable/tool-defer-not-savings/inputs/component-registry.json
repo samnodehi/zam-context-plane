@@ -1,0 +1,50 @@
+[
+  {
+    "id": "scaffold.system-rules",
+    "type": "scaffold",
+    "title": "System Rules",
+    "summary": "Core system-level rules applied to every planning run.",
+    "source": "components/scaffold/system-rules.md",
+    "tokensApprox": 350,
+    "charsApprox": 1400,
+    "riskLevel": "critical",
+    "requiredWhen": [
+      "*"
+    ],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": [
+      "scaffold",
+      "required"
+    ],
+    "version": "1.0.0",
+    "hash": "021b6d841c0ee2b639ed4897b1716fa1f55a023aab86aff10ba9e9640d356015"
+  },
+  {
+    "id": "tool.write-file",
+    "type": "tool",
+    "title": "Write File Tool",
+    "summary": "Writes content to a file on the local filesystem.",
+    "source": "components/tools/write-file.md",
+    "tokensApprox": 120,
+    "charsApprox": 480,
+    "riskLevel": "medium",
+    "requiredWhen": [],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 5,
+    "evidenceRequired": null,
+    "tags": [
+      "tool",
+      "filesystem"
+    ],
+    "version": "1.0.0",
+    "hash": "ad0d8ad7ce744adcf8cf0fd1d90cef4c591512fab65f700b068a6ea527ee2c17"
+  }
+]

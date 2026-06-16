@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.system-rules",
+      "action": "include",
+      "path": "safety_override",
+      "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection",
+      "tokensApprox": 350
+    }
+  ],
+  "omittedComponents": [
+    {
+      "componentId": "skill.proactive-tips",
+      "action": "omit",
+      "path": "safe_to_omit_match",
+      "reason": "Path A omit won over Path B omit: safeToOmitWhen matched general_default with positive evidence; path_a_omit_selected_over_path_b",
+      "tokensApprox": 160
+    }
+  ],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 8000,
+    "selectedTokensApprox": 350,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "total": 350,
+    "scaffold": 350
+  },
+  "riskFlags": [],
+  "failOpenReasons": [],
+  "planningWarnings": []
+}

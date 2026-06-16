@@ -1,0 +1,5087 @@
+{
+  "reportId": "a44ce1d6-51b0-44e4-bafd-67b07253f2ec",
+  "timestamp": "2026-06-03T11:24:55.792Z",
+  "harnessVersion": "1.0.0",
+  "mode": "static+generated",
+  "fixtureDiscovery": {
+    "totalCases": 28,
+    "totalFiles": 309,
+    "discoveryErrors": []
+  },
+  "results": {
+    "passed": 27,
+    "failed": 0,
+    "skipped": 1,
+    "blocked": 0
+  },
+  "perFixture": [
+    {
+      "fixturePath": "fixtures\\02-registry-validation\\quarantine-excluded-from-candidates",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\ncontext-plane: warning [component_quarantined]: Component 'skill.malformed-zero-tokens' quarantined: tokensApprox or charsApprox < 1 with metadataOnly false/absent. riskLevel: low.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 1,
+            "decidedInclude": 1,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 1,
+            "decidedInclude": 1,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\03-candidate-set-summary\\gap-check-accounting",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.general-assistant' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\ncontext-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.context-summary' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules",
+            "skill.context-summary",
+            "skill.general-assistant"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules",
+            "skill.context-summary",
+            "skill.general-assistant"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 3,
+            "decidedInclude": 3,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 3,
+            "decidedInclude": 3,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\04-active-ids\\active-id-unknown-not-reference-unknown",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [registry_no_valid_omission_path]: Component 'skill.general-assistant' has omissionPolicy: allow, empty safeToOmitWhen, defaultAction: 'include' (not omit), and evidenceRequired: null. No valid Path A or Path B omission path exists in MVP. Consider using omissionPolicy: fail_open. Canonical: docs/05 §8.\ncontext-plane: warning [active_id_unknown]: Active skill ID 'skill.does-not-exist-in-registry' was not found in componentsById. Treated as absent for selector evaluation; no SelectionDecision produced for this ID.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\05-selector-ladder\\required-when-match",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.coding-guide' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules",
+            "skill.coding-guide"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules",
+            "skill.coding-guide"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\05-selector-policy\\deterministic-only-false-defaulted",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\ncontext-plane: warning [selector_policy_defaulted]: --policy supplied deterministicOnly: false; model-assisted selectors are not implemented in MVP. Coercing to true.\ncontext-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.general-assistant' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\06-hard-protection\\safety-override-include",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\ncontext-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.general-assistant' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\07-path-a-omission\\safe-to-omit-positive-evidence",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\ncontext-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.heartbeat-proactive' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules"
+          ],
+          "expectedOmitted": [
+            "skill.heartbeat-proactive"
+          ],
+          "generatedOmitted": [
+            "skill.heartbeat-proactive"
+          ],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\08-path-b-omission\\default-action-omit",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules"
+          ],
+          "expectedOmitted": [
+            "skill.context-summary"
+          ],
+          "generatedOmitted": [
+            "skill.context-summary"
+          ],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\09-reference-unknown\\unknown-component-reference",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 1,
+            "decidedInclude": 1,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 1,
+            "decidedInclude": 1,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\10-runtime-unavailable\\tool-defer-not-savings",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [registry_no_valid_omission_path]: Component 'tool.write-file' has omissionPolicy: allow, empty safeToOmitWhen, defaultAction: 'include' (not omit), and evidenceRequired: null. No valid Path A or Path B omission path exists in MVP. Consider using omissionPolicy: fail_open. Canonical: docs/05 §8.\ncontext-plane: warning [runtime_unavailable]: Tool \"tool.write-file\" is confirmed unavailable at this runtime. Deferred (not omitted). No token savings claimed.\ncontext-plane: warning [no_output_format_selected]: No output_format component was included and promptFamily \"tool_use_required\" requires structured output. Prompt Plan Generator must surface this.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [
+            "tool.write-file"
+          ],
+          "generatedDeferred": [
+            "tool.write-file"
+          ],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 0,
+            "decidedDefer": 1,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 1,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 0,
+            "decidedDefer": 1,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 1,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\11-capability-inventory-incomplete\\fail-open-tools",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [registry_no_valid_omission_path]: Component 'tool.read-file' has omissionPolicy: allow, empty safeToOmitWhen, defaultAction: 'include' (not omit), and evidenceRequired: null. No valid Path A or Path B omission path exists in MVP. Consider using omissionPolicy: fail_open. Canonical: docs/05 §8.\ncontext-plane: warning [registry_no_valid_omission_path]: Component 'tool.run-shell' has omissionPolicy: allow, empty safeToOmitWhen, defaultAction: 'include' (not omit), and evidenceRequired: null. No valid Path A or Path B omission path exists in MVP. Consider using omissionPolicy: fail_open. Canonical: docs/05 §8.\ncontext-plane: warning [runtime_capability_unknown]: Tool \"tool.read-file\" availability is unknown (absent from both lists, capabilityInventoryComplete: false). Fail-open include applied immediately — ladder not run.\ncontext-plane: warning [runtime_capability_unknown]: Tool \"tool.run-shell\" availability is unknown (absent from both lists, capabilityInventoryComplete: false). Fail-open include applied immediately — ladder not run.\ncontext-plane: warning [no_output_format_selected]: No output_format component was included and promptFamily \"tool_use_required\" requires structured output. Prompt Plan Generator must surface this.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules",
+            "tool.read-file",
+            "tool.run-shell"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules",
+            "tool.read-file",
+            "tool.run-shell"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 3,
+            "decidedInclude": 3,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 2,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 3,
+            "decidedInclude": 3,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 2,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\12-injection-gate\\fail-open-all",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\ncontext-plane: warning [injection_suspect_fail_open_all]: Injection-suspect signal detected. Effective policy: fail_open_all. All Path A and Path B omit decisions suppressed; all omit → include/fail_open.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules",
+            "skill.optional-helper"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules",
+            "skill.optional-helper"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 1,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 1,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\12-injection-gate\\family-confidence-escalation",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [runtime_capabilities_missing]: --runtime file failed schema validation; applying missing-runtime fallback.\ncontext-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\ncontext-plane: warning [family_confidence_fail_open_escalation]: familyConfidence (0.4) is below failOpenThreshold (0.7). Injection policy escalated to fail_open_all.\ncontext-plane: warning [injection_suspect_fail_open_all]: Injection-suspect signal detected. Effective policy: fail_open_all. All Path A and Path B omit decisions suppressed; all omit → include/fail_open.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.base-rules",
+            "skill.context-helper"
+          ],
+          "generatedSelected": [
+            "scaffold.base-rules",
+            "skill.context-helper"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 1,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 1,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\12-injection-gate\\halt-planning-recognized",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.general-assistant' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\ncontext-plane: warning [policy_value_not_implemented]: injectionSuspectAction 'halt_planning' is a reserved future value and is not implemented in MVP. Effective policy: warn_and_continue.\ncontext-plane: warning [injection_suspect_warn_and_continue]: Injection-suspect signal detected. Effective policy: warn_and_continue. Allowed omit decisions annotated with injection_suspect_omit_allowed. Policy/high-risk/output_format critical-high omits converted to include/fail_open.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 1,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": false
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\12-injection-gate\\unknown-policy-value",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.general-assistant' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\ncontext-plane: warning [injection_action_unknown]: injectionSuspectAction 'weird_future_policy' is not a recognized MVP value. Effective policy: warn_and_continue.\ncontext-plane: warning [injection_suspect_warn_and_continue]: Injection-suspect signal detected. Effective policy: warn_and_continue. Allowed omit decisions annotated with injection_suspect_omit_allowed. Policy/high-risk/output_format critical-high omits converted to include/fail_open.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 1,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": false
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\12-injection-gate\\warn-and-continue-baseline",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [runtime_capabilities_missing]: --runtime file failed schema validation; applying missing-runtime fallback.\ncontext-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\ncontext-plane: warning [injection_suspect_warn_and_continue]: Injection-suspect signal detected. Effective policy: warn_and_continue. Allowed omit decisions annotated with injection_suspect_omit_allowed. Policy/high-risk/output_format critical-high omits converted to include/fail_open.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.core-rules"
+          ],
+          "generatedSelected": [
+            "scaffold.core-rules"
+          ],
+          "expectedOmitted": [
+            "skill.optional-tip"
+          ],
+          "generatedOmitted": [
+            "skill.optional-tip"
+          ],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\13-conflict-resolution\\multiple-include-merged",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [registry_no_valid_omission_path]: Component 'scaffold.system-rules' has omissionPolicy: allow, empty safeToOmitWhen, defaultAction: 'include' (not omit), and evidenceRequired: null. No valid Path A or Path B omission path exists in MVP. Consider using omissionPolicy: fail_open. Canonical: docs/05 §8.\ncontext-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.general-assistant' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules",
+            "skill.general-assistant"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 1
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": false
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\13-conflict-resolution\\path-a-beats-path-b-omit",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.proactive-tips' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules"
+          ],
+          "expectedOmitted": [
+            "skill.proactive-tips"
+          ],
+          "generatedOmitted": [
+            "skill.proactive-tips"
+          ],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 1
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": false
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\13-conflict-resolution\\safety-beats-omit",
+      "status": "skipped",
+      "skipApproval": {
+        "reason": "safety_hard_protection conflict is not reachable through current MVP E2E selector routing. The deterministic ladder applies hard protection (Step 3) before safeToOmitWhen (Step 7), producing a single include/safety_override decision per component. No multi-selector conflict is possible for the same component type.",
+        "approvedBy": "user",
+        "approvedDate": "2026-06-02",
+        "unitTestCoverage": "tests/phase8/conflict-resolver.test.ts SHP-1"
+      },
+      "cliExitCode": null,
+      "cliStderr": "",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": null,
+      "semanticComparison": null
+    },
+    {
+      "fixturePath": "fixtures\\13-conflict-resolution\\user-constraint-include-beats-omit",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [registry_no_valid_omission_path]: Component 'scaffold.base-context' has omissionPolicy: allow, empty safeToOmitWhen, defaultAction: 'include' (not omit), and evidenceRequired: null. No valid Path A or Path B omission path exists in MVP. Consider using omissionPolicy: fail_open. Canonical: docs/05 §8.\ncontext-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.code-review' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.base-context",
+            "skill.code-review"
+          ],
+          "generatedSelected": [
+            "scaffold.base-context",
+            "skill.code-review"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 1
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": false
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\14-budget-behavior\\candidate-optional-trim",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules"
+          ],
+          "expectedOmitted": [
+            "skill.optional-helper"
+          ],
+          "generatedOmitted": [
+            "skill.optional-helper"
+          ],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\14-budget-behavior\\expensive-optional-trim",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.core-policy"
+          ],
+          "generatedSelected": [
+            "scaffold.core-policy"
+          ],
+          "expectedOmitted": [
+            "skill.large-optional-skill"
+          ],
+          "generatedOmitted": [
+            "skill.large-optional-skill"
+          ],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\14-budget-behavior\\include-resolved-optional-actual-trim",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\ncontext-plane: warning [registry_no_valid_omission_path]: Component 'skill.deep-explainer' has omissionPolicy: allow, empty safeToOmitWhen, defaultAction: 'include' (not omit), and evidenceRequired: null. No valid Path A or Path B omission path exists in MVP. Consider using omissionPolicy: fail_open. Canonical: docs/05 §8.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-core"
+          ],
+          "generatedSelected": [
+            "scaffold.system-core"
+          ],
+          "expectedOmitted": [
+            "skill.deep-explainer"
+          ],
+          "generatedOmitted": [
+            "skill.deep-explainer"
+          ],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\15-over-budget-protected\\safety-critical-budget-overflow",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.mandatory-compliance",
+            "scaffold.safety-critical-core"
+          ],
+          "generatedSelected": [
+            "scaffold.mandatory-compliance",
+            "scaffold.safety-critical-core"
+          ],
+          "expectedOmitted": [
+            "skill.optional-quick"
+          ],
+          "generatedOmitted": [
+            "skill.optional-quick"
+          ],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 3,
+            "decidedInclude": 2,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 3,
+            "decidedInclude": 2,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\15-over-budget-protected\\warn-only-no-trim",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [history_summary_missing]: --history file failed schema validation; applying missing-history fallback.\ncontext-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [user_constraints_missing]: --constraints file failed schema validation; treating as no constraints.\ncontext-plane: warning [registry_no_valid_omission_path]: Component 'skill.greeting-skill' has omissionPolicy: allow, empty safeToOmitWhen, defaultAction: 'include' (not omit), and evidenceRequired: null. No valid Path A or Path B omission path exists in MVP. Consider using omissionPolicy: fail_open. Canonical: docs/05 §8.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.mandatory-rules",
+            "skill.greeting-skill"
+          ],
+          "generatedSelected": [
+            "scaffold.mandatory-rules",
+            "skill.greeting-skill"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\16-partition-integrity\\action-path-reference-unknown",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [registry_null_evidence_path_a_advisory]: Component 'skill.heartbeat-proactive' has omissionPolicy: allow, non-empty safeToOmitWhen, and evidenceRequired: null. Path A omission is authorized by safeToOmitWhen tag match alone (no additional evidence expression required). Verify this is intentional. Canonical: docs/05 §8.\ncontext-plane: warning [registry_no_valid_omission_path]: Component 'tool.unavailable-tool' has omissionPolicy: allow, empty safeToOmitWhen, defaultAction: 'defer' (not omit), and evidenceRequired: null. No valid Path A or Path B omission path exists in MVP. Consider using omissionPolicy: fail_open. Canonical: docs/05 §8.\ncontext-plane: warning [active_id_unknown]: Active skill ID 'skill.does-not-exist-in-registry' was not found in componentsById. Treated as absent for selector evaluation; no SelectionDecision produced for this ID.\ncontext-plane: warning [runtime_unavailable]: Tool \"tool.unavailable-tool\" is confirmed unavailable at this runtime. Deferred (not omitted). No token savings claimed.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules"
+          ],
+          "expectedOmitted": [
+            "skill.heartbeat-proactive"
+          ],
+          "generatedOmitted": [
+            "skill.heartbeat-proactive"
+          ],
+          "expectedDeferred": [
+            "tool.unavailable-tool"
+          ],
+          "generatedDeferred": [
+            "tool.unavailable-tool"
+          ],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 3,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 1,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 1,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 3,
+            "decidedInclude": 1,
+            "decidedOmit": 1,
+            "decidedDefer": 1,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 1,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\17-trace-structure\\keyed-trace-no-injection-phase",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "context-plane: warning [budget_config_missing]: --budget file failed schema validation; treating budget as unconstrained.\ncontext-plane: warning [registry_no_valid_omission_path]: Component 'tool.read-file' has omissionPolicy: allow, empty safeToOmitWhen, defaultAction: 'include' (not omit), and evidenceRequired: null. No valid Path A or Path B omission path exists in MVP. Consider using omissionPolicy: fail_open. Canonical: docs/05 §8.\ncontext-plane: warning [no_output_format_selected]: No output_format component was included and promptFamily \"tool_use_required\" requires structured output. Prompt Plan Generator must surface this.\n",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "scaffold.system-rules",
+            "tool.read-file"
+          ],
+          "generatedSelected": [
+            "scaffold.system-rules",
+            "tool.read-file"
+          ],
+          "expectedOmitted": [],
+          "generatedOmitted": [],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 2,
+            "decidedInclude": 2,
+            "decidedOmit": 0,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    },
+    {
+      "fixturePath": "fixtures\\18-summary-narrative\\deterministic-narrative-template",
+      "status": "passed",
+      "cliExitCode": 0,
+      "cliStderr": "",
+      "staticValidation": {
+        "layoutOk": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsSchemaOk": true,
+        "assertionsMdPresent": true,
+        "errors": []
+      },
+      "generatedValidation": {
+        "outputFilesPresent": true,
+        "promptPlanSchemaOk": true,
+        "traceSchemaOk": true,
+        "requestSignalsMatch": true,
+        "zeroToleranceChecks": [
+          {
+            "id": "ZT-15",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-14",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-03",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-04",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-05",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-06",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-07",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-10",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-11",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-12",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-13",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-01",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RG-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "RS-M",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-02",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-08",
+            "passed": true,
+            "message": null
+          },
+          {
+            "id": "ZT-09",
+            "passed": true,
+            "message": null
+          }
+        ],
+        "errors": []
+      },
+      "semanticComparison": {
+        "status": "passed",
+        "partitionComparison": {
+          "expectedSelected": [
+            "policy.privacy-baseline",
+            "scaffold.agent-persona"
+          ],
+          "generatedSelected": [
+            "policy.privacy-baseline",
+            "scaffold.agent-persona"
+          ],
+          "expectedOmitted": [
+            "skill.greeting-flow"
+          ],
+          "generatedOmitted": [
+            "skill.greeting-flow"
+          ],
+          "expectedDeferred": [],
+          "generatedDeferred": [],
+          "match": true
+        },
+        "phaseKeyComparison": {
+          "expectedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "generatedKeys": [
+            "budgetPhase",
+            "conflictPhase",
+            "planPhase",
+            "registryPhase",
+            "requestPhase",
+            "run",
+            "selectorPhase",
+            "warnings"
+          ],
+          "missingFromGenerated": [],
+          "extraInGenerated": [],
+          "match": true
+        },
+        "selectorSummaryComparison": {
+          "expected": {
+            "totalEvaluated": 3,
+            "decidedInclude": 2,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "generated": {
+            "totalEvaluated": 3,
+            "decidedInclude": 2,
+            "decidedOmit": 1,
+            "decidedDefer": 0,
+            "defaultDefer": 0,
+            "runtimeUnavailableDefer": 0,
+            "failOpenInclude": 0,
+            "conflictsIdentified": 0
+          },
+          "match": true
+        },
+        "message": null
+      }
+    }
+  ],
+  "determinismChecks": [
+    {
+      "fixturePath": "fixtures\\17-trace-structure\\keyed-trace-no-injection-phase",
+      "run1ContentHash": "1d81df2f481d72c7efe5d42bdffe1c3cf5349be1477e808e43fed213a262deb1",
+      "run2ContentHash": "1d81df2f481d72c7efe5d42bdffe1c3cf5349be1477e808e43fed213a262deb1",
+      "normalizedMatch": true
+    },
+    {
+      "fixturePath": "fixtures\\14-budget-behavior\\include-resolved-optional-actual-trim",
+      "run1ContentHash": "21f8cbd4f6f96cb206db2fc4a1d06ac2b85f49530fea17b62e5944967628e827",
+      "run2ContentHash": "21f8cbd4f6f96cb206db2fc4a1d06ac2b85f49530fea17b62e5944967628e827",
+      "normalizedMatch": true
+    }
+  ],
+  "deferred": [
+    "Branch C WARN_AND_CONTINUE_OVERRIDE_DESIGN_DEFERRED",
+    "unknown_cost budget hint fixture (schema gap)",
+    "expected/summary.md fixture files (no current fixture has one)",
+    "assertions.md machine-readable syntax (future)",
+    "Report JSON Schema (future formalization)"
+  ]
+}

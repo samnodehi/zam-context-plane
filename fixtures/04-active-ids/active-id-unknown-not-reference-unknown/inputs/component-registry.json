@@ -1,0 +1,50 @@
+[
+  {
+    "id": "scaffold.system-rules",
+    "type": "scaffold",
+    "title": "System Rules",
+    "summary": "Core system-level rules applied to every planning run.",
+    "source": "components/scaffold/system-rules.md",
+    "tokensApprox": 350,
+    "charsApprox": 1400,
+    "riskLevel": "critical",
+    "requiredWhen": [
+      "*"
+    ],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": [
+      "scaffold",
+      "required"
+    ],
+    "version": "1.0.0",
+    "hash": "021b6d841c0ee2b639ed4897b1716fa1f55a023aab86aff10ba9e9640d356015"
+  },
+  {
+    "id": "skill.general-assistant",
+    "type": "skill",
+    "title": "General Assistant Skill",
+    "summary": "General-purpose assistant behaviour for unspecialised requests.",
+    "source": "components/skills/general-assistant.md",
+    "tokensApprox": 200,
+    "charsApprox": 800,
+    "riskLevel": "low",
+    "requiredWhen": [],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 5,
+    "evidenceRequired": null,
+    "tags": [
+      "skill",
+      "general"
+    ],
+    "version": "1.0.0",
+    "hash": "f6049c6ee31a330e5a65458743c60ddd1e0dbeedbab78f32fd84da45320c7c27"
+  }
+]

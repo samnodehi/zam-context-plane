@@ -1,0 +1,30 @@
+{
+  "selectorName": "model_assisted_skill",
+  "proposals": [
+    {
+      "componentId": "skill.code-formatter",
+      "action": "include",
+      "confidence": "high",
+      "reason": "Request contains explicit code formatting task; code-formatter skill directly addresses the stated need",
+      "evidence": [
+        "keyword_match=format",
+        "keyword_match=code",
+        "task_type=refactor",
+        "prompt_family=coding_build_debug"
+      ],
+      "path": "required_match"
+    },
+    {
+      "componentId": "skill.research-synthesizer",
+      "action": "omit",
+      "confidence": "high",
+      "reason": "Request is a local code formatting task; no research or synthesis is needed",
+      "evidence": [
+        "no_research_signal_detected",
+        "prompt_family=coding_build_debug",
+        "task_type=refactor"
+      ],
+      "path": "safe_to_omit_match"
+    }
+  ]
+}

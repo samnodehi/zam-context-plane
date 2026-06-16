@@ -1,0 +1,42 @@
+[
+  {
+    "id": "scaffold.system-rules",
+    "type": "scaffold",
+    "title": "System Rules",
+    "summary": "Core system rules",
+    "source": "scaffolds/system-rules.md",
+    "tokensApprox": 350,
+    "charsApprox": 1400,
+    "riskLevel": "critical",
+    "requiredWhen": ["*"],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": ["scaffold", "safety"],
+    "version": "1.0.0",
+    "hash": null
+  },
+  {
+    "id": "skill.proactive-tips",
+    "type": "skill",
+    "title": "Proactive Tips",
+    "summary": "Proactive tips skill",
+    "source": "skills/proactive-tips.md",
+    "tokensApprox": 160,
+    "charsApprox": 640,
+    "riskLevel": "low",
+    "requiredWhen": [],
+    "safeToOmitWhen": ["general_default"],
+    "defaultAction": "omit",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 9,
+    "evidenceRequired": null,
+    "tags": ["skill", "tips"],
+    "version": "1.0.0",
+    "hash": null
+  }
+]

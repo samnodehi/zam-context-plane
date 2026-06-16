@@ -1,0 +1,6 @@
+{
+  "promptFamily": "tool_use_required",
+  "familyConfidence": 0.90,
+  "injectionSuspect": false,
+  "activeToolIds": ["tool.write-file"]
+}

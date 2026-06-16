@@ -1,0 +1,20 @@
+{
+  "analyzerVersion": "future-stub-v0.1",
+  "tier": 1,
+  "promptFamily": "coding",
+  "requestType": "coding",
+  "taskType": "debug",
+  "analyzerConfidence": 0.95,
+  "assessedRequestRiskLevel": "low",
+  "neededLanes": ["tools", "files"],
+  "requiresHistory": false,
+  "requiresTools": true,
+  "requiresFiles": true,
+  "failOpenTriggered": false,
+  "failOpenReason": null,
+  "evidence": [
+    "Request contains code block with error message",
+    "User asked to fix a TypeScript compile error"
+  ],
+  "analyzerTraceId": "trace-01-basic-coding-request-stub"
+}

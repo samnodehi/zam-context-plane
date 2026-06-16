@@ -1,0 +1,30 @@
+{
+  "compressorVersion": "future-stub-v0.1",
+  "compressorTraceId": "trace-02-protected-category-preservation-stub",
+  "currentTaskState": {
+    "activeTask": "Verifying protected category preservation in compressor output"
+  },
+  "acceptedDecisions": [
+    { "content": "Isolate future harness from MVP harness", "notes": "Approved by Sam. Cannot be re-litigated." },
+    { "content": "Use fixtures-future/ as the root for all model-assisted fixture groups", "notes": "Canonical decision per docs/22 §4.1" }
+  ],
+  "openIssues": [],
+  "openCommitments": [
+    { "content": "Phase P6 trace extension additions will be handled in a separate pass", "notes": "Commitment from docs/22 §9 Phase P6 description" }
+  ],
+  "userConstraints": [],
+  "importantFilesPaths": [],
+  "failedAttempts": [],
+  "warnings": [],
+  "antiRegressionRules": [],
+  "recentRelevantTurns": [],
+  "durableFacts": [
+    { "content": "acceptedDecisions and openCommitments have dropAllowed: false per docs/04 §7.6 and docs/13 §10" },
+    { "content": "durableFacts are protected from compression per docs/13 §10" }
+  ],
+  "summaryTrace": {
+    "included": ["acceptedDecisions", "openCommitments", "durableFacts"],
+    "omitted": ["openIssues", "userConstraints", "importantFilesPaths", "failedAttempts", "warnings", "antiRegressionRules", "recentRelevantTurns"],
+    "uncertain": []
+  }
+}

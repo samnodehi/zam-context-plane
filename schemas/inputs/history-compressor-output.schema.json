@@ -1,0 +1,451 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/inputs/history-compressor-output.schema.json",
+  "title": "Portable Context Control Plane — History Compressor Output Schema",
+  "description": "[FUTURE-ONLY] Structured output of the History Compressor module. This is the schema-contract for the structured state extractor described in docs/13 §10. It defines the output object that the compressor passes to the context planning pipeline in place of raw conversation history. NOT active in MVP. The MVP context planner receives raw history signals via history-state-summary.schema.json. This schema is valid only when the History Compressor module is implemented (docs/13 §22 Phase 2). Privacy rule: no raw turn content, no raw conversation text, no transcript prose, no raw user requests, no secrets, no credentials, and no API keys may appear in this object or any field below. All session-derived data must be structured, identified only by category or ID, never by embedding verbatim content.",
+  "$comment": "[FUTURE-ONLY] Phase 2 scoping (docs/13 §22). Not active in MVP. Created by History Compressor Scoping pass. Authority: docs/13 §10; docs/13 §20; docs/13 §22.",
+
+  "type": "object",
+  "required": [
+    "compressorVersion",
+    "sessionId",
+    "compressionTraceId",
+    "currentTaskState",
+    "acceptedDecisions",
+    "openIssues",
+    "openCommitments",
+    "userConstraints",
+    "importantFilesPaths",
+    "failedAttempts",
+    "activeWarnings",
+    "antiRegressionRules",
+    "durableFacts",
+    "recentRawTurnWindow",
+    "compressionConfidence",
+    "failOpenTriggered",
+    "failOpenReason",
+    "protectedCategoriesRetained",
+    "totalRawTokensApprox",
+    "compressedTokensApprox"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "compressorVersion": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifier of the compressor model/version that produced this output. Required for audit and reproducibility. Not a schema version. Canonical: docs/13 §10."
+    },
+
+    "sessionId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier for the conversation session being compressed. Used to correlate compressor output with trace entries. No session content is embedded. Canonical: docs/13 §10."
+    },
+
+    "compressionTraceId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique ID linking this compressor output to its trace entry in trace.json (summaryPhase.summaryTraceId). Required for full traceability. Canonical: docs/13 §10; docs/16 §6.2."
+    },
+
+    "currentTaskState": {
+      "type": "object",
+      "$comment": "Required state extraction category 1 of 11. Canonical: docs/13 §10.",
+      "description": "Structured representation of the active task, current goal, and any blockers identified in the session. No raw turn content. Canonical: docs/13 §10.",
+      "required": ["activeTask", "currentGoal", "blockers", "progressNotes"],
+      "additionalProperties": false,
+      "properties": {
+        "activeTask": {
+          "type": ["string", "null"],
+          "description": "The name or identifier of the task currently in progress, or null if no active task is detected."
+        },
+        "currentGoal": {
+          "type": ["string", "null"],
+          "description": "A brief, structured statement of the current objective. Must not be raw transcript prose. Must be a structured extraction."
+        },
+        "blockers": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Identified blockers preventing task completion. Structured list of blocker descriptions, not raw turn content."
+        },
+        "progressNotes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Structured progress markers from the session. Not raw transcript. Structured extraction only."
+        }
+      }
+    },
+
+    "acceptedDecisions": {
+      "type": "array",
+      "$comment": "Required state extraction category 2 of 11. Protected from compression. Canonical: docs/13 §10.",
+      "description": "Decisions explicitly accepted during the session. Protected from compression — must never appear in omitted[]. Canonical: docs/13 §10.",
+      "items": {
+        "type": "object",
+        "required": ["decisionId", "summary", "acceptedAt"],
+        "additionalProperties": false,
+        "properties": {
+          "decisionId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable identifier for this decision. Used for cross-reference in trace and anti-regression rules."
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A brief structured description of the decision. Not raw turn content."
+          },
+          "acceptedAt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Session turn reference or timestamp approximation indicating when the decision was accepted. Not raw turn content."
+          }
+        }
+      }
+    },
+
+    "openIssues": {
+      "type": "array",
+      "$comment": "Required state extraction category 3 of 11. Canonical: docs/13 §10.",
+      "description": "Unresolved problems identified during the session but not yet addressed. Structured list. No raw turn content. Canonical: docs/13 §10.",
+      "items": {
+        "type": "object",
+        "required": ["issueId", "summary", "severity"],
+        "additionalProperties": false,
+        "properties": {
+          "issueId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable identifier for this open issue."
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Structured description of the issue. Not raw turn content."
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "important", "advisory"],
+            "description": "Severity of the unresolved issue. critical = blocks progress; important = needs attention; advisory = noted for awareness."
+          }
+        }
+      }
+    },
+
+    "openCommitments": {
+      "type": "array",
+      "$comment": "Required state extraction category 4 of 11. Protected from compression. dropAllowed: false. Canonical: docs/13 §10; docs/04 §7.6.",
+      "description": "Promises, agreements, and pending deliverables established during the session. Protected from compression — must never appear in omitted[]. These align with the open_commitments lane (docs/04 §7.6, dropAllowed: false). No raw turn content. Canonical: docs/13 §10.",
+      "items": {
+        "type": "object",
+        "required": ["commitmentId", "summary", "committedAt"],
+        "additionalProperties": false,
+        "properties": {
+          "commitmentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable identifier for this commitment."
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Structured description of the commitment. Not raw turn content."
+          },
+          "committedAt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Session turn reference or timestamp approximation. Not raw turn content."
+          }
+        }
+      }
+    },
+
+    "userConstraints": {
+      "type": "array",
+      "$comment": "Required state extraction category 5 of 11. Protected from compression. Canonical: docs/13 §10; docs/06 §2.8.",
+      "description": "User-stated requirements and preferences established during the session. Protected from compression. Aligns with userConstraints input (docs/06 §2.8). No raw turn content. Canonical: docs/13 §10.",
+      "items": {
+        "type": "object",
+        "required": ["constraintId", "summary"],
+        "additionalProperties": false,
+        "properties": {
+          "constraintId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable identifier for this user constraint."
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Structured description of the constraint. Not raw turn content."
+          }
+        }
+      }
+    },
+
+    "importantFilesPaths": {
+      "type": "array",
+      "$comment": "Required state extraction category 6 of 11. Canonical: docs/13 §10.",
+      "description": "Files, directories, and paths referenced during the session that remain relevant to the current task. Path strings only — no file content embedded. Canonical: docs/13 §10.",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "description": "A file path or directory reference. No file content embedded. Path reference only."
+      }
+    },
+
+    "failedAttempts": {
+      "type": "array",
+      "$comment": "Required state extraction category 7 of 11. Canonical: docs/13 §10.",
+      "description": "Approaches tried and rejected during the session, with structured reasons. Essential for preventing the main model from re-attempting known-failed strategies. No raw turn content. Canonical: docs/13 §10.",
+      "items": {
+        "type": "object",
+        "required": ["attemptId", "summary", "failureReason"],
+        "additionalProperties": false,
+        "properties": {
+          "attemptId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable identifier for this failed attempt."
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Structured description of the approach that was tried. Not raw turn content."
+          },
+          "failureReason": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Structured reason the approach was rejected or failed. Not raw turn content."
+          }
+        }
+      }
+    },
+
+    "activeWarnings": {
+      "type": "array",
+      "$comment": "Required state extraction category 8 of 11. Canonical: docs/13 §10.",
+      "description": "Active warnings and risk flags relevant to the current task. No raw turn content. Canonical: docs/13 §10.",
+      "items": {
+        "type": "object",
+        "required": ["warningCode", "message"],
+        "additionalProperties": false,
+        "properties": {
+          "warningCode": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Warning code identifying the type of warning."
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Structured warning message. Not raw turn content."
+          }
+        }
+      }
+    },
+
+    "antiRegressionRules": {
+      "type": "array",
+      "$comment": "Required state extraction category 9 of 11. Protected from compression. Canonical: docs/13 §10; docs/13 §13.",
+      "description": "Hard lessons from the session that prevent repeating costly mistakes. Protected from compression. Each rule carries lifecycle metadata as specified in docs/13 §13. No raw turn content. Canonical: docs/13 §10; docs/13 §13.",
+      "items": {
+        "type": "object",
+        "required": ["ruleId", "category", "summary", "severity", "applicability", "sourceReference"],
+        "additionalProperties": false,
+        "properties": {
+          "ruleId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable identifier for this anti-regression rule."
+          },
+          "category": {
+            "type": "string",
+            "enum": ["process", "architectural", "tool_specific", "safety"],
+            "description": "The rule category as defined in docs/13 §13: process, architectural, tool_specific, or safety."
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Structured description of the rule. Not raw turn content."
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "important", "advisory"],
+            "description": "Severity of the anti-regression rule. Canonical: docs/13 §13."
+          },
+          "applicability": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "description": "Which task types or prompt families this rule applies to. Canonical: docs/13 §13."
+          },
+          "sourceReference": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The incident or pass that created this rule. Required for lifecycle review. Canonical: docs/13 §13."
+          },
+          "reviewDate": {
+            "type": ["string", "null"],
+            "description": "Optional review/expiry date. When the rule should be reviewed for continued relevance. Canonical: docs/13 §13."
+          }
+        }
+      }
+    },
+
+    "durableFacts": {
+      "type": "array",
+      "$comment": "Required state extraction category 10 of 11. Aligns with durable_facts lane. Canonical: docs/13 §10; docs/04 §7.6.",
+      "description": "Long-lived factual context established during the session. Aligns with the durable_facts lane (docs/04 §7.6). No raw turn content. Canonical: docs/13 §10.",
+      "items": {
+        "type": "object",
+        "required": ["factId", "summary"],
+        "additionalProperties": false,
+        "properties": {
+          "factId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable identifier for this durable fact."
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Structured description of the durable fact. Not raw turn content."
+          }
+        }
+      }
+    },
+
+    "recentRawTurnWindow": {
+      "type": "object",
+      "$comment": "Required state extraction category 11 of 11. The configurable raw window paired with the structured summary. Canonical: docs/13 §10.",
+      "description": "Configuration and metadata for the recent raw turn window paired with this structured summary. The actual raw turns are NOT embedded here — this object carries only the window configuration and counts. The raw turns are injected as a separate history lane (recent_raw_turns, docs/04 §7.6). No raw turn content embedded. Canonical: docs/13 §10.",
+      "required": ["windowSize", "turnCount", "windowPolicy"],
+      "additionalProperties": false,
+      "properties": {
+        "windowSize": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Configured maximum number of recent raw turns to include alongside the structured summary."
+        },
+        "turnCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Actual number of recent raw turns included in the window. May be less than windowSize if the session has fewer turns."
+        },
+        "windowPolicy": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The policy used to select which turns are included (e.g., most_recent_N, relevance_scored_topN). Structured label only — no raw turn content."
+        }
+      }
+    },
+
+    "compressionConfidence": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "[FUTURE-ONLY] The compressor's float confidence that this structured summary faithfully represents the session state. Low confidence must trigger fail-open (failOpenTriggered: true), expanding context rather than reducing it. Canonical: docs/13 §10."
+    },
+
+    "failOpenTriggered": {
+      "type": "boolean",
+      "description": "Whether this output represents a fail-open expansion. Must be true when compressionConfidence is below threshold or when the session history was malformed or unparseable. When true, the planning pipeline must include more context, not less. Canonical: docs/13 §10; docs/13 §7."
+    },
+
+    "failOpenReason": {
+      "type": ["string", "null"],
+      "description": "Human-readable reason why fail-open was triggered, or null if it was not. Required in trace when failOpenTriggered: true. Canonical: docs/13 §10."
+    },
+
+    "protectedCategoriesRetained": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "The names of state categories that are protected from compression and were unconditionally retained. These correspond to the protected categories in docs/13 §10: durable constraints, open commitments, accepted decisions, active task state, anti-regression rules, recent direct user instructions. Must not appear in the summaryPhase.omitted[] trace array. Canonical: docs/13 §10."
+    },
+
+    "totalRawTokensApprox": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Approximate total token count of the full raw conversation history before compression. Integer >= 0. Used to compute compression ratio and assess cost savings. No raw content — count only. Canonical: docs/13 §10."
+    },
+
+    "compressedTokensApprox": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Approximate token count of this structured summary output (excluding the raw turn window). Integer >= 0. Used to compute compression ratio. Canonical: docs/13 §10."
+    }
+
+  },
+
+  "examples": [
+    {
+      "compressorVersion": "compressor-v0.1.0-stub",
+      "sessionId": "session-abc-001",
+      "compressionTraceId": "summary-trace-001",
+      "currentTaskState": {
+        "activeTask": "implement-selector-ladder",
+        "currentGoal": "Complete Phase 12 harness implementation",
+        "blockers": ["Hardcoded fixture counts in harness.test.ts"],
+        "progressNotes": ["Phase 5 schemas validated", "Fixture creation deferred"]
+      },
+      "acceptedDecisions": [
+        {
+          "decisionId": "dec-001",
+          "summary": "Use Option C: defer fixture creation until formal scoping pass",
+          "acceptedAt": "session-turn-ref-42"
+        }
+      ],
+      "openIssues": [
+        {
+          "issueId": "issue-001",
+          "summary": "Harness fixture count hardcoding limits future fixture expansion",
+          "severity": "important"
+        }
+      ],
+      "openCommitments": [],
+      "userConstraints": [],
+      "importantFilesPaths": [
+        "tests/phase12/harness.test.ts",
+        "schemas/outputs/trace.schema.json"
+      ],
+      "failedAttempts": [
+        {
+          "attemptId": "attempt-001",
+          "summary": "Creating E2E fixtures for future-only Phase 5 schemas",
+          "failureReason": "MVP CLI does not produce future-only trace keys; harness counts are hardcoded"
+        }
+      ],
+      "activeWarnings": [],
+      "antiRegressionRules": [
+        {
+          "ruleId": "rule-001",
+          "category": "architectural",
+          "summary": "Do not create harness fixtures for future-only schemas without updating hardcoded harness counts",
+          "severity": "important",
+          "applicability": ["fixture_creation", "schema_work"],
+          "sourceReference": "Phase 5+ Fixture Creation blocked pass",
+          "reviewDate": null
+        }
+      ],
+      "durableFacts": [
+        {
+          "factId": "fact-001",
+          "summary": "The harness expects exactly 28 fixture cases and 18 fixture groups (hardcoded in harness.test.ts H-S4, H-F1, H-F2)"
+        }
+      ],
+      "recentRawTurnWindow": {
+        "windowSize": 6,
+        "turnCount": 6,
+        "windowPolicy": "most_recent_N"
+      },
+      "compressionConfidence": 0.88,
+      "failOpenTriggered": false,
+      "failOpenReason": null,
+      "protectedCategoriesRetained": ["acceptedDecisions", "openCommitments", "antiRegressionRules"],
+      "totalRawTokensApprox": 24000,
+      "compressedTokensApprox": 1800
+    }
+  ]
+}

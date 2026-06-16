@@ -1,0 +1,5 @@
+{
+  "activeSkillIds": ["skill.does-not-exist-in-registry"],
+  "activeToolIds": [],
+  "activeMemoryIds": []
+}

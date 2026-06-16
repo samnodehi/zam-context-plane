@@ -1,0 +1,49 @@
+[
+  {
+    "id": "scaffold.system-rules",
+    "type": "scaffold",
+    "title": "System Rules",
+    "summary": "Core system-level rules and constraints applied to every planning run.",
+    "source": "components/scaffold/system-rules.md",
+    "tokensApprox": 350,
+    "charsApprox": 1400,
+    "riskLevel": "critical",
+    "requiredWhen": [
+      "*"
+    ],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": [
+      "scaffold",
+      "required"
+    ],
+    "version": "1.0.0",
+    "hash": "021b6d841c0ee2b639ed4897b1716fa1f55a023aab86aff10ba9e9640d356015"
+  },
+  {
+    "id": "tool.read-file",
+    "type": "tool",
+    "title": "Read File Tool",
+    "summary": "Tool that reads a file from the local filesystem.",
+    "source": "components/tools/read-file.md",
+    "tokensApprox": 120,
+    "charsApprox": 480,
+    "riskLevel": "medium",
+    "requiredWhen": [],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 3,
+    "evidenceRequired": null,
+    "tags": [
+      "tool"
+    ],
+    "version": "1.0.0",
+    "hash": "c3167962be16ecb06138e28b5f9337ed3cbd6cde9c4db597ae5471f887c494aa"
+  }
+]

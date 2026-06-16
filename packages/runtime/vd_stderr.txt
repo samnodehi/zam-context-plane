@@ -1,0 +1,7 @@
+[zam-agent] Session: 4e2d4d2d-f689-406c-b28d-0919d7567725
+[zam-agent] Model: google/gemini-3.1-flash-lite
+[zam-agent] Registry: 5 total components (including 5 default tools)
+[zam-agent] Workspace: S:\mywork\ZAM\packages\runtime
+[zam-agent] Turns: 2
+[zam-agent] Exit: no_progress
+[zam-agent] Session ID: 4e2d4d2d-f689-406c-b28d-0919d7567725

@@ -1,0 +1,187 @@
+{
+  "run": {
+    "runId": "fixture-run-11-capability-incomplete-001",
+    "planningRunStartedAt": "2026-05-21T08:00:00Z",
+    "planningRunCompletedAt": "2026-05-21T08:00:00Z",
+    "promptFamily": "tool_use_required",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "tool_use_required",
+      "familyConfidence": 0.88,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "tool_use_required",
+    "familyConfidence": 0.88
+  },
+  "registryPhase": {
+    "componentCount": 3,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 3,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.system-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "omissionPolicy: never — hard protection; requiredWhen: * matched",
+        "evidence": ["omissionPolicy=never", "retainPolicy=safety_critical", "riskLevel=critical", "requiredWhen=*"],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "tool.read-file",
+        "module": "ToolSelector",
+        "action": "include",
+        "reason": "capabilityInventoryComplete: false — unknown availability; fail-open include applied for tool.read-file",
+        "evidence": ["capabilityInventoryComplete=false", "tool_availability_unknown", "fail_open_incomplete_inventory"],
+        "confidence": "medium",
+        "risk": "medium",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": true,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-003",
+        "componentId": "tool.run-shell",
+        "module": "ToolSelector",
+        "action": "include",
+        "reason": "capabilityInventoryComplete: false — unknown availability; fail-open include applied for tool.run-shell",
+        "evidence": ["capabilityInventoryComplete=false", "tool_availability_unknown", "fail_open_incomplete_inventory"],
+        "confidence": "medium",
+        "risk": "high",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": true,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [
+      {
+        "code": "runtime_capabilities_missing",
+        "message": "capabilityInventoryComplete: false — tool capability inventory is incomplete; tool components fail-open to include"
+      }
+    ],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 3,
+      "decidedInclude": 3,
+      "decidedOmit": 0,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 2,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "3 components evaluated; 3 included (2 fail-open); 0 omitted; 0 deferred; 0 conflicts; 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.system-rules",
+        "finalAction": "include",
+        "finalPath": "required_match",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "tool.read-file",
+        "finalAction": "include",
+        "finalPath": "fail_open",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-002"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      },
+      {
+        "componentId": "tool.run-shell",
+        "finalAction": "include",
+        "finalPath": "fail_open",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-003"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 3
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": [
+      "scaffold.system-rules",
+      "tool.read-file",
+      "tool.run-shell"
+    ],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 540,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.system-rules",
+        "action": "include",
+        "path": "required_match",
+        "reason": "omissionPolicy: never — always included",
+        "tokensApprox": 350
+      },
+      {
+        "componentId": "tool.read-file",
+        "action": "include",
+        "path": "fail_open",
+        "reason": "capabilityInventoryComplete: false — unknown availability; fail-open include applied",
+        "tokensApprox": 100
+      },
+      {
+        "componentId": "tool.run-shell",
+        "action": "include",
+        "path": "fail_open",
+        "reason": "capabilityInventoryComplete: false — unknown availability; fail-open include applied",
+        "tokensApprox": 90
+      }
+    ],
+    "omittedComponents": [],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": [
+      "tool.read-file: capabilityInventoryComplete=false — unknown availability; fail-open include applied",
+      "tool.run-shell: capabilityInventoryComplete=false — unknown availability; fail-open include applied"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "runtime_capabilities_missing",
+      "message": "capabilityInventoryComplete: false — tool capability inventory is incomplete; tool components fail-open to include"
+    }
+  ]
+}

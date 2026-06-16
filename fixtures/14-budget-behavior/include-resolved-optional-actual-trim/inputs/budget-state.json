@@ -1,0 +1,9 @@
+{
+  "totalPromptTokenTarget": 800,
+  "maxScaffoldTokens": 800,
+  "maxSkillTokens": 800,
+  "maxToolTokens": 800,
+  "maxHistoryTokens": 800,
+  "reservedUserTokens": 0,
+  "budgetCritical": true
+}

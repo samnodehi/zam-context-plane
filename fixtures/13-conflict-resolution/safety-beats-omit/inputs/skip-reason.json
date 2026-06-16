@@ -1,0 +1,6 @@
+{
+  "reason": "safety_hard_protection conflict is not reachable through current MVP E2E selector routing. The deterministic ladder applies hard protection (Step 3) before safeToOmitWhen (Step 7), producing a single include/safety_override decision per component. No multi-selector conflict is possible for the same component type.",
+  "approvedBy": "user",
+  "approvedDate": "2026-06-02",
+  "unitTestCoverage": "tests/phase8/conflict-resolver.test.ts SHP-1"
+}

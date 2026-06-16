@@ -1,0 +1,32 @@
+{
+  "compressorVersion": "future-stub-v0.1",
+  "compressorTraceId": "trace-04-summary-trace-stub",
+  "currentTaskState": {
+    "activeTask": "Verifying summaryTrace structure: included, omitted, uncertain arrays"
+  },
+  "acceptedDecisions": [
+    { "content": "summaryTrace is mandatory and must have all three categories even if empty" }
+  ],
+  "openIssues": [
+    { "content": "Whether to surface uncertain items to the main model as warnings — deferred" }
+  ],
+  "openCommitments": [],
+  "userConstraints": [],
+  "importantFilesPaths": [
+    { "content": "docs/13_MODEL_ASSISTED_CONTEXT_PLANNING.md", "notes": "§10 Summary Trace definition" }
+  ],
+  "failedAttempts": [],
+  "warnings": [
+    { "content": "Do not conflate summaryTrace.uncertain with failOpen — they are separate concepts" }
+  ],
+  "antiRegressionRules": [],
+  "recentRelevantTurns": [
+    { "content": "Reviewer confirmed: summaryTrace.uncertain is essential for fail-open auditability" }
+  ],
+  "durableFacts": [],
+  "summaryTrace": {
+    "included": ["currentTaskState", "acceptedDecisions", "importantFilesPaths", "warnings", "recentRelevantTurns"],
+    "omitted": ["openCommitments", "userConstraints", "failedAttempts", "antiRegressionRules", "durableFacts"],
+    "uncertain": ["openIssues — could not determine if still relevant after compression"]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "analyzerVersion": "future-stub-v0.1",
+  "tier": 1,
+  "promptFamily": "coding",
+  "requestType": "coding",
+  "analyzerConfidence": 0.85,
+  "assessedRequestRiskLevel": "medium",
+  "neededLanes": ["tools"],
+  "requiresHistory": false,
+  "requiresTools": true,
+  "requiresFiles": false,
+  "failOpenTriggered": false,
+  "failOpenReason": null,
+  "evidence": [
+    "Detected programming language reference",
+    "Request framing matches coding task pattern"
+  ],
+  "analyzerTraceId": "trace-04-prompt-family-validation-stub"
+}

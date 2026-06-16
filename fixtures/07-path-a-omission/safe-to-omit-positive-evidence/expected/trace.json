@@ -1,0 +1,140 @@
+{
+  "run": {
+    "runId": "fixture-run-07-path-a-omission-001",
+    "planningRunStartedAt": "2026-05-21T11:00:00Z",
+    "planningRunCompletedAt": "2026-05-21T11:00:00Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.88,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.88
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 2,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.system-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection",
+        "evidence": ["riskLevel=critical", "omissionPolicy=never", "retainPolicy=safety_critical", "hard_protection_applied"],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "skill.heartbeat-proactive",
+        "module": "SkillSelector",
+        "action": "omit",
+        "reason": "safeToOmitWhen matched: general_default; evidenceRequired: null — Path A omit authorized",
+        "evidence": ["safeToOmitWhen=general_default", "promptFamily=general_default", "evidenceRequired=null", "path_a_gate_passed"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 180},
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 2,
+      "decidedInclude": 1,
+      "decidedOmit": 1,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "2 components evaluated; 1 included (0 fail-open); 1 omitted; 0 deferred; 0 conflicts; 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.system-rules",
+        "finalAction": "include",
+        "finalPath": "safety_override",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.heartbeat-proactive",
+        "finalAction": "omit",
+        "finalPath": "safe_to_omit_match",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-002"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": ["scaffold.system-rules", "skill.heartbeat-proactive"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 350,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.system-rules",
+        "action": "include",
+        "path": "safety_override",
+        "reason": "hard protection: riskLevel=critical, omissionPolicy=never",
+        "tokensApprox": 350
+      }
+    ],
+    "omittedComponents": [
+      {
+        "componentId": "skill.heartbeat-proactive",
+        "action": "omit",
+        "path": "safe_to_omit_match",
+        "reason": "safeToOmitWhen matched: general_default; Path A omit authorized",
+        "tokensApprox": 180
+      }
+    ],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": []
+  },
+  "warnings": []
+}

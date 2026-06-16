@@ -1,0 +1,125 @@
+{
+  "run": {
+    "runId": "fixture-run-02-quarantine-001",
+    "planningRunStartedAt": "2026-05-22T10:00:00Z",
+    "planningRunCompletedAt": "2026-05-22T10:00:00Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.9,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.9
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 1,
+    "validationWarnings": [
+      {
+        "code": "schema_invalid",
+        "componentId": "skill.malformed-zero-tokens",
+        "message": "Component skill.malformed-zero-tokens quarantined: tokensApprox=0 and charsApprox=0 but metadataOnly is not true — violates loader cross-field rule (tokensApprox >= 1 unless metadataOnly: true); component excluded from candidate set"
+      }
+    ],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 1,
+      "quarantinedExcluded": 1
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.system-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; always included",
+        "evidence": [
+          "riskLevel=critical",
+          "omissionPolicy=never",
+          "retainPolicy=safety_critical",
+          "hard_protection_applied"
+        ],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": {
+          "tokens": 0
+        },
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 1,
+      "decidedInclude": 1,
+      "decidedOmit": 0,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "1 component evaluated; 1 included (0 fail-open); 0 omitted; 0 deferred; 0 conflicts; 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.system-rules",
+        "finalAction": "include",
+        "finalPath": "safety_override",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": [
+          "tid-001"
+        ],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": [
+      "scaffold.system-rules"
+    ],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 350,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.system-rules",
+        "action": "include",
+        "path": "safety_override",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; always included",
+        "tokensApprox": 350
+      }
+    ],
+    "omittedComponents": [],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": []
+  },
+  "warnings": []
+}

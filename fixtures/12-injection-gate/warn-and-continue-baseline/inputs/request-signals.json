@@ -1,0 +1,10 @@
+{
+  "promptFamily": "general_default",
+  "familyConfidence": 0.85,
+  "injectionSuspect": true,
+  "activeSkillIds": [],
+  "activeToolIds": [],
+  "activeMemoryIds": [],
+  "outputFormatHint": null,
+  "explicitCallerFlags": []
+}

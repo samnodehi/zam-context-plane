@@ -1,0 +1,175 @@
+{
+  "run": {
+    "runId": "fixture-run-12-warn-continue-001",
+    "planningRunStartedAt": "2026-05-24T10:00:00Z",
+    "planningRunCompletedAt": "2026-05-24T10:00:00Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.85,
+      "injectionSuspect": true
+    },
+    "injectionSuspectFlag": true,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.85,
+    "requestedInjectionSuspectAction": "warn_and_continue",
+    "effectiveInjectionSuspectAction": "warn_and_continue",
+    "policyFallbackReasons": []
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 2,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.core-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection Step 3 wins unconditionally; injection gate does not alter hard-protected decisions",
+        "evidence": [
+          "riskLevel=critical",
+          "omissionPolicy=never",
+          "retainPolicy=safety_critical",
+          "hard_protection_applied",
+          "injection_suspect_seen=true",
+          "injectionSuspectAction=warn_and_continue"
+        ],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": false,
+        "selector": "deterministic",
+        "injectionSuspect": true,
+        "injectionSuspectAction": "warn_and_continue",
+        "actionChanged": false,
+        "warningsEmitted": []
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "skill.optional-tip",
+        "module": "SkillSelector",
+        "action": "omit",
+        "reason": "warn_and_continue: low-risk optional skill with defaultAction: omit — no requiredWhen match, no safeToOmitWhen match — Path B omit preserved; ordinary omit allowed under warn_and_continue",
+        "evidence": [
+          "defaultAction=omit",
+          "no_requiredWhen_match",
+          "no_safeToOmitWhen_match",
+          "injection_suspect_seen=true",
+          "injectionSuspectAction=warn_and_continue",
+          "path_b_omit_allowed"
+        ],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": { "tokens": 150 },
+        "failOpen": false,
+        "selector": "deterministic",
+        "injectionSuspect": true,
+        "injectionSuspectAction": "warn_and_continue",
+        "actionChanged": false,
+        "warningsEmitted": ["injection_suspect_omit_allowed"]
+      }
+    ],
+    "planningWarnings": [
+      {
+        "code": "injection_suspect_warn_and_continue",
+        "message": "injectionSuspect: true — effective policy: warn_and_continue (applied once per run); ladder behavior preserved; safety/policy omit would be upgraded but no such omit occurred in this run"
+      }
+    ],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 2,
+      "decidedInclude": 1,
+      "decidedOmit": 1,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "2 components evaluated. 1 included, 1 omitted, 0 deferred (0 default, 0 runtime-unavailable), 0 fail-open. 0 conflict(s) identified."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.core-rules",
+        "finalAction": "include",
+        "finalPath": "safety_override",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.optional-tip",
+        "finalAction": "omit",
+        "finalPath": "default_action_omit",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-002"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": ["scaffold.core-rules", "skill.optional-tip"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 300,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.core-rules",
+        "action": "include",
+        "path": "safety_override",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; always included",
+        "tokensApprox": 300
+      }
+    ],
+    "omittedComponents": [
+      {
+        "componentId": "skill.optional-tip",
+        "action": "omit",
+        "path": "default_action_omit",
+        "reason": "warn_and_continue: low-risk optional skill with defaultAction: omit — Path B omit preserved; ordinary omit allowed",
+        "tokensApprox": 150
+      }
+    ],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": []
+  },
+  "warnings": [
+    {
+      "code": "injection_suspect_warn_and_continue",
+      "message": "injectionSuspect: true — effective policy: warn_and_continue (applied once per run); ladder behavior preserved; safety/policy omit would be upgraded but no such omit occurred in this run"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/inputs/selector-policy.schema.json",
+  "title": "Portable Context Control Plane — Selector Policy Input",
+  "description": "Schema for the --policy CLI input file. Operator-supplied configuration governing selector behavior. Class B input — if absent: apply safe defaults (failOpenThreshold: 0.7, deterministicOnly: true, injectionSuspectAction: 'warn_and_continue'); emit selector_policy_defaulted warning. CRITICAL injectionSuspectAction schema rule: this field is an OPEN raw string — no enum is enforced at the schema boundary. The schema must accept any string so the orchestrator can distinguish halt_planning (recognized reserved value, not a typo) from genuine typos (unrecognized unknown value). If the schema enforces a closed enum, the injection_action_unknown fallback path is permanently blocked. Orchestrator-level normalization (not schema) produces the effective policy. deterministicOnly is always true in MVP — model-assisted selectors not implemented. Canonical owners: docs/06 §2.9; docs/11 §4.1; docs/12 §2.2 and §3.7.",
+  "$comment": "Pass 4.9C-2B — Batch B. Pass 4.9C-2B.1 — fixed injectionSuspectAction from closed enum to open string. No code. No runtime. No provider/model calls. No docs edited. injectionSuspectAction is open string per docs/12 §2.2, §3.7 and docs/06 §2.9 F-24. Effective normalized policy is warn_and_continue or fail_open_all only — normalization is orchestrator logic, not schema logic. Canonical sources: docs/06 §2.9, docs/11 §4.1, docs/12 §2.2 §3.7.",
+
+  "type": "object",
+  "required": ["failOpenThreshold", "deterministicOnly", "injectionSuspectAction"],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "failOpenThreshold": {
+      "title": "Fail-open confidence threshold",
+      "description": "Float 0.0-1.0. Confidence threshold below which selectors must fail open (emit action: include / path: fail_open) rather than omit. Default: 0.7. A value near 0.0 disables fail-open behavior almost entirely — operators should avoid very low values. Also used by the familyConfidence escalation rule: when injectionSuspect: true and requestSignals.familyConfidence < failOpenThreshold, effective injectionSuspectAction automatically escalates to fail_open_all regardless of the configured value. Canonical: docs/06 §2.9.",
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+
+    "deterministicOnly": {
+      "title": "Deterministic only flag",
+      "description": "Boolean. Must be true in MVP — model-assisted selectors are not implemented. Only deterministic selector logic is applied. If false is supplied, the orchestrator must treat it as true and emit a selector_policy_defaulted warning noting that model-assisted selectors are not implemented in MVP.",
+      "type": "boolean"
+    },
+
+    "injectionSuspectAction": {
+      "title": "Injection suspect action (raw input value — open string, no enum)",
+      "description": "What the orchestrator should do when requestSignals.injectionSuspect is true. This is the RAW INPUT value. This field is an OPEN STRING with no enum enforced at the schema boundary so that all values reach the orchestrator for proper classification. ACTIVE MVP VALUES: 'warn_and_continue' (default) — ladder behavior; safety/policy/history-durable omit upgraded to include/fail_open; all decisions carry injection_suspect_seen evidence atom. 'fail_open_all' — all Path A and Path B omits globally suppressed; all omit becomes include/fail_open. RECOGNIZED RESERVED (not implemented in MVP): 'halt_planning' — orchestrator recognizes this as a known-but-not-implemented value, emits policy_value_not_implemented planning warning, normalizes to warn_and_continue, and records the fallback in trace. Must NOT be treated as a typo or generic unknown value. UNRECOGNIZED STRINGS: any string other than the three above passes the schema boundary unchanged so the orchestrator can emit injection_action_unknown and normalize to warn_and_continue. A closed enum enforced at the schema level would silently block this fallback path. The effective normalized policy is always either warn_and_continue or fail_open_all — never modeled in this input schema. Canonical: docs/06 §2.9 F-24; docs/12 §2.2 and §3.7.",
+      "$comment": "SCHEMA DESIGN (Pass 4.9C-2B.1 fix): Open string, no enum. Three recognized values: warn_and_continue (active MVP), fail_open_all (active MVP), halt_planning (recognized reserved — policy_value_not_implemented path, not injection_action_unknown). Any other string accepted at schema boundary so orchestrator can emit injection_action_unknown. A closed enum of these three would permanently block the injection_action_unknown warning path. Normalization to effective policy is orchestrator logic.",
+      "type": "string",
+      "minLength": 1
+    }
+
+  },
+
+  "examples": [
+    {
+      "failOpenThreshold": 0.7,
+      "deterministicOnly": true,
+      "injectionSuspectAction": "warn_and_continue"
+    },
+    {
+      "failOpenThreshold": 0.8,
+      "deterministicOnly": true,
+      "injectionSuspectAction": "fail_open_all"
+    },
+    {
+      "$comment": "halt_planning: recognized reserved value — passes schema boundary; orchestrator emits policy_value_not_implemented and normalizes to warn_and_continue; not treated as a typo",
+      "failOpenThreshold": 0.7,
+      "deterministicOnly": true,
+      "injectionSuspectAction": "halt_planning"
+    },
+    {
+      "$comment": "Unknown/typo value: passes schema boundary; orchestrator emits injection_action_unknown and normalizes to warn_and_continue",
+      "failOpenThreshold": 0.7,
+      "deterministicOnly": true,
+      "injectionSuspectAction": "some_unknown_future_value"
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "run": {
+    "runId": "fixture-run-14-actual-trim-001",
+    "planningRunStartedAt": "2026-05-26T09:00:00Z",
+    "planningRunCompletedAt": "2026-05-26T09:00:00Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.90,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.90
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 2,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.system-core",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection applied; budget pressure cannot override",
+        "evidence": ["riskLevel=critical", "omissionPolicy=never", "retainPolicy=safety_critical", "hard_protection_applied", "budgetHint=protected"],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "skill.deep-explainer",
+        "module": "SkillSelector",
+        "action": "include",
+        "reason": "defaultAction: include; no requiredWhen match but defaultAction=include; Path A not triggered; defaultAction include applied; budgetHint: expensive_optional (tokensApprox=650 >= 500 threshold; retainPolicy=optional; omissionPolicy=allow); include-resolved before Budgeter",
+        "evidence": ["defaultAction=include", "no_requiredWhen_match", "no_safeToOmitWhen_match", "default_include", "budgetHint=expensive_optional", "thresholdUsed=500", "budget_pressure_seen"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [
+      {
+        "code": "budget_pressure_seen",
+        "message": "budgetCritical=true: budget pressure observed; optional components reviewed for trimming by Budgeter"
+      }
+    ],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 2,
+      "decidedInclude": 2,
+      "decidedOmit": 0,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "2 components evaluated. 2 included, 0 omitted, 0 deferred (0 default, 0 runtime-unavailable), 0 fail-open. 0 conflict(s) identified."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.system-core",
+        "finalAction": "include",
+        "finalPath": "safety_override",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.deep-explainer",
+        "finalAction": "include",
+        "finalPath": "default_include",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-002"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": ["scaffold.system-core", "skill.deep-explainer"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 800,
+        "selectedTokensApprox": 1350,
+        "projectedOverflow": 550
+      },
+      "trimOrder": [
+        {
+          "componentId": "skill.deep-explainer",
+          "budgetHint": "expensive_optional",
+          "tokensApprox": 650,
+          "trimReason": "expensive_optional_over_budget: tokensApprox=650 >= threshold=500; retainPolicy=optional, omissionPolicy=allow, budgetPriority=7; include-resolved by selector; Budgeter performs actual trim to resolve overflow"
+        }
+      ],
+      "budgetOverflow": false
+    },
+    "trimActions": [
+      {
+        "componentId": "skill.deep-explainer",
+        "budgetHint": "expensive_optional",
+        "tokensDropped": 650,
+        "reason": "expensive_optional include-resolved trim: tokensApprox=650 >= threshold=500; pre-trim overflow=550; trim resolves overflow (post-trim selected=700 <= target=800); retainPolicy=optional, omissionPolicy=allow"
+      }
+    ],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.system-core",
+        "action": "include",
+        "path": "safety_override",
+        "reason": "hard protection: riskLevel=critical, omissionPolicy=never, retainPolicy=safety_critical; budget pressure cannot override",
+        "tokensApprox": 700
+      }
+    ],
+    "omittedComponents": [
+      {
+        "componentId": "skill.deep-explainer",
+        "action": "omit",
+        "path": "budget_trim",
+        "reason": "include-resolved by selector (default_include); actually trimmed by Budgeter — expensive_optional (tokensApprox=650 >= 500 threshold); budget overflow resolved by trim (pre-trim total 1350 > target 800)",
+        "tokensApprox": 650
+      }
+    ],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": []
+  },
+  "warnings": []
+}

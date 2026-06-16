@@ -1,0 +1,6 @@
+{
+  "availableToolIds": [],
+  "unavailableToolIds": ["tool.write-file"],
+  "capabilityInventoryComplete": true,
+  "runtimeLabel": "test-runtime-v1"
+}

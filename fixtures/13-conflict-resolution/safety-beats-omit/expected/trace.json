@@ -1,0 +1,179 @@
+{
+  "run": {
+    "runId": "fixture-run-13-safety-beats-omit-001",
+    "planningRunStartedAt": "2026-05-21T12:00:00Z",
+    "planningRunCompletedAt": "2026-05-21T12:00:00Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.88,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.88
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 2,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.safety-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection applied",
+        "evidence": ["riskLevel=critical", "omissionPolicy=never", "retainPolicy=safety_critical", "hard_protection_applied"],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "scaffold.safety-rules",
+        "module": "SkillSelector",
+        "action": "omit",
+        "reason": "safeToOmitWhen matched general_default — erroneous omit decision (selector defect scenario per docs/06 §11.5 Case 8)",
+        "evidence": ["safeToOmitWhen_match=general_default", "promptFamily=general_default"],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": {"tokens": 300},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-003",
+        "componentId": "skill.optional-helper",
+        "module": "SkillSelector",
+        "action": "include",
+        "reason": "no-conflict include: defaultAction omit but no evidence path fired cleanly; included via default_include for fixture baseline",
+        "evidence": ["defaultAction=omit", "no_safe_to_omit_evidence_clean", "default_include_fallback"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 2,
+      "decidedInclude": 2,
+      "decidedOmit": 0,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 1,
+      "unknownReferences": 0,
+      "narrative": "2 components evaluated; 2 included (0 fail-open); 0 omitted; 0 deferred; 1 conflict resolved (safety_hard_protection); 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.safety-rules",
+        "finalAction": "include",
+        "finalPath": "safety_override",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001", "tid-002"],
+        "resolutionRule": "safety_hard_protection",
+        "losingDecisions": [
+          {
+            "decisionId": "tid-002",
+            "action": "omit",
+            "path": "safe_to_omit_match",
+            "defeatedBy": "safety_hard_protection"
+          }
+        ],
+        "warningsEmitted": ["safety_override_omit_decision"],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.optional-helper",
+        "finalAction": "include",
+        "finalPath": "default_include",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-003"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      }
+    ],
+    "conflictResolutionTrace": [
+      {
+        "componentId": "scaffold.safety-rules",
+        "inputDecisionIds": ["tid-001", "tid-002"],
+        "finalAction": "include",
+        "finalPath": "safety_override",
+        "resolutionRule": "safety_hard_protection",
+        "losingDecisions": [
+          {
+            "decisionId": "tid-002",
+            "action": "omit",
+            "path": "safe_to_omit_match",
+            "defeatedBy": "safety_hard_protection"
+          }
+        ],
+        "warningsEmitted": ["safety_override_omit_decision"],
+        "resolvedAt": 1
+      }
+    ],
+    "noConflictComponentIds": ["skill.optional-helper"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 480,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.safety-rules",
+        "action": "include",
+        "path": "safety_override",
+        "reason": "hard protection: safety_hard_protection won over omit decision",
+        "tokensApprox": 300
+      },
+      {
+        "componentId": "skill.optional-helper",
+        "action": "include",
+        "path": "default_include",
+        "reason": "no conflict; included via default_include",
+        "tokensApprox": 180
+      }
+    ],
+    "omittedComponents": [],
+    "deferredComponents": [],
+    "riskFlags": [
+      "safety_override_omit_decision: scaffold.safety-rules was the subject of an omit decision that was defeated by hard protection (safety_hard_protection); indicates a selector implementation defect"
+    ],
+    "failOpenReasons": []
+  },
+  "warnings": []
+}

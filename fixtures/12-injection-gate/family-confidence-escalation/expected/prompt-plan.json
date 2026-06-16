@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.base-rules",
+      "action": "include",
+      "path": "safety_override",
+      "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection Step 3; always included regardless of injection gate",
+      "tokensApprox": 320
+    },
+    {
+      "componentId": "skill.context-helper",
+      "action": "include",
+      "path": "fail_open",
+      "reason": "familyConfidence (0.4) < failOpenThreshold (0.7) with injectionSuspect: true — effective policy escalated to fail_open_all; Path B omit (defaultAction: omit) converted to include/fail_open",
+      "tokensApprox": 200
+    }
+  ],
+  "omittedComponents": [],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 8000,
+    "selectedTokensApprox": 520,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "total": 520,
+    "scaffold": 320,
+    "skills": 200
+  },
+  "riskFlags": [],
+  "failOpenReasons": [
+    "fail_open:componentId:skill.context-helper:path_fail_open"
+  ],
+  "planningWarnings": []
+}

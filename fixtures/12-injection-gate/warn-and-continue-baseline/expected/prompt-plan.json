@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.core-rules",
+      "action": "include",
+      "path": "safety_override",
+      "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection Step 3; always included regardless of injection gate",
+      "tokensApprox": 300
+    }
+  ],
+  "omittedComponents": [
+    {
+      "componentId": "skill.optional-tip",
+      "action": "omit",
+      "path": "default_action_omit",
+      "reason": "warn_and_continue: low-risk optional skill with defaultAction: omit — Path B omit preserved; injection_suspect_omit_allowed emitted",
+      "tokensApprox": 150
+    }
+  ],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 8000,
+    "selectedTokensApprox": 300,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "total": 300,
+    "scaffold": 300
+  },
+  "riskFlags": [],
+  "failOpenReasons": [],
+  "planningWarnings": []
+}

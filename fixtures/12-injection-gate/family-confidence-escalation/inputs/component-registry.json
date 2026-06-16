@@ -1,0 +1,42 @@
+[
+  {
+    "id": "scaffold.base-rules",
+    "type": "scaffold",
+    "title": "Base Rules Scaffold",
+    "summary": "Foundational behavioral rules required in every planning run.",
+    "source": "scaffolds/base-rules.md",
+    "tokensApprox": 320,
+    "charsApprox": 1280,
+    "riskLevel": "critical",
+    "requiredWhen": [],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": ["scaffold", "safety"],
+    "version": "1.0.0",
+    "hash": null
+  },
+  {
+    "id": "skill.context-helper",
+    "type": "skill",
+    "title": "Context Helper Skill",
+    "summary": "A low-priority optional skill not needed for general-default requests.",
+    "source": "skills/context-helper.md",
+    "tokensApprox": 200,
+    "charsApprox": 800,
+    "riskLevel": "low",
+    "requiredWhen": [],
+    "safeToOmitWhen": [],
+    "defaultAction": "omit",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 9,
+    "evidenceRequired": null,
+    "tags": ["skill", "optional"],
+    "version": "1.0.0",
+    "hash": null
+  }
+]

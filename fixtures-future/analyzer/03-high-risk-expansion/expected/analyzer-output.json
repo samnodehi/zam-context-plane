@@ -1,0 +1,18 @@
+{
+  "analyzerVersion": "future-stub-v0.1",
+  "tier": 3,
+  "promptFamily": "general",
+  "analyzerConfidence": 0.9,
+  "assessedRequestRiskLevel": "critical",
+  "neededLanes": ["tools", "files", "history"],
+  "requiresHistory": true,
+  "requiresTools": true,
+  "requiresFiles": true,
+  "failOpenTriggered": true,
+  "failOpenReason": "Critical risk level forces fail-open",
+  "evidence": [
+    "Request involves system-level operations",
+    "Potential for irreversible side effects detected"
+  ],
+  "analyzerTraceId": "trace-03-high-risk-expansion-stub"
+}

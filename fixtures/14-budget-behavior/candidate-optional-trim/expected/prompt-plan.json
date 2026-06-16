@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.system-rules",
+      "action": "include",
+      "path": "safety_override",
+      "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; always included regardless of budget pressure",
+      "tokensApprox": 350
+    }
+  ],
+  "omittedComponents": [
+    {
+      "componentId": "skill.optional-helper",
+      "action": "omit",
+      "path": "default_action_omit",
+      "reason": "defaultAction: omit; no requiredWhen match; no safeToOmitWhen match; budget pressure (budgetCritical=true); Budgeter confirmed trim as candidate_optional",
+      "tokensApprox": 300
+    }
+  ],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 500,
+    "selectedTokensApprox": 350,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "scaffold": 350,
+    "total": 350
+  },
+  "riskFlags": [],
+  "failOpenReasons": [],
+  "planningWarnings": [
+    {
+      "code": "budget_pressure_seen",
+      "message": "budgetCritical=true: budget pressure observed; optional components reviewed for trimming by Budgeter"
+    }
+  ]
+}

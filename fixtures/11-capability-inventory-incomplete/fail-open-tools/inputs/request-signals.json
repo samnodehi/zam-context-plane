@@ -1,0 +1,6 @@
+{
+  "promptFamily": "tool_use_required",
+  "familyConfidence": 0.88,
+  "injectionSuspect": false,
+  "activeToolIds": ["tool.read-file", "tool.run-shell"]
+}

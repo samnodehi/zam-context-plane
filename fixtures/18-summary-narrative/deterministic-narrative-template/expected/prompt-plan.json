@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "coding_build_debug",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.agent-persona",
+      "action": "include",
+      "path": "required_match",
+      "reason": "requiredWhen tag matched: coding_build_debug",
+      "tokensApprox": 280
+    },
+    {
+      "componentId": "policy.privacy-baseline",
+      "action": "include",
+      "path": "default_include",
+      "reason": "No tag match; defaultAction: include applied",
+      "tokensApprox": 350
+    }
+  ],
+  "omittedComponents": [
+    {
+      "componentId": "skill.greeting-flow",
+      "action": "omit",
+      "path": "default_action_omit",
+      "reason": "No requiredWhen or safeToOmitWhen match; defaultAction: omit with omissionPolicy: allow and riskLevel: low",
+      "tokensApprox": 200
+    }
+  ],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 8000,
+    "selectedTokensApprox": 630,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "scaffold": 280,
+    "skills": 0,
+    "total": 630
+  },
+  "riskFlags": [],
+  "failOpenReasons": [],
+  "planningWarnings": []
+}

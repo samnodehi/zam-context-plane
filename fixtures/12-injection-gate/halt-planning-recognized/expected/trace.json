@@ -1,0 +1,163 @@
+{
+  "run": {
+    "runId": "fixture-run-12-halt-planning-001",
+    "planningRunStartedAt": "2026-05-20T18:00:00Z",
+    "planningRunCompletedAt": "2026-05-20T18:00:00Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.82,
+      "injectionSuspect": true
+    },
+    "injectionSuspectFlag": true,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.82,
+    "requestedInjectionSuspectAction": "halt_planning",
+    "effectiveInjectionSuspectAction": "warn_and_continue",
+    "policyFallbackReasons": [
+      "halt_planning_recognized_not_implemented_normalized_to_warn_and_continue"
+    ]
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 2,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.system-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "omissionPolicy: never — hard protection overrides injection gate",
+        "evidence": ["omissionPolicy=never", "retainPolicy=safety_critical", "riskLevel=critical"],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": false,
+        "selector": "deterministic",
+        "injectionSuspect": true,
+        "injectionSuspectAction": "warn_and_continue",
+        "actionChanged": false,
+        "warningsEmitted": []
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "skill.general-assistant",
+        "module": "SkillSelector",
+        "action": "include",
+        "reason": "injectionSuspect: true with effective warn_and_continue (halt_planning recognized-not-implemented) — fail-open include",
+        "evidence": ["injectionSuspect=true", "injection_suspect_seen", "effective_policy=warn_and_continue", "halt_planning_recognized_not_implemented"],
+        "confidence": "medium",
+        "risk": "low",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": true,
+        "selector": "deterministic",
+        "injectionSuspect": true,
+        "injectionSuspectAction": "warn_and_continue",
+        "actionChanged": false,
+        "warningsEmitted": ["injection_suspect_omit_allowed"]
+      }
+    ],
+    "planningWarnings": [],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 2,
+      "decidedInclude": 2,
+      "decidedOmit": 0,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 1,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "2 components evaluated; 2 included (1 fail-open); 0 omitted; 0 deferred; 0 conflicts; 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.system-rules",
+        "finalAction": "include",
+        "finalPath": "required_match",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.general-assistant",
+        "finalAction": "include",
+        "finalPath": "fail_open",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-002"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": ["scaffold.system-rules", "skill.general-assistant"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 550,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.system-rules",
+        "action": "include",
+        "path": "required_match",
+        "reason": "omissionPolicy: never — always included",
+        "tokensApprox": 350
+      },
+      {
+        "componentId": "skill.general-assistant",
+        "action": "include",
+        "path": "fail_open",
+        "reason": "injectionSuspect: true with effective warn_and_continue — fail-open include applied",
+        "tokensApprox": 200
+      }
+    ],
+    "omittedComponents": [],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": [
+      "skill.general-assistant: injectionSuspect=true, effectivePolicy=warn_and_continue (halt_planning normalized) — fail-open include applied"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "policy_value_not_implemented",
+      "message": "injectionSuspectAction 'halt_planning' is recognized but not implemented in MVP; normalized to warn_and_continue"
+    },
+    {
+      "code": "injection_suspect_warn_and_continue",
+      "message": "injectionSuspect: true — effective policy: warn_and_continue (applied once per run)"
+    }
+  ]
+}

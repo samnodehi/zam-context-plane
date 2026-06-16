@@ -1,0 +1,748 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/outputs/trace.schema.json",
+  "title": "Portable Context Control Plane — trace.json Output Schema",
+  "description": "Output schema for the trace.json file produced by the Trace/Explainability Layer at the end of a planning run. A keyed phase object — not a flat array. Exactly 8 required top-level phase keys: run, requestPhase, registryPhase, selectorPhase, conflictPhase, budgetPhase, planPhase, warnings. There is NO injectionGatePhase top-level key — injection gate trace data is distributed across selectorPhase.selectorTrace[] per-decision entries and global warnings[]. selectorTrace is typed as array of TraceEntry — never array of SelectionDecision. noConflictComponentIds is a separate string[] on conflictPhase — not embedded inside conflictSummary. No raw component text, no raw history content, no provider/cache/model fields. Canonical owners: docs/04 §7.8; docs/06 §3.2, §17.6; docs/12 §5.2.",
+  "$comment": "Pass 4.9C-4C + 4.9C-4C.1 + 4.9C-4C.2 (Batch D output schema creation + repair). No code. No runtime. No provider/model calls. CRITICAL INVARIANTS: (1) No injectionGatePhase top-level key — 8 phase keys only. (2) selectorTrace is array of TraceEntry, never array of SelectionDecision. (3) noConflictComponentIds is separate string[] on conflictPhase, never inside conflictSummary. (4) budgetOverflow is required boolean on budgetPhase. (5) trimActions is required array (empty if no trim). Policy fallback fields on requestPhase — not in warnings[]. REPAIRS (4.9C-4C.1): Fix 2: effectiveInjectionSuspectAction closed enum. Fix 5: TrimActionEntry.budgetHint restricted. REPAIRS (4.9C-4C.2): planPhase partition arrays action+path both locked via allOf; reference_unknown excluded from all partition arrays. Canonical: docs/04 §7.8; docs/06 §3.2, §17.6; docs/12 §5.2.",
+
+  "type": "object",
+  "required": [
+    "run",
+    "requestPhase",
+    "registryPhase",
+    "selectorPhase",
+    "conflictPhase",
+    "budgetPhase",
+    "planPhase",
+    "warnings"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "run": {
+      "type": "object",
+      "required": ["runId", "planningRunStartedAt", "planningRunCompletedAt", "promptFamily", "schemaVersion"],
+      "additionalProperties": false,
+      "description": "Top-level run metadata for this planning run. Present in every trace. Canonical: docs/04 §7.8.",
+      "properties": {
+        "runId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for this planning run. UUID-style recommended. Canonical: docs/04 §7.8."
+        },
+        "planningRunStartedAt": {
+          "type": "string",
+          "minLength": 1,
+          "description": "ISO 8601 timestamp when this planning run started. Canonical: docs/04 §7.8."
+        },
+        "planningRunCompletedAt": {
+          "type": "string",
+          "minLength": 1,
+          "description": "ISO 8601 timestamp when this planning run completed. Canonical: docs/04 §7.8."
+        },
+        "promptFamily": {
+          "$ref": "https://portable-context-control-plane/schemas/shared/prompt-family.schema.json#PromptFamilyValue",
+          "description": "The prompt family that governed this planning run. Canonical: docs/06 §2.2."
+        },
+        "schemaVersion": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Schema version for this trace.json document. Canonical: docs/04 §7.8.",
+          "examples": ["v0"]
+        }
+      }
+    },
+
+    "requestPhase": {
+      "type": "object",
+      "required": ["requestSignalsSummary", "injectionSuspectFlag", "promptFamily", "familyConfidence"],
+      "additionalProperties": false,
+      "description": "Trace of the Request Router phase. Contains a summary of requestSignals (not the raw user request). Policy fallback fields are optional here when effective policy differs from requested. No raw user text. No explicitCallerFlags. Canonical: docs/04 §7.8; docs/06 §2.1, §17.6.",
+      "properties": {
+
+        "requestSignalsSummary": {
+          "type": "object",
+          "required": ["promptFamily", "familyConfidence", "injectionSuspect"],
+          "additionalProperties": false,
+          "$comment": "Pass 4.9C-4B decision #2: only promptFamily, familyConfidence, injectionSuspect included. explicitCallerFlags excluded for privacy/context-minimization. additionalProperties: false. No raw user text.",
+          "description": "Summary of validated requestSignals for this run. Contains the three fields relevant to planning-phase traceability. explicitCallerFlags is excluded — privacy and context-minimization (requires explicit privacy review for re-entry). Canonical: docs/06 §2.1; docs/12 §5.2.",
+          "properties": {
+            "promptFamily": {
+              "$ref": "https://portable-context-control-plane/schemas/shared/prompt-family.schema.json#PromptFamilyValue",
+              "description": "Prompt family as classified by the Request Router. Canonical: docs/06 §2.2."
+            },
+            "familyConfidence": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "description": "Confidence score (0.0–1.0) for the classified prompt family. Below-threshold values trigger fail-open substitution to general_default. Canonical: docs/06 §2.1."
+            },
+            "injectionSuspect": {
+              "type": "boolean",
+              "description": "true if the Request Router detected adversarial injection patterns in the user request. This is a pre-computed boolean — never the raw user text. Selectors consumed this boolean only. Canonical: docs/06 §2.1; F-25 resolved."
+            }
+          }
+        },
+
+        "injectionSuspectFlag": {
+          "type": "boolean",
+          "description": "Top-level convenience duplicate of requestSignalsSummary.injectionSuspect. Allows harnesses to check injection status without navigating into the summary object. Must match requestSignalsSummary.injectionSuspect exactly. Canonical: docs/04 §7.8."
+        },
+
+        "promptFamily": {
+          "$ref": "https://portable-context-control-plane/schemas/shared/prompt-family.schema.json#PromptFamilyValue",
+          "description": "Top-level convenience duplicate of requestSignalsSummary.promptFamily. Must match requestSignalsSummary.promptFamily exactly. Canonical: docs/04 §7.8."
+        },
+
+        "familyConfidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Top-level convenience duplicate of requestSignalsSummary.familyConfidence. Must match requestSignalsSummary.familyConfidence exactly. Canonical: docs/04 §7.8."
+        },
+
+        "requestedInjectionSuspectAction": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional. The injection suspect action value as supplied in selectorPolicy input (may be a recognized reserved value such as halt_planning, an unknown string, or the applied default). Present only when effective policy differs from the requested value (fallback occurred) or when familyConfidence escalation modified the effective policy. Do not place in warnings[] — this is per-run policy context, not a PlanningWarning object. Canonical: docs/06 §17.6; docs/12 §5.2."
+        },
+
+        "effectiveInjectionSuspectAction": {
+          "type": "string",
+          "enum": ["warn_and_continue", "fail_open_all"],
+          "description": "Optional. The injection suspect action actually applied by the orchestrator after any fallback normalization. Closed enum: only 'warn_and_continue' or 'fail_open_all' are valid effective values in MVP. halt_planning and unknown strings may appear as requestedInjectionSuspectAction (raw input), but never as effective applied policy. Present only when effective policy differs from requested or when familyConfidence escalation occurred. Canonical: docs/06 §17.6; docs/12 §5.2; Pass 4.9C-4C.1 Fix 2."
+        },
+
+        "policyFallbackReasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Optional. Reasons why the effective injection suspect action differs from the requested value (e.g., halt_planning recognized but not implemented, unknown policy string normalized, familyConfidence escalation). Present only when a fallback occurred. Each entry is a machine-readable reason atom — not a PlanningWarning. Canonical: docs/06 §17.6; docs/12 §5.2.",
+          "examples": [["halt_planning_recognized_not_implemented_normalized_to_warn_and_continue"]]
+        }
+
+      }
+    },
+
+    "registryPhase": {
+      "type": "object",
+      "required": ["componentCount", "quarantinedCount", "validationWarnings", "fatalErrors", "candidateSetSummary"],
+      "additionalProperties": false,
+      "description": "Trace of the Component Registry phase. Emitted before selector fan-out. candidateSetSummary is required here — it is the accounting denominator for the gap-check invariant. Canonical: docs/04 §7.8; docs/06 §3.1; docs/12 §4.2.",
+      "properties": {
+
+        "componentCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of component definitions loaded from the registry file, including any that were quarantined. Canonical: docs/04 §7.8."
+        },
+
+        "quarantinedCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of components quarantined before selector fan-out (failed validation, duplicate IDs, etc.). Quarantined components do not appear in componentsById and never reach selectors. Must equal componentCount minus the candidate set size. Canonical: docs/04 §7.8; docs/06 §3.1."
+        },
+
+        "validationWarnings": {
+          "type": "array",
+          "items": {
+            "$ref": "https://portable-context-control-plane/schemas/internal/planning-warning.schema.json"
+          },
+          "description": "Non-fatal registry validation warnings (e.g., malformed optional fields, duplicate IDs where one was retained). Must be present — use empty array when there are no warnings. Canonical: docs/04 §7.8."
+        },
+
+        "fatalErrors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Fatal registry errors that halted the planning run (e.g., registry file not found, malformed safety-critical component). In a successful run this is an empty array. If non-empty, the planning run did not complete. Canonical: docs/04 §7.1; docs/04 §7.8."
+        },
+
+        "candidateSetSummary": {
+          "type": "object",
+          "required": ["candidateSetPolicy", "candidateSetSize", "quarantinedExcluded"],
+          "additionalProperties": false,
+          "$comment": "Emitted here before selector fan-out. This is the accounting denominator for the gap-check invariant: noConflictComponentIds.length + conflictResolutionTrace.length must equal candidateSetSize. candidateSetPolicy is always 'all_non_quarantined' in MVP — other values are future-only and must not appear in the schema enum. Canonical: docs/06 §3.1; docs/12 §4.2.",
+          "description": "Summary of the candidate component set before selector fan-out. candidateSetSize is the required gap-check denominator. Canonical: docs/06 §3.1; docs/12 §4.2.",
+          "properties": {
+            "candidateSetPolicy": {
+              "type": "string",
+              "const": "all_non_quarantined",
+              "description": "The candidate set policy applied. Always 'all_non_quarantined' in MVP — all non-quarantined components enter the selector fan-out. Other values are future-only and must not appear. Canonical: docs/06 §3.1."
+            },
+            "candidateSetSize": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Total number of non-quarantined candidate components entering the selector fan-out. This is the gap-check denominator: noConflictComponentIds.length + conflictResolutionTrace.length must equal this value. Canonical: docs/06 §3.1; docs/12 §4.2."
+            },
+            "quarantinedExcluded": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of components excluded from the candidate set due to quarantine. Must equal registryPhase.quarantinedCount. Canonical: docs/06 §3.1; docs/12 §4.2."
+            }
+          }
+        }
+
+      }
+    },
+
+    "selectorPhase": {
+      "type": "object",
+      "required": ["selectorTrace", "planningWarnings", "unresolvedConflicts", "selectorSummary"],
+      "additionalProperties": false,
+      "description": "Trace of the selector fan-out phase. selectorTrace is an array of TraceEntry objects — NOT an array of SelectionDecision objects. These are two distinct companion types. TraceEntry.decisionId is referenced by SelectionDecision.traceRefs[]. Injection gate per-decision data lives inside TraceEntry optional fields when injectionSuspect: true. Canonical: docs/04 §7.8; docs/06 §3.2, §17.6; docs/12 §4.4.",
+      "properties": {
+
+        "selectorTrace": {
+          "type": "array",
+          "items": {
+            "$ref": "https://portable-context-control-plane/schemas/internal/trace-entry.schema.json"
+          },
+          "description": "Array of TraceEntry objects — one per selector decision event. CRITICAL: this is NOT an array of SelectionDecision. TraceEntry carries its own fields (decisionId, module, failOpen, estimatedSavings, selector) that do not exist on SelectionDecision. Each TraceEntry may carry optional injection gate fields (injectionSuspect, injectionSuspectAction, actionChanged, originalCandidateAction, originalCandidatePath, warningsEmitted) when injectionSuspect: true. Canonical: docs/04 §7.8; docs/06 §3.2; docs/12 §4.4."
+        },
+
+        "planningWarnings": {
+          "type": "array",
+          "items": {
+            "$ref": "https://portable-context-control-plane/schemas/internal/planning-warning.schema.json"
+          },
+          "description": "Planning warnings emitted during the selector phase. Per-selector and post-ladder warnings. Must be present — empty array if none. Canonical: docs/06 §3.4."
+        },
+
+        "unresolvedConflicts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Component IDs for which the selector fan-out produced conflicting decisions that could not be resolved by the Conflict Resolver (resolved as fail_open_unresolved). Must be present — empty array if no unresolved conflicts. Canonical: docs/06 §11.3.1a resolutionRule: fail_open_unresolved."
+        },
+
+        "selectorSummary": {
+          "$ref": "https://portable-context-control-plane/schemas/internal/selector-summary.schema.json",
+          "description": "Aggregate counts and deterministic narrative for the selector phase. The narrative string is produced from a fixed template — no model generation. Canonical: docs/06 §3.6; docs/12 §4.5."
+        }
+
+      }
+    },
+
+    "conflictPhase": {
+      "type": "object",
+      "required": ["resolvedDecisions", "conflictResolutionTrace", "noConflictComponentIds", "planningWarnings"],
+      "additionalProperties": false,
+      "description": "Trace of the Conflict Resolver phase. resolvedDecisions contains the full ResolvedSelectionDecision records. conflictResolutionTrace contains full trace entries for components with actual conflicts. noConflictComponentIds is a separate string[] — NOT inside conflictSummary. Accounting invariant: noConflictComponentIds.length + conflictResolutionTrace.length must equal registryPhase.candidateSetSummary.candidateSetSize. Canonical: docs/06 §11.3.2; docs/12 §4.8.",
+      "properties": {
+
+        "resolvedDecisions": {
+          "type": "array",
+          "items": {
+            "$ref": "https://portable-context-control-plane/schemas/internal/resolved-selection-decision.schema.json"
+          },
+          "description": "Full set of ResolvedSelectionDecision records — one per candidate component, produced by the Conflict Resolver. These are consumed read-only by the Budgeter. The Budgeter must not mutate any field. Canonical: docs/06 §11; docs/12 §4.7."
+        },
+
+        "conflictResolutionTrace": {
+          "type": "array",
+          "items": {
+            "$ref": "https://portable-context-control-plane/schemas/internal/conflict-resolution-trace.schema.json"
+          },
+          "description": "Full trace entries for components with actual conflicts (more than one input decision, or a conflict_include path). Components with a single unambiguous decision are not listed here — they appear only in noConflictComponentIds[]. Length contributes to the gap-check denominator alongside noConflictComponentIds. Canonical: docs/06 §11.3.2, §11.6; docs/12 §4.8."
+        },
+
+        "noConflictComponentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Lightweight list of component IDs with a single unambiguous decision (no conflict). CRITICAL: this is a separate string[] field on conflictPhase — it must NOT be embedded inside conflictSummary. conflictSummary.noConflict carries only the count. Accounting invariant: noConflictComponentIds.length + conflictResolutionTrace.length = candidateSetSummary.candidateSetSize. Canonical: docs/06 §11.3.2; docs/12 §4.8."
+        },
+
+        "planningWarnings": {
+          "type": "array",
+          "items": {
+            "$ref": "https://portable-context-control-plane/schemas/internal/planning-warning.schema.json"
+          },
+          "description": "Planning warnings emitted during the conflict resolution phase. Must be present — empty array if none. Canonical: docs/06 §3.4."
+        }
+
+      }
+    },
+
+    "budgetPhase": {
+      "type": "object",
+      "required": ["budgetReport", "trimActions", "budgetOverflow"],
+      "additionalProperties": false,
+      "description": "Trace of the Budgeter phase. budgetReport is the full BudgetReport object. trimActions is a required array (empty if no trimming occurred). budgetOverflow is a required boolean mirroring BudgetReport.budgetOverflow — must match. No provider cost, cache pricing, or model billing fields. Canonical: docs/04 §7.5, §7.8; docs/06 §20, §23, §25; docs/12 §4.9.",
+      "properties": {
+
+        "budgetReport": {
+          "$ref": "https://portable-context-control-plane/schemas/internal/budget-report.schema.json",
+          "description": "The full BudgetReport produced by the Budgeter. Read-only for all downstream consumers. The Budgeter must not receive this as input — it produces it as output. Canonical: docs/04 §7.5; docs/06 §20, §23, §25, §27; docs/12 §4.9."
+        },
+
+        "trimActions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/TrimActionEntry" },
+          "description": "Trace-level record of Budgeter trim actions performed. Required — must be [] if no trimming occurred. Each entry carries componentId, budgetHint, tokensDropped, and reason. runtime_unavailable defer decisions must not appear here — they are not trimming events. No provider cost or cache pricing fields. Canonical: docs/04 §7.5; docs/06 §20.3; Pass 4.9C-4B decision #3."
+        },
+
+        "budgetOverflow": {
+          "type": "boolean",
+          "description": "REQUIRED boolean mirroring BudgetReport.budgetOverflow. true if the selected components exceed totalPromptTokenTarget after trimming; false if within budget. Must match BudgetReport.budgetOverflow exactly. Required here so harnesses can check overflow status without navigating into the budgetReport object. Making this optional would allow the zero-tolerance silent-overflow check to be bypassed. Canonical: docs/04 §7.5; docs/06 §23; docs/12 §2.1."
+        }
+
+      }
+    },
+
+    "planPhase": {
+      "type": "object",
+      "required": ["selectedComponents", "omittedComponents", "deferredComponents", "riskFlags", "failOpenReasons"],
+      "additionalProperties": false,
+      "description": "Trace of the Prompt Plan Generator phase. Contains the same three mutually exclusive component partition arrays as prompt-plan.json, using the same PartitionEntry shape. Every candidate must appear in exactly one partition. path is required on all entries. No raw component text, no raw history content. Canonical: docs/04 §7.7, §7.8; docs/12 §5.1.",
+      "properties": {
+
+        "selectedComponents": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              { "$ref": "#/$defs/PartitionEntry" },
+              {
+                "properties": {
+                  "action": { "const": "include" },
+                  "path": {
+                    "type": "string",
+                    "enum": [
+                      "required_match",
+                      "default_include",
+                      "fail_open",
+                      "conflict_include",
+                      "safety_override",
+                      "not_evaluated",
+                      "quarantine_boundary_violation"
+                    ],
+                    "description": "Path values valid for include actions only. reference_unknown is excluded from partition arrays. Canonical: docs/06 §4; Pass 4.9C-4C.2."
+                  }
+                }
+              }
+            ]
+          },
+          "description": "Components included in the final prompt plan. action MUST be 'include'; path MUST be one of: required_match, default_include, fail_open, conflict_include, safety_override, not_evaluated, quarantine_boundary_violation — schema enforces both via allOf. reference_unknown is not a valid partition path. Mutually exclusive with omittedComponents and deferredComponents. Must match prompt-plan.json.selectedComponents. Canonical: docs/04 §7.7; Pass 4.9C-4C.2."
+        },
+
+        "omittedComponents": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              { "$ref": "#/$defs/PartitionEntry" },
+              {
+                "properties": {
+                  "action": { "const": "omit" },
+                  "path": {
+                    "type": "string",
+                    "enum": [
+                      "safe_to_omit_match",
+                      "default_action_omit",
+                      "budget_trim"
+                    ],
+                    "description": "Path values valid for omit actions. safe_to_omit_match and default_action_omit are selector-origin omit paths. budget_trim is a plan-phase Budgeter-origin path applied by PPG after Budgeter; it represents a component that was include-resolved, then actually dropped by Budgeter and placed into omitted output by PPG; it must correspond to a budgetPhase.trimActions[] entry and must not be emitted by selectors or the Conflict Resolver. reference_unknown is excluded from all partition arrays. Canonical: docs/06 \u00a74; Pass 4.9C-4C.2; Pass 4.9D-2AB."
+                  }
+                }
+              }
+            ]
+          },
+          "description": "Components excluded from the prompt plan. action MUST be 'omit'; path MUST be one of: safe_to_omit_match, default_action_omit, budget_trim — schema enforces both via allOf. safe_to_omit_match and default_action_omit are selector-origin omit paths. budget_trim is a plan-phase Budgeter-origin path applied by PPG after Budgeter; it represents a component that was include-resolved and then actually dropped by Budgeter; it must correspond to a budgetPhase.trimActions[] entry and must not be emitted by selectors or the Conflict Resolver. reference_unknown is not a valid partition path. Every omit must have a valid omission path. Mutually exclusive with selectedComponents and deferredComponents. Must match prompt-plan.json.omittedComponents. Canonical: docs/04 §7.7; Pass 4.9C-4C.2; Pass 4.9D-2AB."
+        },
+
+        "deferredComponents": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              { "$ref": "#/$defs/PartitionEntry" },
+              {
+                "properties": {
+                  "action": { "const": "defer" },
+                  "path": {
+                    "type": "string",
+                    "enum": [
+                      "default_defer",
+                      "runtime_unavailable"
+                    ],
+                    "description": "Path values valid for defer actions only. Harnesses MUST filter by path (not action alone) to distinguish runtime_unavailable from default_defer. reference_unknown is excluded from partition arrays. Canonical: docs/06 §4; 5-Q7/F-28; Pass 4.9C-4C.2."
+                  }
+                }
+              }
+            ]
+          },
+          "description": "Components deferred — not included and not counted as budget savings. action MUST be 'defer'; path MUST be one of: default_defer, runtime_unavailable — schema enforces both via allOf. Harnesses must filter by path (not action alone) to distinguish runtime_unavailable from default_defer. reference_unknown is not a valid partition path. Mutually exclusive with selectedComponents and omittedComponents. Canonical: docs/04 §7.7; 5-Q7/F-28; Pass 4.9C-4C.2."
+        },
+
+        "riskFlags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Machine-readable risk flags from BudgetReport and planning phases. Must match prompt-plan.json.riskFlags. Must not contain raw component text. Canonical: docs/04 §7.7."
+        },
+
+        "failOpenReasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Reasons why fail-open inclusion was invoked during this run. Must match prompt-plan.json.failOpenReasons. Must not contain raw user text. Canonical: docs/04 §7.7."
+        }
+
+      }
+    },
+
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "https://portable-context-control-plane/schemas/internal/planning-warning.schema.json"
+      },
+      "description": "Global per-run planning warnings collected from all phases. Includes global injection-suspect warnings (injection_suspect_warn_and_continue or injection_suspect_fail_open_all — each emitted exactly once per run by the orchestrator), policy_value_not_implemented (for halt_planning fallback), injection_action_unknown, family_confidence_fail_open_escalation, and other cross-phase warnings. Must be present — use empty array when there are no global warnings. Policy fallback CONTEXT fields (requestedInjectionSuspectAction, effectiveInjectionSuspectAction, policyFallbackReasons) are optional fields on requestPhase — they must NOT appear here in PlanningWarning shape. Canonical: docs/06 §3.4, §17.6; docs/12 §5.2, §6.2."
+    },
+
+    "analyzerPhase": {
+      "type": "object",
+      "$comment": "[FUTURE-ONLY] Phase 4 trace extension. Not active in MVP. Authority: docs/17_SCHEMA_DECISION_PASS.md §6.1.1.",
+      "description": "[FUTURE-ONLY] Captures the structured trace of request analyzer output (tier, confidence, proposed lanes). Present only when model-assisted analyzer is implemented. Canonical: docs/16 §6.1; docs/13 §8.",
+      "required": [
+        "analyzerVersion",
+        "tier",
+        "promptFamily",
+        "analyzerConfidence",
+        "proposedLanes",
+        "failOpenTriggered",
+        "failOpenReason",
+        "evidence",
+        "analyzerTraceId"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "analyzerVersion": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier of the analyzer model/version. Canonical: docs/16 §6.1."
+        },
+        "tier": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3,
+          "description": "Routing tier applied. 0 = fast path; 3 = fail-open. Canonical: docs/15 §5."
+        },
+        "promptFamily": {
+          "$ref": "https://portable-context-control-plane/schemas/shared/prompt-family.schema.json#PromptFamilyValue",
+          "description": "Prompt family proposal. Must be from PromptFamilyValue enum. Canonical: docs/06 §2.2."
+        },
+        "analyzerConfidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Float confidence score. DISTINCT from SelectionDecision.confidence string enum. Canonical: docs/16 §6.1."
+        },
+        "proposedLanes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Advisory lane proposals. Do not override safety constraints or protected lanes. Canonical: docs/16 §6.1."
+        },
+        "failOpenTriggered": {
+          "type": "boolean",
+          "description": "true when analyzerConfidence is below threshold or assessedRequestRiskLevel is high or critical. Canonical: docs/16 §6.1."
+        },
+        "failOpenReason": {
+          "type": ["string", "null"],
+          "description": "Reason why fail-open was triggered, or null. Canonical: docs/16 §6.1."
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Signals used to reach the classification. Required for auditability. Canonical: docs/16 §6.1."
+        },
+        "analyzerTraceId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique ID linking this phase to analyzer-output.schema.json analyzerTraceId. Canonical: docs/16 §6.1."
+        }
+      }
+    },
+
+    "summaryPhase": {
+      "type": "object",
+      "$comment": "[FUTURE-ONLY] Phase 4 trace extension. Not active in MVP. Authority: docs/17_SCHEMA_DECISION_PASS.md §6.1.2.",
+      "description": "[FUTURE-ONLY] Captures history compressor decisions (included/omitted/uncertain). Present only when history compressor is implemented. Canonical: docs/16 §6.2; docs/13 §10.",
+      "required": [
+        "compressorVersion",
+        "included",
+        "omitted",
+        "uncertain",
+        "protectedCategories",
+        "summaryTraceId"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "compressorVersion": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier of the compressor version. Canonical: docs/16 §6.2."
+        },
+        "included": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["category", "description", "sourceReference"],
+            "additionalProperties": false,
+            "properties": {
+              "category": { "type": "string", "minLength": 1 },
+              "description": { "type": "string", "minLength": 1 },
+              "sourceReference": { "type": "string", "minLength": 1 }
+            }
+          },
+          "description": "State categories unconditionally retained. No raw turn content. Canonical: docs/16 §6.2; docs/13 §10."
+        },
+        "omitted": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["category", "reason"],
+            "additionalProperties": false,
+            "properties": {
+              "category": { "type": "string", "minLength": 1 },
+              "reason": { "type": "string", "minLength": 1 }
+            }
+          },
+          "description": "State categories omitted by the compressor. Protected categories must never appear here. No raw turn content. Canonical: docs/16 §6.2."
+        },
+        "uncertain": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["category", "reason"],
+            "additionalProperties": false,
+            "properties": {
+              "category": { "type": "string", "minLength": 1 },
+              "reason": { "type": "string", "minLength": 1 }
+            }
+          },
+          "description": "State categories with uncertain retention status. No raw turn content. Canonical: docs/16 §6.2."
+        },
+        "protectedCategories": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Categories unconditionally retained regardless of compressor decision. Must not appear in omitted[]. Canonical: docs/16 §6.2."
+        },
+        "summaryTraceId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique ID for this summary phase trace entry. Canonical: docs/16 §6.2."
+        }
+      }
+    },
+
+    "reentryPhase": {
+      "type": "array",
+      "$comment": "[FUTURE-ONLY] Phase 4 trace extension. Not active in MVP. Array shape — multiple re-entry events per run. Authority: docs/17_SCHEMA_DECISION_PASS.md §6.1.3.",
+      "description": "[FUTURE-ONLY] Ordered array of re-entry events in this planning run. Each entry captures one re-entry trigger and updated lane state. Array shape ensures multiple re-entry events are not overwritten. Present only when re-entry planning is implemented. Canonical: docs/16 §6.3; docs/13 §18.",
+      "items": {
+        "type": "object",
+        "required": [
+          "trigger",
+          "updatedLanes",
+          "reentryTraceId",
+          "priorPlanId"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "trigger": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Event that initiated this re-entry (e.g., tool result, error, retry, user clarification). Canonical: docs/16 §6.3."
+          },
+          "updatedLanes": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "description": "Lanes that received new or changed content as a result of this re-entry. Canonical: docs/16 §6.3."
+          },
+          "reentryTraceId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Unique ID for this re-entry event trace entry. Canonical: docs/16 §6.3."
+          },
+          "priorPlanId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "runId of the prior planning run that this re-entry updates. Canonical: docs/16 §6.3."
+          }
+        }
+      }
+    },
+
+    "outputReviewPhase": {
+      "type": "object",
+      "$comment": "[FUTURE-ONLY] Phase 4 trace extension. Not active in MVP. Authority: docs/17_SCHEMA_DECISION_PASS.md §6.1.4.",
+      "description": "[FUTURE-ONLY] Captures output review findings and re-entry decisions. Present only when output review is implemented. Canonical: docs/16 §6.4; docs/13 §19.",
+      "required": [
+        "reviewType",
+        "defectsFound",
+        "reentryTriggered",
+        "reentryTraceId",
+        "reviewTraceId"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "reviewType": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Kind of review applied (e.g., code review, source/citation review, scope/status review, artifact consistency review, instruction compliance review). Canonical: docs/16 §6.4."
+        },
+        "defectsFound": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Specific defects identified. If empty, no re-entry is triggered. Canonical: docs/16 §6.4."
+        },
+        "reentryTriggered": {
+          "type": "boolean",
+          "description": "true only when defects were found and context planning re-ran. Canonical: docs/16 §6.4."
+        },
+        "reentryTraceId": {
+          "type": ["string", "null"],
+          "description": "reentryTraceId of the triggered re-entry, or null when reentryTriggered is false. Canonical: docs/16 §6.4."
+        },
+        "reviewTraceId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique ID for this output review phase trace entry. Canonical: docs/16 §6.4."
+        }
+      }
+    },
+
+    "cacheAdvisoryPhase": {
+      "type": "object",
+      "$comment": "[FUTURE-ONLY] Phase 4 trace extension. Not active in MVP. Authority: docs/17_SCHEMA_DECISION_PASS.md §6.1.5.",
+      "description": "[FUTURE-ONLY] Captures cache stability classification applied to components during ordering. Present only when cache advisory ordering is implemented. Canonical: docs/16 §6.5; docs/13 §15; docs/04 §7.7.",
+      "required": [
+        "classificationApplied",
+        "componentClassifications",
+        "orderingInvariantsVerified",
+        "cacheAdvisoryTraceId"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "classificationApplied": {
+          "type": "boolean",
+          "description": "Whether cache advisory classification was applied in this run. Canonical: docs/16 §6.5."
+        },
+        "componentClassifications": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["componentId", "cacheStability"],
+            "additionalProperties": false,
+            "properties": {
+              "componentId": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Registry component ID. Canonical: docs/16 §6.5."
+              },
+              "cacheStability": {
+                "type": "string",
+                "enum": ["stable", "session", "volatile"],
+                "description": "Cache stability classification. Exactly 3 valid values: stable, session, volatile. No other values permitted. Canonical: docs/13 §15; docs/04 §7.7; docs/16 §6.5."
+              }
+            }
+          },
+          "description": "Per-component cache stability classifications applied during ordering. Advisory only — affects sequence only, never partition membership. Canonical: docs/16 §6.5."
+        },
+        "orderingInvariantsVerified": {
+          "type": "boolean",
+          "description": "true asserts that ordering did not alter the membership of selectedComponents[], omittedComponents[], or deferredComponents[]. Canonical: docs/16 §6.5."
+        },
+        "cacheAdvisoryTraceId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique ID for this cache advisory phase trace entry. Canonical: docs/16 §6.5."
+        }
+      }
+    }
+
+  },
+
+
+  "$defs": {
+
+    "PartitionEntry": {
+      "$anchor": "PartitionEntry",
+      "title": "Component partition entry (trace.json)",
+      "description": "A single component entry in a partition array (selectedComponents, omittedComponents, or deferredComponents) in planPhase. Identical shape to prompt-plan.schema.json PartitionEntry — componentId, action, path, reason required; tokensApprox optional. path is required on ALL entries. Do not embed full SelectionDecision or ResolvedSelectionDecision objects. No raw component text, no raw history content, no contentInline, no cache advisory fields. Canonical: docs/04 §7.7 F-13; docs/12 §5.1; Pass 4.9C-4B decision #1.",
+      "type": "object",
+      "required": ["componentId", "action", "path", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "componentId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The validated registry component ID. For reference_unknown entries, carries the unknown string (safe-defer 5-Q4). Must not contain raw component content. Canonical: docs/06 §4."
+        },
+        "action": {
+          "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionAction",
+          "description": "The final resolved action for this component. Canonical: docs/06 §4."
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The final output partition path for this component. The valid path values are constrained further by each partition array's local allOf rules — see selectedComponents, omittedComponents, and deferredComponents item schemas under planPhase. Required on ALL partition entries. On deferredComponents harnesses must filter by path, not by action alone, to distinguish runtime_unavailable from default_defer (5-Q7/F-28). Canonical: docs/06 \u00a74; 5-Q7/F-28."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable audit reason. Must not contain raw component content, raw history turn content, or raw user text. Canonical: docs/04 §7.7."
+        },
+        "tokensApprox": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Optional. Approximate token count from registry metadata. Absent when cost is unknown or not meaningful. No live tokenizer calls in MVP. Canonical: docs/04 §7.5."
+        }
+      }
+    },
+
+    "TrimActionEntry": {
+      "$anchor": "TrimActionEntry",
+      "title": "Trim action entry",
+      "description": "A single trace-level record of a Budgeter trim action. Required fields: componentId, budgetHint, tokensDropped, reason. budgetHint is restricted to trim-eligible values: candidate_optional and expensive_optional — protected, over_budget_protected, and unknown_cost must never appear here. runtime_unavailable defer decisions must not appear here — they are not trimming events. No provider cost, cache pricing, or model billing fields. Canonical: docs/04 §7.5; docs/06 §20.3; Pass 4.9C-4B decision #3; Pass 4.9C-4C.2 wording fix.",
+      "type": "object",
+      "required": ["componentId", "budgetHint", "tokensDropped", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "componentId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Registry ID of the component trimmed by the Budgeter. Canonical: docs/04 §7.5."
+        },
+        "budgetHint": {
+          "type": "string",
+          "enum": ["candidate_optional", "expensive_optional"],
+          "description": "The budgetHint of the trimmed component as it appeared in its ResolvedSelectionDecision. Restricted to trim-eligible values only: candidate_optional or expensive_optional. protected and over_budget_protected must NEVER be trimmed and must never appear here. unknown_cost is excluded: components with unknown cost are handled via conservative estimate/warning paths, not represented as a trim action. Canonical: docs/06 §20.3 rule 2; §27.5; Pass 4.9C-4C.1 Fix 5."
+        },
+        "tokensDropped": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Approximate tokens reclaimed by removing this component from the plan. Based on tokensApproxObserved from the ResolvedSelectionDecision. No live tokenizer calls. Canonical: docs/06 §20.2."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable reason for this trim action (e.g., 'expensive_optional over budget at equal priority', 'candidate_optional lowest budgetPriority'). Must not contain raw component content. Canonical: docs/04 §7.5."
+        }
+      }
+    }
+
+  }
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "scaffold.base-context",
+    "type": "scaffold",
+    "title": "Base Context",
+    "summary": "Base context scaffold",
+    "source": "scaffolds/base-context.md",
+    "tokensApprox": 250,
+    "charsApprox": 1000,
+    "riskLevel": "low",
+    "requiredWhen": ["*"],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 2,
+    "evidenceRequired": null,
+    "tags": ["scaffold", "base"],
+    "version": "1.0.0",
+    "hash": null
+  },
+  {
+    "id": "skill.code-review",
+    "type": "skill",
+    "title": "Code Review",
+    "summary": "Code review skill",
+    "source": "skills/code-review.md",
+    "tokensApprox": 220,
+    "charsApprox": 880,
+    "riskLevel": "low",
+    "requiredWhen": [],
+    "safeToOmitWhen": ["general_default"],
+    "defaultAction": "omit",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 6,
+    "evidenceRequired": null,
+    "tags": ["skill", "coding"],
+    "version": "1.0.0",
+    "hash": null
+  }
+]

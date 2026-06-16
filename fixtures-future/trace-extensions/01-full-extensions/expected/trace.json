@@ -1,0 +1,194 @@
+{
+  "run": {
+    "runId": "future-fixture-trace-ext-001",
+    "planningRunStartedAt": "2026-06-06T10:00:00Z",
+    "planningRunCompletedAt": "2026-06-06T10:00:01Z",
+    "promptFamily": "coding_build_debug",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "coding_build_debug",
+      "familyConfidence": 0.95,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "coding_build_debug",
+    "familyConfidence": 0.95
+  },
+  "registryPhase": {
+    "componentCount": 1,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 1,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "trace-ext-tid-001",
+        "componentId": "scaffold.system-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; always included",
+        "evidence": [
+          "riskLevel=critical",
+          "omissionPolicy=never",
+          "retainPolicy=safety_critical",
+          "hard_protection_applied"
+        ],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": {
+          "tokens": 0
+        },
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 1,
+      "decidedInclude": 1,
+      "decidedOmit": 0,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "1 component evaluated; 1 included (0 fail-open); 0 omitted; 0 deferred; 0 conflicts; 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.system-rules",
+        "finalAction": "include",
+        "finalPath": "safety_override",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["trace-ext-tid-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": ["scaffold.system-rules"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 350,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.system-rules",
+        "action": "include",
+        "path": "safety_override",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; always included",
+        "tokensApprox": 350
+      }
+    ],
+    "omittedComponents": [],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": []
+  },
+  "warnings": [],
+
+  "analyzerPhase": {
+    "analyzerVersion": "future-analyzer-v0.1",
+    "tier": 1,
+    "promptFamily": "coding_build_debug",
+    "analyzerConfidence": 0.92,
+    "proposedLanes": ["scaffold", "tools", "history"],
+    "failOpenTriggered": false,
+    "failOpenReason": null,
+    "evidence": [
+      "keyword_match=build",
+      "keyword_match=debug",
+      "history_reference_detected"
+    ],
+    "analyzerTraceId": "analyzer-trace-ext-001"
+  },
+
+  "summaryPhase": {
+    "compressorVersion": "future-compressor-v0.1",
+    "included": [
+      {
+        "category": "active_task_state",
+        "description": "Current task: implement trace extension harness fixtures",
+        "sourceReference": "session-turn-42"
+      },
+      {
+        "category": "open_commitments",
+        "description": "Committed to zero tech debt policy throughout project",
+        "sourceReference": "session-turn-01"
+      }
+    ],
+    "omitted": [
+      {
+        "category": "obsolete_rejected_drafts",
+        "reason": "Superseded by accepted implementation; no longer relevant to active task"
+      }
+    ],
+    "uncertain": [
+      {
+        "category": "exploratory_research_notes",
+        "reason": "Uncertain if still relevant to current implementation phase"
+      }
+    ],
+    "protectedCategories": [
+      "active_task_state",
+      "open_commitments",
+      "durable_constraints"
+    ],
+    "summaryTraceId": "summary-trace-ext-001"
+  },
+
+  "reentryPhase": [
+    {
+      "trigger": "tool_result: test run revealed missing fixture directory",
+      "updatedLanes": ["active_task_state", "file_context"],
+      "reentryTraceId": "reentry-trace-ext-001",
+      "priorPlanId": "future-fixture-trace-ext-000"
+    }
+  ],
+
+  "outputReviewPhase": {
+    "reviewType": "code review",
+    "defectsFound": [],
+    "reentryTriggered": false,
+    "reentryTraceId": null,
+    "reviewTraceId": "review-trace-ext-001"
+  },
+
+  "cacheAdvisoryPhase": {
+    "classificationApplied": true,
+    "componentClassifications": [
+      {
+        "componentId": "scaffold.system-rules",
+        "cacheStability": "stable"
+      }
+    ],
+    "orderingInvariantsVerified": true,
+    "cacheAdvisoryTraceId": "cache-trace-ext-001"
+  }
+}

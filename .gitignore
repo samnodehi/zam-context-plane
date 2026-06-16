@@ -1,0 +1,35 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+# .env.example is the committed template — keep it tracked despite .env.* above
+!.env.example
+*.js.map
+
+# Google Drive sync temp dirs (this workspace is Drive-synced; git is source of truth)
+.tmp.drivedownload/
+.tmp.driveupload/
+
+# Generated CLI outputs (context-plane plan with default --output-dir)
+/prompt-plan.json
+/trace.json
+/summary.md
+
+# Scratch / temporary files
+scratch/
+
+# Ad-hoc test artifacts (evaluations/ itself is committable for intentional reports)
+evaluations/scratch/
+
+# Runtime local config and EventStream session logs (contain credentials and ephemeral data)
+runtime.config.json
+sessions/
+test-sessions/
+
+# Ad-hoc scratch / log artifacts at repo root (root-anchored so legit subdir files are unaffected)
+/failed_fixture_log*.txt
+/harness-*.txt
+/temp_log.txt
+/scratch-output.txt
+/scratch-*.cjs

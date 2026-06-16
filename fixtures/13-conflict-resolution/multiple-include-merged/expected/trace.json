@@ -1,0 +1,163 @@
+{
+  "run": {
+    "runId": "fixture-run-13-multiple-include-merged-001",
+    "planningRunStartedAt": "2026-05-21T12:00:03Z",
+    "planningRunCompletedAt": "2026-05-21T12:00:03Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.93,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.93
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 2,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.system-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "requiredWhen: [\"*\"] matches all prompt families; retainPolicy: mandatory",
+        "evidence": ["requiredWhen=*", "promptFamily=general_default", "retainPolicy=mandatory"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "scaffold.system-rules",
+        "module": "ConstraintSelector",
+        "action": "include",
+        "reason": "userConstraints.alwaysInclude: operator constraint includes scaffold.system-rules",
+        "evidence": ["alwaysInclude=scaffold.system-rules", "constraintSource=operator_cli"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-003",
+        "componentId": "skill.general-assistant",
+        "module": "SkillSelector",
+        "action": "include",
+        "reason": "defaultAction: include; safeToOmitWhen does not match general_default",
+        "evidence": ["defaultAction=include", "safeToOmitWhen_no_match", "promptFamily=general_default"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 2,
+      "decidedInclude": 2,
+      "decidedOmit": 0,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 1,
+      "unknownReferences": 0,
+      "narrative": "2 components evaluated; 2 included (0 fail-open); 0 omitted; 0 deferred; 1 conflict resolved (multiple_include_merged); 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.system-rules",
+        "finalAction": "include",
+        "finalPath": "required_match",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001", "tid-002"],
+        "resolutionRule": "multiple_include_merged",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.general-assistant",
+        "finalAction": "include",
+        "finalPath": "default_include",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-003"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      }
+    ],
+    "conflictResolutionTrace": [
+      {
+        "componentId": "scaffold.system-rules",
+        "inputDecisionIds": ["tid-001", "tid-002"],
+        "finalAction": "include",
+        "finalPath": "required_match",
+        "resolutionRule": "multiple_include_merged",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      }
+    ],
+    "noConflictComponentIds": ["skill.general-assistant"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 550,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.system-rules",
+        "action": "include",
+        "path": "required_match",
+        "reason": "multiple include decisions merged: requiredWhen match + alwaysInclude (multiple_include_merged); appears once in selectedComponents",
+        "tokensApprox": 350
+      },
+      {
+        "componentId": "skill.general-assistant",
+        "action": "include",
+        "path": "default_include",
+        "reason": "defaultAction: include; safeToOmitWhen does not match general_default",
+        "tokensApprox": 200
+      }
+    ],
+    "omittedComponents": [],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": []
+  },
+  "warnings": []
+}

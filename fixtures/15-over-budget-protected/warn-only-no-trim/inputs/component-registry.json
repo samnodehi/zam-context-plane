@@ -1,0 +1,42 @@
+[
+  {
+    "id": "scaffold.mandatory-rules",
+    "type": "scaffold",
+    "title": "Mandatory Rules",
+    "summary": "Mandatory scaffold that is over budget — must still be selected; over_budget_protected warn-only policy",
+    "source": "scaffolds/mandatory-rules.md",
+    "tokensApprox": 900,
+    "charsApprox": 3600,
+    "riskLevel": "critical",
+    "requiredWhen": ["*"],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": ["scaffold", "mandatory", "safety"],
+    "version": "1.0.0",
+    "hash": null
+  },
+  {
+    "id": "skill.greeting-skill",
+    "type": "skill",
+    "title": "Greeting Skill",
+    "summary": "Small greeting skill with low token cost",
+    "source": "skills/greeting-skill.md",
+    "tokensApprox": 80,
+    "charsApprox": 320,
+    "riskLevel": "low",
+    "requiredWhen": ["general_default"],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 5,
+    "evidenceRequired": null,
+    "tags": ["skill", "greeting"],
+    "version": "1.0.0",
+    "hash": null
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "compressorVersion": "future-stub-v0.1",
+  "compressorTraceId": "trace-01-structured-state-extraction-stub",
+  "currentTaskState": {
+    "activeTask": "Implementing Phase P5 compressor test integration",
+    "currentGoal": "Create seed fixtures for the compressor harness",
+    "blockers": []
+  },
+  "acceptedDecisions": [
+    { "content": "Use docs/22 §4.3 fixture layout for compressor fixtures" }
+  ],
+  "openIssues": [
+    { "content": "Enum extension for promptFamily pending a future explicit pass" }
+  ],
+  "openCommitments": [
+    { "content": "Phase P6 trace extension schema additions to be handled separately" }
+  ],
+  "userConstraints": [
+    { "content": "No MVP files may be touched in any future-harness pass" }
+  ],
+  "importantFilesPaths": [
+    { "content": "schemas/future/history-compressor-output.schema.json", "notes": "The schema this fixture validates against" },
+    { "content": "docs/22_MODEL_ASSISTED_HARNESS_SCOPING.md", "notes": "Architecture reference for fixture layout" }
+  ],
+  "failedAttempts": [
+    { "content": "2-level discovery in future-harness-runner.ts (Phase P3)", "notes": "Replaced in Phase P4 with 1-level discovery matching docs/22 §4.1" }
+  ],
+  "warnings": [
+    { "content": "Do not place compressor fixtures under fixtures/ — they would break the MVP harness" }
+  ],
+  "antiRegressionRules": [
+    { "content": "Future harness files must never import from harness-runner.ts or harness-ajv.ts", "notes": "Isolation rule per docs/22 §5.3" }
+  ],
+  "recentRelevantTurns": [
+    { "content": "Phase P4: Created 4 analyzer seed fixtures and updated runner to use 1-level discovery" }
+  ],
+  "durableFacts": [
+    { "content": "Gate B baseline is 27 passed, 1 approved-skipped. Future fixture additions have no effect on it." }
+  ],
+  "summaryTrace": {
+    "included": ["currentTaskState", "acceptedDecisions", "openIssues", "openCommitments", "userConstraints", "importantFilesPaths", "failedAttempts", "warnings", "antiRegressionRules", "recentRelevantTurns", "durableFacts"],
+    "omitted": [],
+    "uncertain": []
+  }
+}

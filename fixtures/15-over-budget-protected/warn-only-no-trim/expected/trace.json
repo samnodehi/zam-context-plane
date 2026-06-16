@@ -1,0 +1,154 @@
+{
+  "run": {
+    "runId": "fixture-run-15-warn-only-no-trim-001",
+    "planningRunStartedAt": "2026-05-22T09:02:00Z",
+    "planningRunCompletedAt": "2026-05-22T09:02:00Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.88,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.88
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 2,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.mandatory-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection applied; budgetHint: over_budget_protected (tokensApprox=900 > totalPromptTokenTarget=800); over_budget_protected emits warning; action/path unchanged",
+        "evidence": ["riskLevel=critical", "omissionPolicy=never", "retainPolicy=safety_critical", "hard_protection_applied", "budgetHint=over_budget_protected", "thresholdCrossed=totalPromptTokenTarget", "applicableBudgetLimit=800", "tokensApproxObserved=900", "riskFlag=budget_infeasible_protected_component", "actionChanged=false"],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "skill.greeting-skill",
+        "module": "SkillSelector",
+        "action": "include",
+        "reason": "requiredWhen matches general_default — required_match include",
+        "evidence": ["requiredWhen_match=general_default", "promptFamily=general_default", "required_match"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [
+      {
+        "code": "over_budget_protected",
+        "message": "scaffold.mandatory-rules tokensApprox=900 exceeds totalPromptTokenTarget=800; over_budget_protected warn-only — component retained; planning continues (docs/06 §25.3)"
+      }
+    ],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 2,
+      "decidedInclude": 2,
+      "decidedOmit": 0,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "2 components evaluated; 2 included (0 fail-open); 0 omitted; 0 deferred; 0 conflicts; 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.mandatory-rules",
+        "finalAction": "include",
+        "finalPath": "safety_override",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": ["over_budget_protected"],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.greeting-skill",
+        "finalAction": "include",
+        "finalPath": "required_match",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-002"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": ["scaffold.mandatory-rules", "skill.greeting-skill"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 800,
+        "selectedTokensApprox": 980,
+        "projectedOverflow": 180
+      },
+      "trimOrder": [],
+      "budgetOverflow": true,
+      "overBudgetProtectedWarnings": [
+        {
+          "componentId": "scaffold.mandatory-rules",
+          "tokensApprox": 900,
+          "thresholdCrossed": "totalPromptTokenTarget",
+          "applicableBudgetLimit": 800
+        }
+      ]
+    },
+    "trimActions": [],
+    "budgetOverflow": true
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.mandatory-rules",
+        "action": "include",
+        "path": "safety_override",
+        "reason": "hard protection: riskLevel=critical, omissionPolicy=never, retainPolicy=safety_critical; over_budget_protected warn-only — budget overflow cannot remove protected component",
+        "tokensApprox": 900
+      },
+      {
+        "componentId": "skill.greeting-skill",
+        "action": "include",
+        "path": "required_match",
+        "reason": "requiredWhen matched general_default",
+        "tokensApprox": 80
+      }
+    ],
+    "omittedComponents": [],
+    "deferredComponents": [],
+    "riskFlags": [
+      "budget_infeasible_protected_component: scaffold.mandatory-rules tokensApprox=900 exceeds totalPromptTokenTarget=800; over_budget_protected — cannot trim protected component"
+    ],
+    "failOpenReasons": []
+  },
+  "warnings": []
+}

@@ -1,0 +1,6 @@
+{
+  "totalPromptTokenTarget": 8000,
+  "maxScaffoldTokens": 2000,
+  "maxSkillTokens": 3000,
+  "remainingTokens": 8000
+}

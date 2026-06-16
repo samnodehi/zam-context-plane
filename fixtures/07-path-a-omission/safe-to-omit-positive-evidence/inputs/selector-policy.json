@@ -1,0 +1,1 @@
+{"failOpenThreshold": 0.7, "deterministicOnly": true, "injectionSuspectAction": "warn_and_continue"}

@@ -1,0 +1,78 @@
+[
+  {
+    "id": "scaffold.system-rules",
+    "type": "scaffold",
+    "title": "System Rules",
+    "summary": "Core system-level rules and constraints applied to every planning run.",
+    "source": "components/scaffold/system-rules.md",
+    "tokensApprox": 350,
+    "charsApprox": 1400,
+    "riskLevel": "critical",
+    "requiredWhen": [
+      "*"
+    ],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": [
+      "scaffold",
+      "required"
+    ],
+    "version": "1.0.0",
+    "hash": "021b6d841c0ee2b639ed4897b1716fa1f55a023aab86aff10ba9e9640d356015"
+  },
+  {
+    "id": "skill.heartbeat-proactive",
+    "type": "skill",
+    "title": "Heartbeat Proactive Skill",
+    "summary": "Proactive heartbeat context, safe to omit for non-heartbeat requests.",
+    "source": "components/skills/heartbeat-proactive.md",
+    "tokensApprox": 180,
+    "charsApprox": 720,
+    "riskLevel": "low",
+    "requiredWhen": [
+      "heartbeat_proactive"
+    ],
+    "safeToOmitWhen": [
+      "general_default",
+      "tool_use_required",
+      "coding_build_debug"
+    ],
+    "defaultAction": "omit",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 9,
+    "evidenceRequired": null,
+    "tags": [
+      "skill",
+      "heartbeat"
+    ],
+    "version": "1.0.0",
+    "hash": "b48ce18225de670bae18908ccc09961d1f8501e5fed543545a8f079c7221a000"
+  },
+  {
+    "id": "tool.unavailable-tool",
+    "type": "tool",
+    "title": "Unavailable Tool",
+    "summary": "A tool that is present in the registry but confirmed unavailable at runtime.",
+    "source": "components/tools/unavailable-tool.md",
+    "tokensApprox": 90,
+    "charsApprox": 360,
+    "riskLevel": "low",
+    "requiredWhen": [],
+    "safeToOmitWhen": [],
+    "defaultAction": "defer",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 8,
+    "evidenceRequired": null,
+    "tags": [
+      "tool"
+    ],
+    "version": "1.0.0",
+    "hash": "787b5d9b97825981955c22a2bca43d8c13ecebde76a47d32dfd20e5c6005ee63"
+  }
+]

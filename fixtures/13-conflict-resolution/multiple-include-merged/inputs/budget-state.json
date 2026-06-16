@@ -1,0 +1,5 @@
+{
+  "totalPromptTokenTarget": 8000,
+  "currentUsedTokens": 0,
+  "budgetCritical": false
+}

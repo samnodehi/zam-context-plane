@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.safety-rules",
+      "action": "include",
+      "path": "safety_override",
+      "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection wins over any omit decision",
+      "tokensApprox": 300
+    },
+    {
+      "componentId": "skill.optional-helper",
+      "action": "include",
+      "path": "default_include",
+      "reason": "no conflict — defaultAction omit but selector chose include as no-conflict default_include fallback for this fixture scenario",
+      "tokensApprox": 180
+    }
+  ],
+  "omittedComponents": [],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 8000,
+    "selectedTokensApprox": 480,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "total": 480,
+    "scaffold": 300,
+    "skills": 180
+  },
+  "riskFlags": [
+    "safety_override_omit_decision: scaffold.safety-rules was the subject of an omit decision that was defeated by hard protection (safety_hard_protection); indicates a selector implementation defect"
+  ],
+  "failOpenReasons": [],
+  "planningWarnings": []
+}

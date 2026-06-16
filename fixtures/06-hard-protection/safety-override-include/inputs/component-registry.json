@@ -1,0 +1,42 @@
+[
+  {
+    "id": "scaffold.system-rules",
+    "type": "scaffold",
+    "title": "System Rules",
+    "summary": "Core system rules scaffold — always required.",
+    "source": "scaffolds/system-rules.md",
+    "tokensApprox": 350,
+    "charsApprox": 1400,
+    "riskLevel": "critical",
+    "requiredWhen": ["*"],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": ["scaffold", "safety"],
+    "version": "1.0.0",
+    "hash": null
+  },
+  {
+    "id": "skill.general-assistant",
+    "type": "skill",
+    "title": "General Assistant",
+    "summary": "General-purpose assistant skill for default prompt families.",
+    "source": "skills/general-assistant.md",
+    "tokensApprox": 200,
+    "charsApprox": 800,
+    "riskLevel": "low",
+    "requiredWhen": [],
+    "safeToOmitWhen": ["simple_greeting"],
+    "defaultAction": "include",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 5,
+    "evidenceRequired": null,
+    "tags": ["skill", "general"],
+    "version": "1.0.0",
+    "hash": null
+  }
+]

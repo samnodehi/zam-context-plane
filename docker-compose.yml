@@ -1,0 +1,55 @@
+# =============================================================================
+# ZAM Context Governance API — Docker Compose Configuration
+#
+# Provides one-command local deployment of the ZAM HTTP service.
+#
+# Usage:
+#   1. Copy the environment template:  cp .env.example .env
+#   2. (Optional) Set ZAM_API_KEY in .env for authenticated mode.
+#   3. Start the service:              docker compose up -d
+#   4. Verify the service is alive:    curl http://localhost:3001/health
+#   5. Stop the service:               docker compose down
+#
+# The container binds internally on port 3000 and is mapped to host port 3001
+# by default. Override ZAM_EXTERNAL_PORT in .env to change the host port.
+#
+# Canonical: docs/31_PRODUCT_DISTRIBUTION_AND_PACKAGING.md §4.
+# =============================================================================
+
+version: '3.8'
+
+services:
+  zam-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: zamapi/context-plane:latest
+    container_name: zam-api
+    ports:
+      - "${ZAM_EXTERNAL_PORT:-3001}:${ZAM_PORT:-3000}"
+    environment:
+      ZAM_PORT: "${ZAM_PORT:-3000}"
+      # ZAM_HOST is always 0.0.0.0 in Docker — the container must bind to all
+      # interfaces to be reachable from the host machine. Never use 127.0.0.1
+      # inside a container. (docs/31 §4)
+      ZAM_HOST: "0.0.0.0"
+      # ZAM_API_KEY is sourced from .env on the host machine. If not set,
+      # the server runs in local-only mode (no authentication required).
+      # Set a strong random key for any deployment accessible beyond localhost.
+      ZAM_API_KEY: "${ZAM_API_KEY:-}"
+      ZAM_LOG_LEVEL: "${ZAM_LOG_LEVEL:-info}"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    # Enforce read-only filesystem — ZAM is stateless and reads nothing from
+    # disk at runtime. /tmp is mounted as tmpfs for any transient Node.js needs.
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      # Prevent privilege escalation attacks inside the container.
+      - no-new-privileges:true

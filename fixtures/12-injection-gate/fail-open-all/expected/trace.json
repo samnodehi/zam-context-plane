@@ -1,0 +1,176 @@
+{
+  "run": {
+    "runId": "fixture-run-12-fail-open-all-001",
+    "planningRunStartedAt": "2026-05-22T10:00:00Z",
+    "planningRunCompletedAt": "2026-05-22T10:00:00Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.92,
+      "injectionSuspect": true
+    },
+    "injectionSuspectFlag": true,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.92,
+    "requestedInjectionSuspectAction": "fail_open_all",
+    "effectiveInjectionSuspectAction": "fail_open_all"
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 2,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.system-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection overrides all omit paths including injection gate",
+        "evidence": [
+          "riskLevel=critical",
+          "omissionPolicy=never",
+          "retainPolicy=safety_critical",
+          "hard_protection_applied",
+          "injection_suspect_seen",
+          "injectionSuspectAction=fail_open_all"
+        ],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": false,
+        "selector": "deterministic",
+        "injectionSuspect": true,
+        "injectionSuspectAction": "fail_open_all",
+        "actionChanged": false,
+        "warningsEmitted": []
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "skill.optional-helper",
+        "module": "SkillSelector",
+        "action": "include",
+        "reason": "injectionSuspect: true with effective fail_open_all — Path B omit (defaultAction: omit) converted to include/fail_open by injection gate",
+        "evidence": [
+          "defaultAction=omit",
+          "no_requiredWhen_match",
+          "no_safeToOmitWhen_match",
+          "injection_suspect_seen",
+          "injectionSuspectAction=fail_open_all",
+          "path_b_suppressed_by_fail_open_all"
+        ],
+        "confidence": "medium",
+        "risk": "low",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": true,
+        "selector": "deterministic",
+        "injectionSuspect": true,
+        "injectionSuspectAction": "fail_open_all",
+        "actionChanged": true,
+        "originalCandidateAction": "omit",
+        "originalCandidatePath": "default_action_omit",
+        "warningsEmitted": []
+      }
+    ],
+    "planningWarnings": [],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 2,
+      "decidedInclude": 2,
+      "decidedOmit": 0,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 1,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "2 components evaluated; 2 included (1 fail-open); 0 omitted; 0 deferred; 0 conflicts; 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.system-rules",
+        "finalAction": "include",
+        "finalPath": "safety_override",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.optional-helper",
+        "finalAction": "include",
+        "finalPath": "fail_open",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-002"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "hadGateConvertedDecisions": true,
+        "gateConvertedTraceRefs": ["tid-002"],
+        "preGateActions": ["omit"],
+        "preGatePaths": ["default_action_omit"],
+        "resolvedAt": 2
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": ["scaffold.system-rules", "skill.optional-helper"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 530,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.system-rules",
+        "action": "include",
+        "path": "safety_override",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — always included",
+        "tokensApprox": 350
+      },
+      {
+        "componentId": "skill.optional-helper",
+        "action": "include",
+        "path": "fail_open",
+        "reason": "injectionSuspect: true with effective fail_open_all — Path B omit converted to include/fail_open",
+        "tokensApprox": 180
+      }
+    ],
+    "omittedComponents": [],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": [
+      "skill.optional-helper: injectionSuspect=true, effectivePolicy=fail_open_all — Path B omit converted to include/fail_open"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "injection_suspect_fail_open_all",
+      "message": "injectionSuspect: true — effective policy: fail_open_all (applied once per run); all Path A and Path B omit decisions converted to include/fail_open"
+    }
+  ]
+}

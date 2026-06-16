@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "coding_build_debug",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.system-rules",
+      "action": "include",
+      "path": "default_include",
+      "reason": "No tag match; defaultAction: include applied",
+      "tokensApprox": 320
+    },
+    {
+      "componentId": "skill.coding-guide",
+      "action": "include",
+      "path": "required_match",
+      "reason": "requiredWhen tag matched: coding_build_debug",
+      "tokensApprox": 480
+    }
+  ],
+  "omittedComponents": [],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 8000,
+    "selectedTokensApprox": 800,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "scaffold": 320,
+    "skills": 480,
+    "total": 800
+  },
+  "riskFlags": [],
+  "failOpenReasons": [],
+  "planningWarnings": []
+}

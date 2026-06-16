@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.system-rules",
+      "action": "include",
+      "path": "safety_override",
+      "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; always included",
+      "tokensApprox": 350
+    },
+    {
+      "componentId": "skill.general-assistant",
+      "action": "include",
+      "path": "default_include",
+      "reason": "promptFamily general_default: safeToOmitWhen does not match; defaultAction: include",
+      "tokensApprox": 200
+    }
+  ],
+  "omittedComponents": [],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 8000,
+    "selectedTokensApprox": 550,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "total": 550,
+    "scaffold": 350,
+    "skills": 200
+  },
+  "riskFlags": [],
+  "failOpenReasons": [],
+  "planningWarnings": []
+}

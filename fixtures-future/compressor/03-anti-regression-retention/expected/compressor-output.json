@@ -1,0 +1,29 @@
+{
+  "compressorVersion": "future-stub-v0.1",
+  "compressorTraceId": "trace-03-anti-regression-retention-stub",
+  "currentTaskState": {
+    "activeTask": "Verifying anti-regression rule preservation in compressor output",
+    "blockers": []
+  },
+  "acceptedDecisions": [],
+  "openIssues": [],
+  "openCommitments": [],
+  "userConstraints": [],
+  "importantFilesPaths": [],
+  "failedAttempts": [
+    { "content": "Attempted to use fixtures/ for model-assisted fixtures (Phase P3 planning)", "notes": "Rejected — harness.test.ts hardcodes fixtures/ as its root and expects only MVP outputs" }
+  ],
+  "warnings": [],
+  "antiRegressionRules": [
+    { "content": "Never place model-assisted fixture groups under fixtures/ — they would break the MVP harness gate assertions", "notes": "Severity: critical. Source: docs/22 §3.2, §3.3" },
+    { "content": "Never import harness-runner.ts or harness-ajv.ts from future-harness modules", "notes": "Severity: critical. Source: docs/22 §5.3" },
+    { "content": "Never modify tests/phase12/harness.test.ts in any future-harness pass", "notes": "Severity: critical. Source: docs/22 §2.1" }
+  ],
+  "recentRelevantTurns": [],
+  "durableFacts": [],
+  "summaryTrace": {
+    "included": ["antiRegressionRules", "failedAttempts", "currentTaskState"],
+    "omitted": ["acceptedDecisions", "openIssues", "openCommitments", "userConstraints", "importantFilesPaths", "warnings", "recentRelevantTurns", "durableFacts"],
+    "uncertain": []
+  }
+}

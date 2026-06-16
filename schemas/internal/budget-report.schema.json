@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/internal/budget-report.schema.json",
+  "title": "Portable Context Control Plane — BudgetReport",
+  "description": "Internal object schema for the BudgetReport produced by the Budgeter after consuming ResolvedSelectionDecision[] records. budgetOverflow is REQUIRED boolean — not optional. Making it optional would allow the zero-tolerance 'silent budget overflow' harness check to be bypassed. The Budgeter reads ResolvedSelectionDecision[] as read-only; BudgetReport is a separate output, not a mutation of those records. Canonical owner: docs/04 §7.5; docs/06 §20, §23, §25, §27.",
+  "$comment": "Pass 4.9C-3 (Batch C creation). No code. No runtime. No provider/model calls. Canonical: docs/04 §7.5; docs/06 §20.3 §23 §25 §27; docs/12 §4.9. budgetOverflow is required:true — do not make optional. budgetHint enum refs enums.shared.schema.json#BudgetHint.",
+
+  "type": "object",
+  "required": [
+    "budgetPlan",
+    "trimOrder",
+    "budgetOverflow"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "budgetPlan": {
+      "type": "object",
+      "required": [
+        "totalPromptTokenTarget",
+        "selectedTokensApprox",
+        "projectedOverflow"
+      ],
+      "additionalProperties": true,
+      "$comment": "additionalProperties: true allows future fields without schema change. Core fields are required.",
+      "properties": {
+
+        "totalPromptTokenTarget": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total token target for the prompt plan, sourced from budgetState.totalPromptTokenTarget. Canonical: docs/06 §2.7."
+        },
+
+        "selectedTokensApprox": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Sum of tokensApprox across all selectedComponents[], using pre-computed registry metadata only. No live tokenizer calls at planning time. Canonical: docs/06 §20.2."
+        },
+
+        "projectedOverflow": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Projected token overflow: max(0, selectedTokensApprox - totalPromptTokenTarget). Zero means no projected overflow. Canonical: docs/04 §7.5."
+        },
+
+        "maxScaffoldTokens": {
+          "type": ["integer", "null"],
+          "description": "Per-type budget limit from budgetState.maxScaffoldTokens, or null if not supplied. Canonical: docs/06 §2.7."
+        },
+
+        "maxSkillTokens": {
+          "type": ["integer", "null"],
+          "description": "Per-type budget limit from budgetState.maxSkillTokens, or null if not supplied. Canonical: docs/06 §2.7."
+        },
+
+        "maxToolTokens": {
+          "type": ["integer", "null"],
+          "description": "Per-type budget limit from budgetState.maxToolTokens, or null if not supplied. Canonical: docs/06 §2.7."
+        },
+
+        "maxHistoryTokens": {
+          "type": ["integer", "null"],
+          "description": "Per-type budget limit from budgetState.maxHistoryTokens, or null if not supplied. Canonical: docs/06 §2.7."
+        },
+
+        "reservedUserTokens": {
+          "type": ["integer", "null"],
+          "description": "Tokens reserved for user response from budgetState.reservedUserTokens, or null if not supplied. Canonical: docs/06 §2.7."
+        }
+
+      },
+      "description": "Budget planning summary: token target, selected component totals, and projected overflow. Canonical: docs/04 §7.5; docs/06 §20.2."
+    },
+
+    "trimOrder": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["componentId", "budgetHint", "tokensApprox", "trimReason"],
+        "additionalProperties": false,
+        "properties": {
+          "componentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Registry ID of the component considered for trimming."
+          },
+          "budgetHint": {
+            "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#BudgetHint",
+            "description": "Budget hint for this component as promoted to ResolvedSelectionDecision. Determines Budgeter trim eligibility. protected and over_budget_protected must NEVER be trimmed. Canonical: docs/06 §20.3 rule 2; §27.5."
+          },
+          "tokensApprox": {
+            "type": ["integer", "null"],
+            "description": "tokensApprox for this component from registry metadata, or null if unknown. Canonical: docs/06 §20.4."
+          },
+          "trimReason": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Coded reason why this component is in the trim order (e.g., 'expensive_optional_over_budget', 'candidate_optional_lowest_priority'). Must not contain raw content."
+          }
+        }
+      },
+      "description": "Ordered list of components the Budgeter considered for trimming, in trim priority order (lower budgetPriority values = trimmed first). May be empty if no trimming was required. Protected and over_budget_protected components must not appear as trim candidates. runtime_unavailable defer decisions are excluded — they are not budget savings. Canonical: docs/06 §20.3; docs/05 §5 budgetPriority."
+    },
+
+    "budgetOverflow": {
+      "type": "boolean",
+      "description": "REQUIRED boolean. true if the selected components exceed totalPromptTokenTarget after trimming; false if within budget. This field is required:true — making it optional would allow the zero-tolerance 'silent budget overflow' check to be bypassed. A safety_critical component that alone exceeds the budget target sets this to true but remains included (budgetOverflow does not cause omission of protected components). Canonical: docs/04 §7.5; docs/12 §2.1 Core Rule 'budgetOverflow always explicit'; docs/12 §4.9."
+    },
+
+    "overBudgetProtectedWarnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["componentId", "tokensApprox", "thresholdCrossed", "applicableBudgetLimit"],
+        "additionalProperties": false,
+        "properties": {
+          "componentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tokensApprox": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "thresholdCrossed": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Field-name atom of the budget limit exceeded (e.g., 'totalPromptTokenTarget', 'maxScaffoldTokens'). Must be a field-name atom, not free-form string."
+          },
+          "applicableBudgetLimit": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "description": "Optional. Array of warnings for protected components whose tokensApprox exceeded a budget limit. These components remain included — over_budget_protected never causes omission. Sourced from ResolvedSelectionDecision records with budgetHint: over_budget_protected. Planning continues (warn-only, halt explicitly rejected for MVP per docs/06 §25.2). Canonical: docs/06 §25.3, §25.5."
+    },
+
+    "budgetHintInterpretation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protectedCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of components with budgetHint: protected. Must not be trimmed."
+        },
+        "overBudgetProtectedCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of components with budgetHint: over_budget_protected. Must not be trimmed; emitted overBudgetProtectedWarnings."
+        },
+        "expensiveOptionalCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of components with budgetHint: expensive_optional (>= 500 tokens threshold). Trimmed first at equal budgetPriority."
+        },
+        "candidateOptionalCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of components with budgetHint: candidate_optional. May be trimmed."
+        },
+        "unknownCostCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of components with budgetHint: unknown_cost. Conservative default; budget_cost_unknown warning emitted per component."
+        },
+        "noHintCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of components with no budgetHint. Includes runtime_unavailable defer records (which suppress generic budget hints)."
+        }
+      },
+      "description": "Optional. Summary of how the Budgeter interpreted budget hints from resolved decisions. Counts derived from ResolvedSelectionDecision[] — not a second source of truth. Canonical: docs/06 §20.4, §27."
+    }
+
+  }
+}

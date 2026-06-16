@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.safety-critical-core",
+      "action": "include",
+      "path": "safety_override",
+      "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; budget overflow cannot remove safety-critical component",
+      "tokensApprox": 700
+    },
+    {
+      "componentId": "scaffold.mandatory-compliance",
+      "action": "include",
+      "path": "required_match",
+      "reason": "retainPolicy: mandatory + omissionPolicy: never — hard protection; requiredWhen: [*] matched; budget overflow cannot remove mandatory component",
+      "tokensApprox": 500
+    }
+  ],
+  "omittedComponents": [
+    {
+      "componentId": "skill.optional-quick",
+      "action": "omit",
+      "path": "default_action_omit",
+      "reason": "defaultAction: omit; candidate_optional; Budgeter trimmed optional component first — but overflow persists from protected scaffolds",
+      "tokensApprox": 50
+    }
+  ],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 1000,
+    "selectedTokensApprox": 1200,
+    "projectedOverflow": 200
+  },
+  "estimatedTokens": {
+    "scaffold": 1200,
+    "total": 1200
+  },
+  "riskFlags": [
+    "budget_infeasible_protected_component: scaffold.safety-critical-core tokensApprox=700 contributes to overflow; protected scaffold retained (safety_critical)",
+    "budget_infeasible_protected_component: scaffold.mandatory-compliance tokensApprox=500 contributes to overflow; protected scaffold retained (mandatory)"
+  ],
+  "failOpenReasons": [],
+  "planningWarnings": [
+    {
+      "code": "over_budget_protected",
+      "message": "Combined protected scaffolds (scaffold.safety-critical-core=700 + scaffold.mandatory-compliance=500 = 1200 tokens) exceed totalPromptTokenTarget=1000; budgetOverflow=true; optional skill trimmed first but overflow persists; protected components retained"
+    }
+  ]
+}

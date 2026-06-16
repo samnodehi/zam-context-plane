@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/internal/selection-decision.schema.json",
+  "title": "Portable Context Control Plane — SelectionDecision",
+  "description": "Internal object schema for a single SelectionDecision record produced by a selector during fan-out. Canonical owner: docs/06 §4. All 10 required fields defined here. Non-MVP fields (action: quarantine, action: unavailable, unknownId field) are excluded per docs/12 §9.",
+  "$comment": "Pass 4.9C-3 (Batch C creation). No code. No runtime. No provider/model calls. All enum values $ref enums.shared.schema.json. Canonical: docs/06 §4.",
+
+  "type": "object",
+  "required": [
+    "componentId",
+    "selectorName",
+    "action",
+    "reason",
+    "path",
+    "confidence",
+    "evidence",
+    "constraintsApplied",
+    "warnings",
+    "traceRefs"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "componentId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The validated registry component ID this decision applies to. For action: reference_unknown, this carries the unknown string (no separate unknownId field in MVP — safe-defer 5-Q4). Canonical: docs/06 §4."
+    },
+
+    "selectorName": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The name of the selector module that produced this decision (e.g., 'ScaffoldSelector', 'ToolSelector'). Canonical: docs/06 §4."
+    },
+
+    "action": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionAction",
+      "description": "The selector's decision for this component: include, omit, defer, or reference_unknown. action: quarantine and action: unavailable are not valid MVP values (F-17 resolved; 5-Q7/F-28 safe-defer). Canonical: docs/06 §4."
+    },
+
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable explanation for the decision. Must not contain raw component content, raw history turn content, or raw user message text. Canonical: docs/06 §4."
+    },
+
+    "path": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionPath",
+      "description": "The decision ladder path that produced this action. Must be consistent with the action value (e.g., safe_to_omit_match only valid with action: omit; safety_override only valid with action: include). Canonical: docs/06 §4 and docs/12 §6.1."
+    },
+
+    "confidence": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionConfidence",
+      "description": "Selector confidence in this decision: high, medium, or low. No float confidence on SelectionDecision (F-08 resolved). A low-confidence omit is invalid in MVP — the selector must fall to fail_open. Canonical: docs/06 §4."
+    },
+
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Signal atoms and trace atoms that justify this decision. Must be non-empty for any action: omit decision — empty evidence[] with omit is a harness failure. Evidence items are coded atoms (e.g., 'promptFamily=simple_greeting', 'requiredWhen=coding_build_debug') and must not contain raw component content, raw history turn content, or raw user message text. Canonical: docs/06 §4."
+    },
+
+    "constraintsApplied": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Descriptions of the specific constraint fields that governed this decision (e.g., 'retainPolicy=mandatory', 'userConstraints.alwaysInclude'). Used for Step 3 hard-protection decisions and Step 6 user-constraint decisions. Empty array when no constraints applied. Canonical: docs/06 §4."
+    },
+
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Per-decision warning codes emitted for this decision (e.g., injection_suspect_omit_allowed, path_a_null_evidence, injection_suspect_policy_override). Not the same as global planningWarnings. Must not contain the global per-run injection warning codes (injection_suspect_warn_and_continue, injection_suspect_fail_open_all) — those are orchestrator-owned globals only. Canonical: docs/06 §4 and §17.6."
+    },
+
+    "traceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Array of trace entry IDs (decisionId values) referencing TraceEntry objects in selectorPhase.selectorTrace[]. Provides a bi-directional link from this decision to the corresponding trace events. Canonical: docs/06 §4."
+    },
+
+    "budgetHint": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#BudgetHint",
+      "description": "Optional informational budget classification for this component. Produced by budget-aware selector hint logic (docs/06 §20) after the ladder decision is finalised. Must not change action or path. Absent when budget hint was not produced. Canonical: docs/06 §20.4."
+    },
+
+    "budgetReason": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Coded atom explaining the budgetHint classification (e.g., retain_policy_safety_critical, high_token_estimate, cost_unknown). Must not contain raw component content or free-form strings. Present only when budgetHint is present. Canonical: docs/06 §20.4."
+    },
+
+    "tokensApproxObserved": {
+      "type": ["integer", "null"],
+      "description": "The tokensApprox value read from registry metadata at hint-production time, or null if absent. Present only when budgetHint was produced. Canonical: docs/06 §20.4."
+    },
+
+    "budgetPriorityObserved": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "maximum": 10,
+      "description": "The budgetPriority value read from registry metadata (integer 1–10 per docs/05 §5), or null if absent. Present only when budgetHint was produced. Canonical: docs/06 §20.4."
+    },
+
+    "budgetCriticalObserved": {
+      "type": "boolean",
+      "description": "The budgetState.budgetCritical flag value at the time the budget hint was produced. Present only when budgetHint was produced. Canonical: docs/06 §20.4."
+    },
+
+    "budgetWarningCodes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Per-decision budget warning codes emitted by budget-hint logic (e.g., budget_cost_unknown, over_budget_protected, budget_pressure_seen). Distinct from the general warnings[] array. Present only when budget-hint logic emitted warnings. Canonical: docs/06 §20.4."
+    }
+
+  }
+}

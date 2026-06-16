@@ -1,0 +1,44 @@
+{
+  "name": "context-plane",
+  "version": "0.1.0",
+  "description": "Portable Context Control Plane CLI MVP",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "./dist/core/api.js",
+  "types": "./dist/core/api.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/core/api.d.ts",
+      "import": "./dist/core/api.js",
+      "default": "./dist/core/api.js"
+    },
+    "./http": {
+      "types": "./dist/http/server.d.ts",
+      "import": "./dist/http/server.js",
+      "default": "./dist/http/server.js"
+    }
+  },
+  "bin": {
+    "context-plane": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@fastify/type-provider-typebox": "^6.1.0",
+    "ajv": "^8.17.1",
+    "commander": "^12.1.0",
+    "fastify": "^5.8.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.4.0",
+    "vitest": "^4.1.9"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "promptFamily": "general_default",
+  "familyConfidence": 0.87,
+  "injectionSuspect": false,
+  "activeSkillIds": ["skill.general-assistant", "skill.does-not-exist-in-registry"]
+}

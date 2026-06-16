@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.system-rules",
+      "action": "include",
+      "path": "required_match",
+      "reason": "omissionPolicy: never — always included regardless of injection gate",
+      "tokensApprox": 350
+    },
+    {
+      "componentId": "skill.general-assistant",
+      "action": "include",
+      "path": "fail_open",
+      "reason": "injectionSuspect: true with warn_and_continue effective policy (halt_planning recognized but not implemented) — fail-open include applied",
+      "tokensApprox": 200
+    }
+  ],
+  "omittedComponents": [],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 8000,
+    "selectedTokensApprox": 550,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "scaffold": 350,
+    "skills": 200,
+    "tools": 0,
+    "history": 0,
+    "total": 550
+  },
+  "riskFlags": [],
+  "failOpenReasons": [
+    "skill.general-assistant: injectionSuspect=true, effectivePolicy=warn_and_continue (halt_planning recognized-not-implemented) — fail-open include applied"
+  ],
+  "planningWarnings": [
+    {
+      "code": "policy_value_not_implemented",
+      "message": "injectionSuspectAction 'halt_planning' is recognized but not implemented in MVP; normalized to warn_and_continue"
+    }
+  ]
+}

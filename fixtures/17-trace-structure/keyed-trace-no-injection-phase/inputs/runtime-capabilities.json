@@ -1,0 +1,6 @@
+{
+  "availableToolIds": ["tool.read-file"],
+  "unavailableToolIds": [],
+  "capabilityInventoryComplete": true,
+  "runtimeLabel": "test-runtime-v1"
+}

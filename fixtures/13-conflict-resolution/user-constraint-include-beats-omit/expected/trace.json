@@ -1,0 +1,177 @@
+{
+  "run": {
+    "runId": "fixture-run-13-user-constraint-include-beats-omit-001",
+    "planningRunStartedAt": "2026-05-21T12:00:01Z",
+    "planningRunCompletedAt": "2026-05-21T12:00:01Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.85,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.85
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 2,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.base-context",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "requiredWhen: [\"*\"] matches all prompt families",
+        "evidence": ["requiredWhen=*", "promptFamily=general_default"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "skill.code-review",
+        "module": "ConstraintSelector",
+        "action": "include",
+        "reason": "userConstraints.alwaysInclude: operator constraint forces include",
+        "evidence": ["alwaysInclude=skill.code-review", "constraintSource=operator_cli"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-003",
+        "componentId": "skill.code-review",
+        "module": "SkillSelector",
+        "action": "omit",
+        "reason": "safeToOmitWhen matched general_default; Path A omit",
+        "evidence": ["safeToOmitWhen_match=general_default", "promptFamily=general_default"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 220},
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 2,
+      "decidedInclude": 2,
+      "decidedOmit": 0,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 1,
+      "unknownReferences": 0,
+      "narrative": "2 components evaluated; 2 included (0 fail-open); 0 omitted; 0 deferred; 1 conflict resolved (user_constraint_include); 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.base-context",
+        "finalAction": "include",
+        "finalPath": "required_match",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.code-review",
+        "finalAction": "include",
+        "finalPath": "required_match",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-002", "tid-003"],
+        "resolutionRule": "user_constraint_include",
+        "losingDecisions": [
+          {
+            "decisionId": "tid-003",
+            "action": "omit",
+            "path": "safe_to_omit_match",
+            "defeatedBy": "user_constraint_include"
+          }
+        ],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      }
+    ],
+    "conflictResolutionTrace": [
+      {
+        "componentId": "skill.code-review",
+        "inputDecisionIds": ["tid-002", "tid-003"],
+        "finalAction": "include",
+        "finalPath": "required_match",
+        "resolutionRule": "user_constraint_include",
+        "losingDecisions": [
+          {
+            "decisionId": "tid-003",
+            "action": "omit",
+            "path": "safe_to_omit_match",
+            "defeatedBy": "user_constraint_include"
+          }
+        ],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      }
+    ],
+    "noConflictComponentIds": ["scaffold.base-context"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 470,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.base-context",
+        "action": "include",
+        "path": "required_match",
+        "reason": "requiredWhen: [\"*\"] matches all prompt families",
+        "tokensApprox": 250
+      },
+      {
+        "componentId": "skill.code-review",
+        "action": "include",
+        "path": "required_match",
+        "reason": "userConstraints.alwaysInclude overrode Path A omit (user_constraint_include)",
+        "tokensApprox": 220
+      }
+    ],
+    "omittedComponents": [],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": []
+  },
+  "warnings": []
+}

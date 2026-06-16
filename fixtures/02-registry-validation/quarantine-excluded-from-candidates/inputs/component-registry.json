@@ -1,0 +1,42 @@
+[
+  {
+    "id": "scaffold.system-rules",
+    "type": "scaffold",
+    "title": "System Rules Scaffold",
+    "summary": "Core system rules and behavioral guidelines for the assistant.",
+    "source": "scaffolds/system-rules.md",
+    "tokensApprox": 350,
+    "charsApprox": 1400,
+    "riskLevel": "critical",
+    "requiredWhen": [],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": ["scaffold", "safety"],
+    "version": "1.0.0",
+    "hash": null
+  },
+  {
+    "id": "skill.malformed-zero-tokens",
+    "type": "skill",
+    "title": "Malformed Skill — Zero Token Count",
+    "summary": "A skill component with tokensApprox:0 and charsApprox:0 and no metadataOnly flag; triggers loader quarantine.",
+    "source": "skills/malformed-zero-tokens.md",
+    "tokensApprox": 0,
+    "charsApprox": 0,
+    "riskLevel": "low",
+    "requiredWhen": [],
+    "safeToOmitWhen": ["simple_greeting"],
+    "defaultAction": "include",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 8,
+    "evidenceRequired": null,
+    "tags": ["skill", "optional"],
+    "version": "1.0.0",
+    "hash": null
+  }
+]

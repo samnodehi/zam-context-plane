@@ -1,0 +1,42 @@
+[
+  {
+    "id": "scaffold.safety-rules",
+    "type": "scaffold",
+    "title": "Safety Rules",
+    "summary": "Core safety rules",
+    "source": "scaffolds/safety-rules.md",
+    "tokensApprox": 300,
+    "charsApprox": 1200,
+    "riskLevel": "critical",
+    "requiredWhen": ["*"],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": ["scaffold", "safety"],
+    "version": "1.0.0",
+    "hash": null
+  },
+  {
+    "id": "skill.optional-helper",
+    "type": "skill",
+    "title": "Optional Helper",
+    "summary": "Optional helper skill",
+    "source": "skills/optional-helper.md",
+    "tokensApprox": 180,
+    "charsApprox": 720,
+    "riskLevel": "low",
+    "requiredWhen": [],
+    "safeToOmitWhen": ["general_default"],
+    "defaultAction": "omit",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 8,
+    "evidenceRequired": null,
+    "tags": ["skill", "optional"],
+    "version": "1.0.0",
+    "hash": null
+  }
+]

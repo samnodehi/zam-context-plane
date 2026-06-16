@@ -1,0 +1,189 @@
+{
+  "run": {
+    "runId": "fixture-run-18-deterministic-narrative-001",
+    "planningRunStartedAt": "2026-05-24T08:00:00Z",
+    "planningRunCompletedAt": "2026-05-24T08:00:00Z",
+    "promptFamily": "coding_build_debug",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "coding_build_debug",
+      "familyConfidence": 0.91,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "coding_build_debug",
+    "familyConfidence": 0.91
+  },
+  "registryPhase": {
+    "componentCount": 3,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 3,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-dn-001",
+        "componentId": "scaffold.agent-persona",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "requiredWhen tag matched: coding_build_debug",
+        "evidence": [
+          "requiredWhen=coding_build_debug",
+          "promptFamily=coding_build_debug"
+        ],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-dn-002",
+        "componentId": "skill.greeting-flow",
+        "module": "SkillSelector",
+        "action": "omit",
+        "reason": "No requiredWhen or safeToOmitWhen match; defaultAction: omit; all Path B conditions satisfied",
+        "evidence": [
+          "requiredWhen=no_match",
+          "safeToOmitWhen=no_match",
+          "defaultAction=omit",
+          "omissionPolicy=allow",
+          "promptFamily=coding_build_debug"
+        ],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": { "tokens": 200 },
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-dn-003",
+        "componentId": "policy.privacy-baseline",
+        "module": "PolicySelector",
+        "action": "include",
+        "reason": "No tag match; defaultAction: include applied",
+        "evidence": [
+          "requiredWhen=no_match",
+          "safeToOmitWhen=no_match",
+          "defaultAction=include",
+          "promptFamily=coding_build_debug"
+        ],
+        "confidence": "high",
+        "risk": "medium",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 3,
+      "decidedInclude": 2,
+      "decidedOmit": 1,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "3 components evaluated. 2 included, 1 omitted, 0 deferred (0 default, 0 runtime-unavailable), 0 fail-open. 0 conflict(s) identified."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.agent-persona",
+        "finalAction": "include",
+        "finalPath": "required_match",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-dn-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.greeting-flow",
+        "finalAction": "omit",
+        "finalPath": "default_action_omit",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-dn-002"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      },
+      {
+        "componentId": "policy.privacy-baseline",
+        "finalAction": "include",
+        "finalPath": "default_include",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-dn-003"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 3
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": [
+      "scaffold.agent-persona",
+      "skill.greeting-flow",
+      "policy.privacy-baseline"
+    ],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 630,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.agent-persona",
+        "action": "include",
+        "path": "required_match",
+        "reason": "requiredWhen tag matched: coding_build_debug",
+        "tokensApprox": 280
+      },
+      {
+        "componentId": "policy.privacy-baseline",
+        "action": "include",
+        "path": "default_include",
+        "reason": "No tag match; defaultAction: include applied",
+        "tokensApprox": 350
+      }
+    ],
+    "omittedComponents": [
+      {
+        "componentId": "skill.greeting-flow",
+        "action": "omit",
+        "path": "default_action_omit",
+        "reason": "No requiredWhen or safeToOmitWhen match; defaultAction: omit with omissionPolicy: allow and riskLevel: low",
+        "tokensApprox": 200
+      }
+    ],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": []
+  },
+  "warnings": []
+}

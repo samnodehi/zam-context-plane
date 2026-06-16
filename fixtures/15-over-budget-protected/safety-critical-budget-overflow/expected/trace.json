@@ -1,0 +1,200 @@
+{
+  "run": {
+    "runId": "fixture-run-15-safety-critical-budget-overflow-001",
+    "planningRunStartedAt": "2026-05-22T09:03:00Z",
+    "planningRunCompletedAt": "2026-05-22T09:03:00Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.90,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.90
+  },
+  "registryPhase": {
+    "componentCount": 3,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 3,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.safety-critical-core",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; budgetHint: over_budget_protected (tokensApprox=700; protected component contributes to inevitable overflow)",
+        "evidence": ["riskLevel=critical", "omissionPolicy=never", "retainPolicy=safety_critical", "hard_protection_applied", "budgetHint=over_budget_protected", "thresholdCrossed=totalPromptTokenTarget", "applicableBudgetLimit=1000", "tokensApproxObserved=700", "riskFlag=budget_infeasible_protected_component", "actionChanged=false"],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "scaffold.mandatory-compliance",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "retainPolicy: mandatory + omissionPolicy: never — hard protection; requiredWhen: [*] matched; budgetHint: over_budget_protected (combined with safety-critical-core makes overflow inevitable)",
+        "evidence": ["retainPolicy=mandatory", "omissionPolicy=never", "requiredWhen_match=*", "hard_protection_applied", "budgetHint=over_budget_protected", "thresholdCrossed=totalPromptTokenTarget", "applicableBudgetLimit=1000", "tokensApproxObserved=500", "riskFlag=budget_infeasible_protected_component", "actionChanged=false"],
+        "confidence": "high",
+        "risk": "high",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-003",
+        "componentId": "skill.optional-quick",
+        "module": "SkillSelector",
+        "action": "omit",
+        "reason": "defaultAction: omit; no positive include signals; Path B omit — default_action_omit; budgetHint: candidate_optional (tokensApprox=50 < 500; retainPolicy=optional; omissionPolicy=allow)",
+        "evidence": ["defaultAction=omit", "no_requiredWhen_match", "path_b_default_action_omit", "budgetHint=candidate_optional", "budget_pressure_seen"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 50},
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [
+      {
+        "code": "over_budget_protected",
+        "message": "Combined protected scaffolds (scaffold.safety-critical-core=700 + scaffold.mandatory-compliance=500 = 1200) exceed totalPromptTokenTarget=1000; budgetOverflow=true inevitable; optional trimmed first but overflow persists"
+      }
+    ],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 3,
+      "decidedInclude": 2,
+      "decidedOmit": 1,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "3 components evaluated; 2 included (0 fail-open); 1 omitted; 0 deferred; 0 conflicts; 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.safety-critical-core",
+        "finalAction": "include",
+        "finalPath": "safety_override",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": ["over_budget_protected"],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "scaffold.mandatory-compliance",
+        "finalAction": "include",
+        "finalPath": "required_match",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-002"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": ["over_budget_protected"],
+        "resolvedAt": 2
+      },
+      {
+        "componentId": "skill.optional-quick",
+        "finalAction": "omit",
+        "finalPath": "default_action_omit",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-003"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 3
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": ["scaffold.safety-critical-core", "scaffold.mandatory-compliance", "skill.optional-quick"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 1000,
+        "selectedTokensApprox": 1200,
+        "projectedOverflow": 200
+      },
+      "trimOrder": [
+        {
+          "componentId": "skill.optional-quick",
+          "budgetHint": "candidate_optional",
+          "tokensApprox": 50,
+          "trimReason": "candidate_optional_lowest_priority: retainPolicy=optional, omissionPolicy=allow, budgetPriority=9; trimmed first; overflow persists from protected scaffolds"
+        }
+      ],
+      "budgetOverflow": true,
+      "overBudgetProtectedWarnings": [
+        {
+          "componentId": "scaffold.safety-critical-core",
+          "tokensApprox": 700,
+          "thresholdCrossed": "totalPromptTokenTarget",
+          "applicableBudgetLimit": 1000
+        },
+        {
+          "componentId": "scaffold.mandatory-compliance",
+          "tokensApprox": 500,
+          "thresholdCrossed": "totalPromptTokenTarget",
+          "applicableBudgetLimit": 1000
+        }
+      ]
+    },
+    "trimActions": [],
+    "budgetOverflow": true
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.safety-critical-core",
+        "action": "include",
+        "path": "safety_override",
+        "reason": "hard protection: safety_critical; budgetOverflow=true but protected component preserved — overflow is safer than unsafe omission",
+        "tokensApprox": 700
+      },
+      {
+        "componentId": "scaffold.mandatory-compliance",
+        "action": "include",
+        "path": "required_match",
+        "reason": "hard protection: mandatory + omissionPolicy=never; budgetOverflow=true but protected component preserved",
+        "tokensApprox": 500
+      }
+    ],
+    "omittedComponents": [
+      {
+        "componentId": "skill.optional-quick",
+        "action": "omit",
+        "path": "default_action_omit",
+        "reason": "defaultAction=omit; candidate_optional; Budgeter trimmed optional first — overflow from protected scaffolds persists regardless",
+        "tokensApprox": 50
+      }
+    ],
+    "deferredComponents": [],
+    "riskFlags": [
+      "budget_infeasible_protected_component: scaffold.safety-critical-core tokensApprox=700 contributes to overflow; protected scaffold retained (safety_critical)",
+      "budget_infeasible_protected_component: scaffold.mandatory-compliance tokensApprox=500 contributes to overflow; protected scaffold retained (mandatory)"
+    ],
+    "failOpenReasons": []
+  },
+  "warnings": []
+}

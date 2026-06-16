@@ -1,0 +1,5 @@
+{
+  "activeSkillIds": ["skill.general-assistant", "skill.does-not-exist-in-registry"],
+  "activeToolIds": [],
+  "activeMemoryIds": []
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "scaffold.core-policy",
+    "type": "scaffold",
+    "title": "Core Policy",
+    "summary": "Mandatory core policy scaffold",
+    "source": "scaffolds/core-policy.md",
+    "tokensApprox": 400,
+    "charsApprox": 1600,
+    "riskLevel": "critical",
+    "requiredWhen": ["*"],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "never",
+    "retainPolicy": "safety_critical",
+    "budgetPriority": 1,
+    "evidenceRequired": null,
+    "tags": ["scaffold", "policy", "safety"],
+    "version": "1.0.0",
+    "hash": null
+  },
+  {
+    "id": "skill.large-optional-skill",
+    "type": "skill",
+    "title": "Large Optional Skill",
+    "summary": "Optional skill with high token cost — above expensive_optional threshold of 500 tokens",
+    "source": "skills/large-optional-skill.md",
+    "tokensApprox": 900,
+    "charsApprox": 3600,
+    "riskLevel": "low",
+    "requiredWhen": [],
+    "safeToOmitWhen": [],
+    "defaultAction": "omit",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 7,
+    "evidenceRequired": null,
+    "tags": ["skill", "optional", "large"],
+    "version": "1.0.0",
+    "hash": null
+  }
+]

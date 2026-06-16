@@ -1,0 +1,147 @@
+{
+  "run": {
+    "runId": "fixture-run-05-required-when-match-001",
+    "planningRunStartedAt": "2026-05-24T08:00:00Z",
+    "planningRunCompletedAt": "2026-05-24T08:00:00Z",
+    "promptFamily": "coding_build_debug",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "coding_build_debug",
+      "familyConfidence": 0.95,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "coding_build_debug",
+    "familyConfidence": 0.95
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 2,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-rwm-001",
+        "componentId": "scaffold.system-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "No requiredWhen or safeToOmitWhen tag match; defaultAction: include applied",
+        "evidence": [
+          "requiredWhen=no_match",
+          "safeToOmitWhen=no_match",
+          "defaultAction=include",
+          "promptFamily=coding_build_debug"
+        ],
+        "confidence": "high",
+        "risk": "medium",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-rwm-002",
+        "componentId": "skill.coding-guide",
+        "module": "SkillSelector",
+        "action": "include",
+        "reason": "requiredWhen tag matched: coding_build_debug",
+        "evidence": [
+          "requiredWhen=coding_build_debug",
+          "promptFamily=coding_build_debug"
+        ],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": { "tokens": 0 },
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 2,
+      "decidedInclude": 2,
+      "decidedOmit": 0,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "2 components evaluated. 2 included, 0 omitted, 0 deferred (0 default, 0 runtime-unavailable), 0 fail-open. 0 conflict(s) identified."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.system-rules",
+        "finalAction": "include",
+        "finalPath": "default_include",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-rwm-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.coding-guide",
+        "finalAction": "include",
+        "finalPath": "required_match",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-rwm-002"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": ["scaffold.system-rules", "skill.coding-guide"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 8000,
+        "selectedTokensApprox": 800,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.system-rules",
+        "action": "include",
+        "path": "default_include",
+        "reason": "No tag match; defaultAction: include applied",
+        "tokensApprox": 320
+      },
+      {
+        "componentId": "skill.coding-guide",
+        "action": "include",
+        "path": "required_match",
+        "reason": "requiredWhen tag matched: coding_build_debug",
+        "tokensApprox": 480
+      }
+    ],
+    "omittedComponents": [],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": []
+  },
+  "warnings": []
+}

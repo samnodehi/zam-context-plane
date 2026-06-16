@@ -1,0 +1,5 @@
+{
+  "alwaysInclude": ["skill.code-review"],
+  "neverInclude": [],
+  "constraintSource": "operator_cli"
+}

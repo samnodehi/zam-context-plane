@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.mandatory-rules",
+      "action": "include",
+      "path": "safety_override",
+      "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; over_budget_protected warning emitted but component remains selected (warn-only MVP policy)",
+      "tokensApprox": 900
+    },
+    {
+      "componentId": "skill.greeting-skill",
+      "action": "include",
+      "path": "required_match",
+      "reason": "requiredWhen matches general_default — included",
+      "tokensApprox": 80
+    }
+  ],
+  "omittedComponents": [],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 800,
+    "selectedTokensApprox": 980,
+    "projectedOverflow": 180
+  },
+  "estimatedTokens": {
+    "scaffold": 900,
+    "skills": 80,
+    "total": 980
+  },
+  "riskFlags": [
+    "budget_infeasible_protected_component: scaffold.mandatory-rules tokensApprox=900 exceeds totalPromptTokenTarget=800; over_budget_protected — cannot trim protected component"
+  ],
+  "failOpenReasons": [],
+  "planningWarnings": [
+    {
+      "code": "over_budget_protected",
+      "message": "scaffold.mandatory-rules tokensApprox=900 exceeds totalPromptTokenTarget=800; over_budget_protected warn-only — component retained; planning continues"
+    }
+  ]
+}

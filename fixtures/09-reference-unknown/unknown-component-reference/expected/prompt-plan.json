@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.system-rules",
+      "action": "include",
+      "path": "safety_override",
+      "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; always included",
+      "tokensApprox": 350
+    }
+  ],
+  "omittedComponents": [],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 8000,
+    "selectedTokensApprox": 350,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "total": 350,
+    "scaffold": 350
+  },
+  "riskFlags": [
+    "reference_unknown: skill.does-not-exist not found in registry; referenced via userConstraints.alwaysInclude"
+  ],
+  "failOpenReasons": [],
+  "planningWarnings": []
+}

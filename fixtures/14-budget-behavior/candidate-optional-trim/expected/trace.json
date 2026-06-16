@@ -1,0 +1,152 @@
+{
+  "run": {
+    "runId": "fixture-run-14-candidate-optional-trim-001",
+    "planningRunStartedAt": "2026-05-22T09:00:00Z",
+    "planningRunCompletedAt": "2026-05-22T09:00:00Z",
+    "promptFamily": "general_default",
+    "schemaVersion": "v0"
+  },
+  "requestPhase": {
+    "requestSignalsSummary": {
+      "promptFamily": "general_default",
+      "familyConfidence": 0.90,
+      "injectionSuspect": false
+    },
+    "injectionSuspectFlag": false,
+    "promptFamily": "general_default",
+    "familyConfidence": 0.90
+  },
+  "registryPhase": {
+    "componentCount": 2,
+    "quarantinedCount": 0,
+    "validationWarnings": [],
+    "fatalErrors": [],
+    "candidateSetSummary": {
+      "candidateSetPolicy": "all_non_quarantined",
+      "candidateSetSize": 2,
+      "quarantinedExcluded": 0
+    }
+  },
+  "selectorPhase": {
+    "selectorTrace": [
+      {
+        "decisionId": "tid-001",
+        "componentId": "scaffold.system-rules",
+        "module": "ScaffoldSelector",
+        "action": "include",
+        "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection applied; budget pressure cannot override",
+        "evidence": ["riskLevel=critical", "omissionPolicy=never", "retainPolicy=safety_critical", "hard_protection_applied", "budgetHint=protected"],
+        "confidence": "high",
+        "risk": "critical",
+        "estimatedSavings": {"tokens": 0},
+        "failOpen": false,
+        "selector": "deterministic"
+      },
+      {
+        "decisionId": "tid-002",
+        "componentId": "skill.optional-helper",
+        "module": "SkillSelector",
+        "action": "omit",
+        "reason": "defaultAction: omit; no positive include signals; Path B omit — default_action_omit; budgetHint: candidate_optional (tokensApprox=300 < 500 threshold; retainPolicy=optional; omissionPolicy=allow)",
+        "evidence": ["defaultAction=omit", "no_requiredWhen_match", "no_safeToOmitWhen_match", "path_b_default_action_omit", "budgetHint=candidate_optional", "budget_pressure_seen"],
+        "confidence": "high",
+        "risk": "low",
+        "estimatedSavings": {"tokens": 300},
+        "failOpen": false,
+        "selector": "deterministic"
+      }
+    ],
+    "planningWarnings": [
+      {
+        "code": "budget_pressure_seen",
+        "message": "budgetCritical=true: budget pressure observed; optional components reviewed for trimming by Budgeter"
+      }
+    ],
+    "unresolvedConflicts": [],
+    "selectorSummary": {
+      "totalEvaluated": 2,
+      "decidedInclude": 1,
+      "decidedOmit": 1,
+      "decidedDefer": 0,
+      "defaultDefer": 0,
+      "runtimeUnavailableDefer": 0,
+      "failOpenInclude": 0,
+      "conflictsIdentified": 0,
+      "unknownReferences": 0,
+      "narrative": "2 components evaluated; 1 included (0 fail-open); 1 omitted; 0 deferred; 0 conflicts; 0 unknown references."
+    }
+  },
+  "conflictPhase": {
+    "resolvedDecisions": [
+      {
+        "componentId": "scaffold.system-rules",
+        "finalAction": "include",
+        "finalPath": "safety_override",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-001"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 1
+      },
+      {
+        "componentId": "skill.optional-helper",
+        "finalAction": "omit",
+        "finalPath": "default_action_omit",
+        "resolvedBy": "conflict_resolver",
+        "inputDecisionIds": ["tid-002"],
+        "resolutionRule": "no_conflict",
+        "losingDecisions": [],
+        "warningsEmitted": [],
+        "resolvedAt": 2
+      }
+    ],
+    "conflictResolutionTrace": [],
+    "noConflictComponentIds": ["scaffold.system-rules", "skill.optional-helper"],
+    "planningWarnings": []
+  },
+  "budgetPhase": {
+    "budgetReport": {
+      "budgetPlan": {
+        "totalPromptTokenTarget": 500,
+        "selectedTokensApprox": 350,
+        "projectedOverflow": 0
+      },
+      "trimOrder": [
+        {
+          "componentId": "skill.optional-helper",
+          "budgetHint": "candidate_optional",
+          "tokensApprox": 300,
+          "trimReason": "candidate_optional_lowest_priority: retainPolicy=optional, omissionPolicy=allow, budgetPriority=8; selector Path B omit confirmed by Budgeter under budget pressure"
+        }
+      ],
+      "budgetOverflow": false
+    },
+    "trimActions": [],
+    "budgetOverflow": false
+  },
+  "planPhase": {
+    "selectedComponents": [
+      {
+        "componentId": "scaffold.system-rules",
+        "action": "include",
+        "path": "safety_override",
+        "reason": "hard protection: riskLevel=critical, omissionPolicy=never, retainPolicy=safety_critical; budget pressure cannot override",
+        "tokensApprox": 350
+      }
+    ],
+    "omittedComponents": [
+      {
+        "componentId": "skill.optional-helper",
+        "action": "omit",
+        "path": "default_action_omit",
+        "reason": "defaultAction=omit; candidate_optional; Budgeter confirmed trim under budget pressure (budgetCritical=true, totalPromptTokenTarget=500)",
+        "tokensApprox": 300
+      }
+    ],
+    "deferredComponents": [],
+    "riskFlags": [],
+    "failOpenReasons": []
+  },
+  "warnings": []
+}

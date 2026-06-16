@@ -1,0 +1,17 @@
+{
+  "analyzerVersion": "future-stub-v0.1",
+  "tier": 3,
+  "promptFamily": "general",
+  "analyzerConfidence": 0.2,
+  "assessedRequestRiskLevel": "low",
+  "neededLanes": [],
+  "requiresHistory": true,
+  "requiresTools": false,
+  "requiresFiles": false,
+  "failOpenTriggered": true,
+  "failOpenReason": "Confidence below threshold",
+  "evidence": [
+    "Request is ambiguous — no clear task type detected"
+  ],
+  "analyzerTraceId": "trace-02-fail-open-low-confidence-stub"
+}

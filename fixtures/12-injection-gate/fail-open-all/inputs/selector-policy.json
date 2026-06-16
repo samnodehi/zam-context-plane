@@ -1,0 +1,5 @@
+{
+  "failOpenThreshold": 0.7,
+  "deterministicOnly": true,
+  "injectionSuspectAction": "fail_open_all"
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "scaffold.system-rules",
+    "type": "scaffold",
+    "title": "System Rules Scaffold",
+    "summary": "Defines baseline behavioral rules for the agent across all contexts.",
+    "source": "scaffold/system_rules.md",
+    "tokensApprox": 320,
+    "charsApprox": 1280,
+    "riskLevel": "medium",
+    "requiredWhen": [],
+    "safeToOmitWhen": [],
+    "defaultAction": "include",
+    "omissionPolicy": "fail_open",
+    "retainPolicy": "durable",
+    "budgetPriority": 7,
+    "evidenceRequired": null,
+    "tags": ["scaffold", "system"],
+    "version": "1.0.0",
+    "hash": null
+  },
+  {
+    "id": "skill.coding-guide",
+    "type": "skill",
+    "title": "Coding Assistant Guide",
+    "summary": "Provides coding conventions, patterns, and debugging strategies for code-oriented tasks.",
+    "source": "skills/coding_guide.md",
+    "tokensApprox": 480,
+    "charsApprox": 1920,
+    "riskLevel": "low",
+    "requiredWhen": ["coding_build_debug"],
+    "safeToOmitWhen": ["simple_greeting", "heartbeat_proactive"],
+    "defaultAction": "omit",
+    "omissionPolicy": "allow",
+    "retainPolicy": "optional",
+    "budgetPriority": 5,
+    "evidenceRequired": null,
+    "tags": ["skill", "coding", "debug"],
+    "version": "1.0.0",
+    "hash": null
+  }
+]

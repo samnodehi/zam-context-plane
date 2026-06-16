@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "v0",
+  "promptFamily": "general_default",
+  "selectedComponents": [
+    {
+      "componentId": "scaffold.core-policy",
+      "action": "include",
+      "path": "safety_override",
+      "reason": "riskLevel: critical + omissionPolicy: never + retainPolicy: safety_critical — hard protection; budget pressure cannot override",
+      "tokensApprox": 400
+    }
+  ],
+  "omittedComponents": [
+    {
+      "componentId": "skill.large-optional-skill",
+      "action": "omit",
+      "path": "default_action_omit",
+      "reason": "defaultAction: omit; tokensApprox=900 >= 500 threshold → expensive_optional; Budgeter confirmed trim under budget pressure (budgetCritical=true); expensive_optional trimmed before protected/mandatory components",
+      "tokensApprox": 900
+    }
+  ],
+  "deferredComponents": [],
+  "budgetPlan": {
+    "totalPromptTokenTarget": 600,
+    "selectedTokensApprox": 400,
+    "projectedOverflow": 0
+  },
+  "estimatedTokens": {
+    "scaffold": 400,
+    "total": 400
+  },
+  "riskFlags": [],
+  "failOpenReasons": [],
+  "planningWarnings": [
+    {
+      "code": "budget_pressure_seen",
+      "message": "budgetCritical=true: budget pressure observed; optional components reviewed for trimming by Budgeter"
+    }
+  ]
+}
