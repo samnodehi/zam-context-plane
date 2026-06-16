@@ -110,7 +110,10 @@ describe('buildZamInput', () => {
 
   it('should NOT set reentryTurn on first turn (no prior model response)', () => {
     const result = buildZamInput(es, { text: 'first' }, {}, makeConfig());
-    expect(result.requestSignals).toBeUndefined();
+    // requestSignals is always produced (docs/25 §7.1) so the core bypasses its
+    // Phase 3 stub; only reentryTurn is conditional on a prior model response.
+    expect(result.requestSignals).toBeDefined();
+    expect(result.requestSignals?.reentryTurn).toBeUndefined();
   });
 
   it('should set priorPlanId from most recent zam_plan entry', () => {

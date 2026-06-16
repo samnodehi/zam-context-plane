@@ -19,7 +19,7 @@ Roadmap phases referenced below are defined in the approved plan
 | C5 | Medium | Non-constant-time API-key compare; thin auth for SaaS | MITIGATED | Phase 1a (+Phase 4) |
 | C6 | High | Value is fixture-proven, not field-proven | PLANNED | Phase 3 |
 | C7 | Low | Repo hygiene (root scratch/log/generated clutter) | CLOSED | Phase 1a |
-| C9 | Medium | Runtime suite has 2 pre-existing failing tests; not in any gate | OPEN | Phase 2 (decision) |
+| C9 | Medium | Dead no-progress guard (I-5 over-correction) + 2 stale tests | CLOSED | fixed in fix/c9 |
 | C-status | Low | Stale `651` test count + `zero tech debt` wording | MITIGATED | Phase 1a (+CI Phase 2) |
 
 ---
@@ -78,23 +78,27 @@ Removed root clutter (`scratch-*.cjs`, `*_log.txt`, `harness-*.txt`, stray gener
 `prompt-plan.json`/`trace.json`/`summary.md`) and added root-anchored `.gitignore` patterns
 to prevent recurrence.
 
-## C9 — Runtime suite has 2 pre-existing failing tests (Medium)
-The `@zam/runtime` package has its own 354-test suite that is **not part of the headline
-651/735 gates** (those cover only the root `context-plane` package: core + HTTP + future-harness).
-Running it surfaces **2 failing tests**, both stale (test-vs-code drift, not product/network bugs):
+## C9 — Dead no-progress guard + 2 stale tests (Medium) — CLOSED (fix/c9)
+The `@zam/runtime` package has its own 354-test suite, **not part of the headline 651/735 gates**
+(those cover only the root `context-plane` package). It had 2 failing tests; investigation showed
+one was a genuine logic defect, not just a stale test:
 
-- `tests/turn-loop.test.ts > "should detect no-progress (identical plans)"` — expects `no_progress`
-  but gets `max_turns`. The documented **I-5 fix** (`docs/28` §4) made no-progress require the event
-  count to be unchanged too; with an always-failing provider each turn appends an error event, so the
-  loop now runs to `maxTurns`. The test was not updated for I-5.
-- `tests/history-state-builder.test.ts > "should NOT set reentryTurn on first turn"` — expects
-  `requestSignals` to be `undefined`, but `buildZamInput` now always populates it (M1 analyzer
-  integration). Stale assertion.
+- **Real defect — dead no-progress guard.** The I-5 fix (`docs/28` §4) made Step 3b require the
+  EventStream count to be unchanged too. But `analyzer_completed` + `zam_plan` (+ `error`) events
+  append every iteration, so the raw count is *never* unchanged → the plan-hash no-progress guard
+  became **unreachable**. I-5 stopped a false-positive by silently disabling the guard (other
+  safety nets — max_turns, stuck-detector, tool-call-hash — masked it).
+  **Fix (Sam-approved option A):** Step 3b now compares a count of **meaningful** events
+  (`tool_result` + `user_message`) instead of the raw count. It fires when the plan repeats *and*
+  no new external observation arrived (genuinely stuck), while a real re-entry (new `tool_result`)
+  still counts as progress — so the I-5 false-positive does not return. New helper
+  `countMeaningfulEvents` in `turn-loop.ts`. The "identical plans" test now passes unmodified.
+- **Stale test.** `history-state-builder.test.ts > "should NOT set reentryTurn on first turn"`
+  asserted `requestSignals` undefined, but `buildZamInput` intentionally always populates it now
+  (docs/25 §7.1). Assertion corrected to check that `reentryTurn` specifically is unset.
 
-**Discovered:** Phase 1a (these failures predate git init; this pass changed zero runtime files).
-**Plan:** Phase 2 — decide per test whether to update the assertion to the documented intended
-behavior or treat it as a real regression; **and** extend CI (D9) to run *all* package suites, not
-just the root, so runtime health can't go untracked again.
+**Outcome:** runtime suite **354/354**; root suite **737/737** unchanged. **Follow-up (Phase 2 D9):**
+CI must run *all* package suites (not just root) so runtime health can't go untracked again.
 
 ## C-status — Stale claims (Low) — MITIGATED in Phase 1a
 Docs quoted `651/651` and "zero technical debt." Real full suite is **735/735**; `651` is the
