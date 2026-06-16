@@ -1073,7 +1073,11 @@ Conflict Resolution is the sub-phase that runs after selector fan-out completes.
 | `path_b_omit_uncontested` | Priority 5: all input decisions are valid Path B omits, resolved to Path B | Case 4 (when Path B is the only decision) |
 | `path_a_omit_selected_over_path_b` | Priority 5: Path A selected over Path B in an omit-vs-omit conflict | Case 4 (Path A vs Path B) |
 | `multiple_include_merged` | Priority 5: multiple include decisions merged to a single include | Case 5 |
-| `fail_open_unresolved` | Priority order did not cleanly resolve; resolved fail-open | Any unresolvable conflict |
+| `include_over_omit` | Priority 5: include vs omit (non-priority include paths) — include wins unconditionally per §11.5 Case 1 | Case 1 (P5) |
+| `include_over_defer` | Priority 5: include vs ordinary defer — include wins per §11.5 Case 2A | Case 2A |
+| `defer_over_omit` | Priority 5: omit vs ordinary defer — defer wins (defer is the safer exclusion) per §11.5 Case 3 | Case 3 |
+| `conflict_include_resolved` | A single `conflict_include` decision (ladder Step 4: both `requiredWhen` and `safeToOmitWhen` matched) — a clean include, not an unresolved conflict | Single conflict_include |
+| `fail_open_unresolved` | Priority order did not cleanly resolve; resolved fail-open. **Reserved for a genuinely unmatched conflict group only** (Cases 1/2A/3 and single conflict_include now have dedicated rules; docs/34). | Genuinely unmatched conflict group |
 | `quarantine_boundary_violation_pass_through` | Quarantine boundary violation synthetic decision passed through | Case 11 |
 | `reference_unknown_pass_through` | Unknown component reference passed through | Case 10 |
 | `history_malformed_fail_open` | Specialized Case 1 sub-case: include/fail_open won over omit because the winning include had history-malformed provenance and no Priority 0–4 rule applied | Case 12 |

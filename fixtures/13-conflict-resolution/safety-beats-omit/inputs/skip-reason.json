@@ -1,6 +1,7 @@
 {
-  "reason": "safety_hard_protection conflict is not reachable through current MVP E2E selector routing. The deterministic ladder applies hard protection (Step 3) before safeToOmitWhen (Step 7), producing a single include/safety_override decision per component. No multi-selector conflict is possible for the same component type.",
+  "reason": "INTENDED, PERMANENT skip (not a pending gap). safety_hard_protection (Case 8) is architecturally unreachable through MVP E2E selector routing: the deterministic ladder applies hard protection (Step 3) before safeToOmitWhen (Step 7), producing a single include/safety_override decision per component — no multi-selector omit-vs-safety conflict can arise for the same component type in single-primary-selector MVP. The code path is implemented and covered by unit test SHP-1. Phase 2c (docs/34 DQ-4) reaffirmed this as intended rather than inventing an unreachable E2E path.",
   "approvedBy": "user",
-  "approvedDate": "2026-06-02",
-  "unitTestCoverage": "tests/phase8/conflict-resolver.test.ts SHP-1"
+  "approvedDate": "2026-06-16",
+  "unitTestCoverage": "tests/phase8/conflict-resolver.test.ts SHP-1",
+  "canonical": "docs/34 DQ-4; docs/06 §11.5 Case 8"
 }

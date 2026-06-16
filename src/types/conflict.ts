@@ -39,20 +39,19 @@ import type { PlanningWarning } from './warnings.js';
 // ---------------------------------------------------------------------------
 
 /**
- * 14-value canonical enum for conflict resolution results.
+ * 18-value canonical enum for conflict resolution results.
  *
  * Matches schemas/shared/enums.shared.schema.json#ResolutionRule exactly.
  * Any value outside this set is a harness failure.
  * Future additions require an explicit cross-spec decision pass.
  *
- * Known spec gaps (as of Phase 8):
- *   - No canonical value for "defer beats omit" (Case 3) → uses fail_open_unresolved.
- *   - No canonical value for "include beats ordinary defer" at P5 for
- *     default_include / fail_open / not_evaluated / conflict_include paths → uses fail_open_unresolved.
- *   - No canonical value for "include beats omit" at P5 for those same paths → uses fail_open_unresolved.
- *   - No canonical value for single conflict_include decision → uses fail_open_unresolved.
+ * Phase 2c (docs/34) added the canonical values that close the former spec gaps:
+ *   - defer_over_omit            — Case 3: omit vs ordinary defer → defer wins (docs/06 §11.5).
+ *   - include_over_omit          — Case 1 (P5): include vs omit → include wins.
+ *   - include_over_defer         — Case 2A: include vs ordinary defer → include wins.
+ *   - conflict_include_resolved  — single conflict_include decision (ladder Step 4) → include.
  *
- * Canonical: docs/06 §11.3.1a.
+ * Canonical: docs/06 §11.3.1a; docs/34.
  */
 export type ResolutionRule =
   | 'no_conflict'
@@ -65,6 +64,10 @@ export type ResolutionRule =
   | 'path_b_omit_uncontested'
   | 'path_a_omit_selected_over_path_b'
   | 'multiple_include_merged'
+  | 'include_over_omit'
+  | 'include_over_defer'
+  | 'defer_over_omit'
+  | 'conflict_include_resolved'
   | 'fail_open_unresolved'
   | 'quarantine_boundary_violation_pass_through'
   | 'reference_unknown_pass_through'
