@@ -206,12 +206,64 @@ describe('normalizeInputs — requestSignals required fields', () => {
   });
 });
 
+describe('normalizeInputs — deterministic Request Router (C1)', () => {
+  it('classifies a whole-string greeting as simple_greeting (no defaulted warning)', () => {
+    const result = normalizeInputs(makeLoadedInputs({ requestText: 'Hello!' }), makeRegistryResult());
+    expect(result.requestSignals.promptFamily).toBe('simple_greeting');
+    expect(result.requestSignals.familyConfidence).toBeGreaterThanOrEqual(0.7);
+    expect(result.warnings.map((w) => w.code)).not.toContain('prompt_family_defaulted');
+  });
+
+  it('classifies a clear coding request as coding_build_debug', () => {
+    const result = normalizeInputs(
+      makeLoadedInputs({ requestText: 'There is a null pointer exception when I compile the typescript.' }),
+      makeRegistryResult(),
+    );
+    expect(result.requestSignals.promptFamily).toBe('coding_build_debug');
+  });
+
+  it('falls back to general_default on an ambiguous (multi-family) request', () => {
+    // "debug" (coding) + "deploy"/"production" (ops) → two families → ambiguous.
+    const result = normalizeInputs(
+      makeLoadedInputs({ requestText: 'Debug the deploy to production.' }),
+      makeRegistryResult(),
+    );
+    expect(result.requestSignals.promptFamily).toBe('general_default');
+    expect(result.requestSignals.familyConfidence).toBe(0.0);
+    expect(result.warnings.map((w) => w.code)).toContain('prompt_family_defaulted');
+  });
+
+  it('uses caller-provided requestSignals verbatim (bypass beats the router)', () => {
+    const loaded = makeLoadedInputs({ requestText: 'Hello!' }); // would otherwise classify simple_greeting
+    loaded.requestSignals = {
+      promptFamily: 'coding_build_debug',
+      familyConfidence: 0.99,
+      injectionSuspect: false,
+    };
+    const result = normalizeInputs(loaded, makeRegistryResult());
+    expect(result.requestSignals.promptFamily).toBe('coding_build_debug');
+    expect(result.warnings.map((w) => w.code)).not.toContain('prompt_family_defaulted');
+  });
+});
+
 describe('normalizeInputs — warning behavior', () => {
-  it('always emits exactly one prompt_family_defaulted warning', () => {
+  it('emits exactly one prompt_family_defaulted warning when the router does not classify', () => {
+    // The default request ("What is the current system status?") carries no strong
+    // family signal, so the deterministic router (C1) falls back to general_default.
     const result = normalizeInputs(makeLoadedInputs(), makeRegistryResult());
-    const codes = result.warnings.map((w) => w.code);
-    const count = codes.filter((c) => c === 'prompt_family_defaulted').length;
+    expect(result.requestSignals.promptFamily).toBe('general_default');
+    const count = result.warnings.filter((w) => w.code === 'prompt_family_defaulted').length;
     expect(count).toBe(1);
+  });
+
+  it('does NOT emit prompt_family_defaulted when the router classifies confidently', () => {
+    const result = normalizeInputs(
+      makeLoadedInputs({ requestText: 'Please debug this stack trace exception.' }),
+      makeRegistryResult(),
+    );
+    expect(result.requestSignals.promptFamily).toBe('coding_build_debug');
+    const codes = result.warnings.map((w) => w.code);
+    expect(codes).not.toContain('prompt_family_defaulted');
   });
 
   it('does not emit prompt_family_unknown', () => {
@@ -537,7 +589,8 @@ describe('CLI integration — Phase 3 behavior', () => {
 
   it('stderr contains prompt_family_defaulted warning', () => {
     const td = makeTempDir();
-    writeFileSync(join(td, 'req.txt'), 'Explain the deployment process.');
+    // Neutral request with no strong family signal → router falls back to general_default.
+    writeFileSync(join(td, 'req.txt'), 'Test request.');
     writeFileSync(join(td, 'reg.json'), makeRegistryJson(['scaffold.test']));
     const result = runCli([
       'plan',

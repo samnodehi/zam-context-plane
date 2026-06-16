@@ -12,7 +12,7 @@ Roadmap phases referenced below are defined in the approved plan
 
 | ID | Severity | Title | Status | Target |
 |----|----------|-------|--------|--------|
-| C1 | High | Core `promptFamily` classifier is a permanent stub | PLANNED | Phase 2 |
+| C1 | High | Core `promptFamily` classifier was a permanent stub | CLOSED | Phase 2a |
 | C2 | Medium | Conflict-resolver canonical-rule gaps; unreachable fixture 13 | PLANNED | Phase 2 |
 | C3 | Medium | Hand-synced type/default duplication across core↔runtime | CLOSED | a,b,d in 1b-1; c in 1b-2 |
 | C4 | High | No version control | CLOSED | Phase 1a |
@@ -25,15 +25,18 @@ Roadmap phases referenced below are defined in the approved plan
 
 ---
 
-## C1 — Core classifier is a permanent stub (High)
-`src/core/request-normalizer.ts` always returns `promptFamily='general_default'`,
-`familyConfidence=0.0`, and never inspects request text. The entire deterministic ladder
-keys off `promptFamily`, so the core *enforces a policy given a classification it does not
-produce*. Real classification lives in the model analyzer
-(`packages/runtime/src/request-analyzer.ts`) or is injected via `--request-signals`.
-**Plan:** Phase 2 introduces a deterministic Request Router in the core (`docs/32`),
-fail-open to `general_default`, preserving the `--request-signals` bypass and the model
-analyzer as a higher tier.
+## C1 — Core classifier was a permanent stub (High) — CLOSED (Phase 2a)
+`src/core/request-normalizer.ts` used to always return `promptFamily='general_default'`,
+`familyConfidence=0.0`, never inspecting the request text — so the core *enforced a policy
+given a classification it did not produce*.
+**Resolved (docs/33):** a deterministic, offline Request Router (`src/core/request-router.ts`)
+now classifies the request text on the no-signals path, **fail-open to `general_default`**.
+It asserts a narrowing family only on a strong, unambiguous signal; `simple_greeting` requires
+a whole-string greeting; any ambiguity (≥2 families) or weak/no signal → `general_default`.
+The `--request-signals` bypass (caller/model tier) is preserved and still takes precedence;
+`injectionSuspect` detection remains out of scope (separate future item).
+Verified: root suite **757/757** (added classifier + wiring tests; Phase-3 unit tests updated;
+all 28 E2E fixtures unaffected — they bypass via `request-signals`); runtime suite **354/354**.
 
 ## C2 — Conflict-resolver gaps (Medium)
 `src/core/conflict-resolver.ts` header documents cases with "no canonical rule →

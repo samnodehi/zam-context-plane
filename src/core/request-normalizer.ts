@@ -1,31 +1,37 @@
 /**
- * Phase 3: Request normalization — minimal in-process Request Router stub.
+ * Phase 3: Request normalization — deterministic in-process Request Router.
  *
  * Consumes Phase 1 LoadedInputs and Phase 2 RegistryResult, and produces a
  * NormalizedInputs aggregate with a deterministic RequestSignals object.
  *
- * In MVP, Phase 3 always produces:
- *   promptFamily:      'general_default'   (no classifier — documented safe substitution)
- *   familyConfidence:  0.0                 (no classification performed)
- *   injectionSuspect:  false               (no detector — Request Router is sole owner)
+ * On the no-signals path, the deterministic Request Router (request-router.ts)
+ * classifies the request text into a prompt family, fail-open to general_default
+ * (C1, docs/33):
+ *   promptFamily:      classifyRequest(text).promptFamily   (deterministic, offline)
+ *   familyConfidence:  classifyRequest(text).familyConfidence
+ *   injectionSuspect:  false  (injection detection is out of C1 scope; Request
+ *                              Router remains the sole future owner)
+ * When the router cannot confidently classify, it returns general_default and this
+ * module emits a single prompt_family_defaulted warning.
  *
  * Phase 3 bypass: if LoadedInputs.requestSignals is non-null (i.e. the caller
- * provided --request-signals), the module uses those validated pre-normalized signals
- * directly and skips the stub. This is the only path where injectionSuspect may be
- * true in MVP — it is carried from the caller, never detected from raw text.
+ * provided --request-signals — e.g. from the runtime's model analyzer), the module
+ * uses those validated pre-normalized signals directly and skips the router. This
+ * is the only path where injectionSuspect may be true — it is carried from the
+ * caller, never detected from raw text here.
  *
  * Phase 3 boundary — this module must NOT:
- *   - Detect or derive injectionSuspect from raw request text
- *   - Implement keyword-based or model-assisted promptFamily routing
- *   - Inspect raw request text for semantic family classification
+ *   - Detect or derive injectionSuspect from raw request text (out of C1 scope)
+ *   - Implement MODEL-assisted promptFamily routing (the runtime owns that tier).
+ *     Deterministic keyword/heuristic routing IS performed, via request-router.ts.
  *   - Construct a candidate set — Phase 4
  *   - Run selectors or produce SelectionDecision records — Phase 5
  *   - Produce reference_unknown records — Phase 5
  *   - Emit injection-gate warnings — Phase 7
  *   - Write prompt-plan.json, trace.json, or summary.md — Phase 11
- *   - Make provider/model/network calls — permanently prohibited in MVP
+ *   - Make provider/model/network calls — permanently prohibited
  *
- * Canonical: docs/06 §2.1, §2.2; docs/11 §6 Phase 3.
+ * Canonical: docs/06 §2.1, §2.2; docs/11 §6 Phase 3; docs/33.
  */
 
 import { resolve } from 'node:path';
@@ -37,6 +43,8 @@ import type { RegistryResult } from '../types/registry.js';
 import type { NormalizedInputs } from '../types/normalized.js';
 import type { RequestSignals } from '../types/inputs.js';
 import type { PlanningWarning } from '../types/warnings.js';
+
+import { classifyRequest } from './request-router.js';
 
 // ---------------------------------------------------------------------------
 // AJV — local duplicate of Phase 1 pattern (intentional; input-loader.ts
@@ -192,46 +200,46 @@ export function normalizeInputs(
   }
 
   // -------------------------------------------------------------------------
-  // Step 1: Build RequestSignals (always-stub path)
+  // Step 1: Build RequestSignals via the deterministic Request Router (C1)
   // -------------------------------------------------------------------------
-  // MVP Router stub — always general_default, familyConfidence 0.0, injectionSuspect false.
-  // Phase 3 does NOT inspect raw request text for semantic classification.
-  // Phase 3 does NOT implement keyword-based or model-assisted routing.
-  // Phase 3 does NOT implement injection detection.
-  // Empty/whitespace request text follows the same path — no extra warning.
-  // Canonical: docs/06 §2.2; docs/11 §4.1 A* (safe substitution, no halt).
-
+  // The router (request-router.ts) classifies the request text into a prompt
+  // family deterministically and offline, fail-open to general_default. It does
+  // NOT perform injection detection (out of C1 scope) — injectionSuspect stays
+  // false on this path. Empty/whitespace text classifies to general_default.
+  // Canonical: docs/33; docs/06 §2.2; docs/11 §4.1 A* (safe substitution, no halt).
   const { activeSkillIds, activeToolIds, activeMemoryIds } = loadedInputs.activeIds;
 
+  const classification = classifyRequest(loadedInputs.requestText);
+
   const requestSignals: RequestSignals = {
-    promptFamily: 'general_default',
-    familyConfidence: 0.0,
+    promptFamily: classification.promptFamily,
+    familyConfidence: classification.familyConfidence,
     injectionSuspect: false,
-    // Only include array fields if they are non-empty, keeping the schema shape clean.
-    // Empty arrays are valid per schema but we include them explicitly for
-    // downstream phase convenience — selectors default absent to [] anyway.
+    // Array fields included explicitly for downstream convenience — selectors
+    // default absent to [] anyway.
     activeSkillIds: [...activeSkillIds],
     activeToolIds: [...activeToolIds],
     activeMemoryIds: [...activeMemoryIds],
   };
 
   // -------------------------------------------------------------------------
-  // Step 2: Emit prompt_family_defaulted warning (always)
+  // Step 2: Emit prompt_family_defaulted only when the router fell back
   // -------------------------------------------------------------------------
-  // Emitted unconditionally because Phase 3 always substitutes general_default.
-  // This signals to operators that no prompt family classification was performed.
-  // Warning code 'prompt_family_defaulted' follows the _defaulted naming
-  // convention (selector_policy_defaulted, etc.). It is distinct from the
-  // Phase 5 per-selector code 'prompt_family_unknown' (docs/06 §14.1/§14.6).
-  // Canonical: docs/06 §2.2; warning-code.schema.json (open advisory enum).
-  warnings.push({
-    code: 'prompt_family_defaulted',
-    message:
-      'No prompt family classifier is implemented in MVP. ' +
-      'Using safe substitution: promptFamily=general_default, familyConfidence=0.0. ' +
-      'Selectors will use the general_default ladder. ' +
-      'Canonical: docs/06 §2.2.',
-  });
+  // Emitted only when the router could not confidently classify and returned
+  // general_default. On a confident classification no defaulting warning is
+  // emitted — the classified promptFamily/familyConfidence are the record.
+  // Distinct from the Phase 5 per-selector code 'prompt_family_unknown'.
+  // Canonical: docs/33 DQ-6; docs/06 §2.2; warning-code.schema.json (open advisory enum).
+  if (classification.defaulted) {
+    warnings.push({
+      code: 'prompt_family_defaulted',
+      message:
+        'Deterministic Request Router could not confidently classify the request. ' +
+        'Using safe fallback: promptFamily=general_default, familyConfidence=0.0. ' +
+        'Selectors will use the general_default ladder. ' +
+        'Canonical: docs/33; docs/06 §2.2.',
+    });
+  }
 
   // -------------------------------------------------------------------------
   // Step 3: AJV validation guard (Phase 3 internal consistency check)
