@@ -168,15 +168,14 @@ function createInteractiveApprovalCallback(): (action: ToolAction) => Promise<bo
 async function createCorePlanFn(
   registryPath?: string,
 ): Promise<(input: ZamPlanRequestBody) => Promise<ZamPlanResponse>> {
-  // Dynamic import of the core library API.
-  // Path is relative to this file's compiled location in the workspace.
-  // At build-time: this file is at packages/runtime/dist/cli/index.js,
-  // so ../../../../dist/core/api.js resolves to the workspace dist/core/api.js.
-  const coreApiUrl = new URL('../../../../dist/core/api.js', import.meta.url);
+  // Dynamic import of the core library API by package name. `context-plane`
+  // resolves via the workspace-local file: dependency, so this no longer relies
+  // on a hand-counted relative path to dist/. Canonical: docs/18 §7; docs/24 §9;
+  // docs/32 (C3 item c).
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let corePlan: (input: any) => any;
   try {
-    const coreModule = await import(coreApiUrl.href);
+    const coreModule = await import('context-plane');
     corePlan = coreModule.plan;
     if (typeof corePlan !== 'function') {
       throw new Error('Core module does not export a plan() function.');

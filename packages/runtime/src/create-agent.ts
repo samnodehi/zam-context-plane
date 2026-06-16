@@ -152,19 +152,14 @@ export async function createAgent(options?: AgentOptions): Promise<Agent> {
     // Injected planFn (mock or real core — caller decides).
     planFn = options.planFn;
   } else {
-    // Dynamically import the real core plan() function using a path relative
-    // to this file's location at dist/create-agent.js (compiled) or src/create-agent.ts (vitest).
-    // From dist/create-agent.js: ../../../dist/core/api.js resolves to workspace root dist/core/api.js
-    //   (3 levels: dist/ → runtime/ → packages/ → workspace root).
-    // From src/create-agent.ts: ../../../dist/core/api.js resolves to workspace root dist/core/api.js
-    //   (3 levels: src/ → runtime/ → packages/ → workspace root).
-    // The CLI uses 4 levels (../../../../dist/core/api.js) because it lives in dist/cli/index.js.
-    // Dynamic import with URL (not bare specifier) avoids a compile-time
-    // dependency on context-plane being resolvable from @zam/runtime.
-    // Canonical: docs/18 §7, docs/24 §9, docs/29 §4.2.
-    const coreApiUrl = new URL('../../../dist/core/api.js', import.meta.url);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const coreModule = await import(coreApiUrl.href) as {
+    // Dynamically import the real core plan() function by package name.
+    // `context-plane` resolves via the workspace-local file: dependency
+    // (packages/runtime depends on the root core package), so this no longer
+    // relies on a hand-counted relative path to dist/ and survives file moves.
+    // The import stays dynamic to keep core loading lazy (no static compile
+    // coupling beyond type resolution). Canonical: docs/18 §7; docs/24 §9;
+    // docs/29 §4.2; docs/32 (C3 item c).
+    const coreModule = await import('context-plane') as {
       plan: (input: unknown) => unknown;
     };
     const corePlan = coreModule.plan;

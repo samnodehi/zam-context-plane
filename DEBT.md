@@ -14,12 +14,13 @@ Roadmap phases referenced below are defined in the approved plan
 |----|----------|-------|--------|--------|
 | C1 | High | Core `promptFamily` classifier is a permanent stub | PLANNED | Phase 2 |
 | C2 | Medium | Conflict-resolver canonical-rule gaps; unreachable fixture 13 | PLANNED | Phase 2 |
-| C3 | Medium | Hand-synced type/default duplication across core↔runtime | MITIGATED | 1b-1 done (a,b,d); c→1b-2 |
+| C3 | Medium | Hand-synced type/default duplication across core↔runtime | CLOSED | a,b,d in 1b-1; c in 1b-2 |
 | C4 | High | No version control | CLOSED | Phase 1a |
 | C5 | Medium | Non-constant-time API-key compare; thin auth for SaaS | MITIGATED | Phase 1a (+Phase 4) |
 | C6 | High | Value is fixture-proven, not field-proven | PLANNED | Phase 3 |
 | C7 | Low | Repo hygiene (root scratch/log/generated clutter) | CLOSED | Phase 1a |
 | C9 | Medium | Dead no-progress guard (I-5 over-correction) + 2 stale tests | CLOSED | fixed in fix/c9 |
+| C10 | Low | Dev-environment only: dev-dep advisories (prod=0) + vitest major divergence | OPEN | when convenient |
 | C-status | Low | Stale `651` test count + `zero tech debt` wording | MITIGATED | Phase 1a (+CI Phase 2) |
 
 ---
@@ -49,14 +50,16 @@ The cluster had four items (see `docs/32`):
 - **b (CLOSED)** — Class-B defaults triplicated across `api.ts` / `input-loader.ts` / `body-mapper.ts`
   → single source `src/core/class-b-defaults.ts`.
 - **d (CLOSED)** — `mergeRegistries` duplicated → single source `packages/runtime/src/merge-registries.ts`.
-- **c (OPEN → Phase 1b-2)** — the fragile `../../../dist/core/api.js` dynamic import in the runtime.
-  Sam picked DQ-3=A (`import('context-plane')`), but a finding showed that needs the npm-workspaces
-  hoist, which collides with the runtime/root `vitest` major divergence (^3 vs ^4) and separate
-  installs. Deferred to a dedicated **Phase 1b-2** that does workspaces + vitest alignment properly.
-  Until then the existing import remains (it works; not test-covered). This is burning inherited debt
-  down in order, not parking new debt.
+- **c (CLOSED — Phase 1b-2)** — the fragile `../../../dist/core/api.js` dynamic import in the runtime.
+  Implemented DQ-3=A (`import('context-plane')`). Resolution is provided by a workspace-local
+  `"context-plane": "file:../.."` dependency in `packages/runtime/package.json` (symlinks the root
+  core package into the runtime's `node_modules`). Both `create-agent.ts` and `cli/index.ts` now
+  import by package name — no hand-counted relative path remains. The originally-scoped full
+  npm-workspaces hoist + `vitest` alignment turned out **unnecessary** for c (the `file:` dep is the
+  minimal correct mechanism, since the core is the root package, not a `packages/*` member).
 
-Verified: 737/737 root suite unchanged; runtime suite unchanged (same 2 C9 fails); both builds green.
+Verified: runtime build + core build green; runtime suite 354/354; the production path smoke-tested
+(`createAgent` without an injected planFn loads core via `import('context-plane')`); root 737/737.
 
 ## C4 — No version control (High) — CLOSED in Phase 1a
 Repo was Google-Drive-synced only. **Resolved:** `git init` + baseline commit; `.gitignore`
@@ -99,6 +102,16 @@ one was a genuine logic defect, not just a stale test:
 
 **Outcome:** runtime suite **354/354**; root suite **737/737** unchanged. **Follow-up (Phase 2 D9):**
 CI must run *all* package suites (not just root) so runtime health can't go untracked again.
+
+## C10 — Dev-environment tooling (Low)
+Surfaced during Phase 1b-2; neither affects shipped/production code:
+- **Dev-dependency advisories.** `npm audit` reports high-severity advisories in the dependency
+  tree, but `npm audit --omit=dev` at the root reports **0** — they are all in dev dependencies
+  (vitest/tsx/esbuild chain) which never ship (the image installs with `npm ci --only=production`).
+  Low urgency; revisit during a dependency-maintenance pass.
+- **`vitest` major divergence.** Root uses `vitest ^4`, `packages/runtime` uses `^3`. A minor
+  dev-tooling inconsistency (not incorrect logic). The Phase 1b-2 `file:` dep fix did not require
+  aligning them. Align when convenient (bump runtime to ^4 and re-run its suite).
 
 ## C-status — Stale claims (Low) — MITIGATED in Phase 1a
 Docs quoted `651/651` and "zero technical debt." Real full suite is **735/735**; `651` is the

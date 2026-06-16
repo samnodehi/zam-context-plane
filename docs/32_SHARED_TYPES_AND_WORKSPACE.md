@@ -150,3 +150,24 @@ Sam approved the split (1b-1 now; c → 1b-2) and DQ-3=A. Landed in this pass:
 **Verification (all green):** core `tsc` build, runtime `tsc` build; root suite **737/737**; runtime
 suite unchanged (same 2 pre-existing C9 failures, 352/354). Grep confirms zero leftover duplicate
 interfaces, default consts, `mergeRegistries` definitions, or "stay in sync" comments.
+
+---
+
+## 11. Phase 1b-2 outcome (2026-06-16) — DONE
+
+Implemented DQ-3=A (`import('context-plane')`) and closed C3 item c. The originally-scoped full
+npm-workspaces hoist + `vitest` alignment proved **unnecessary**: because the core *is* the root
+package (not a `packages/*` member), the minimal correct mechanism is a workspace-local **`file:`
+dependency**, not a workspaces hoist.
+
+- `packages/runtime/package.json` gains `"context-plane": "file:../.."` → `npm install` symlinks
+  `packages/runtime/node_modules/context-plane → <repo root>`. `import('context-plane')` then
+  resolves by name at runtime, and `tsc` resolves its types from the root package's built `.d.ts`.
+- `create-agent.ts` and `cli/index.ts` now `await import('context-plane')` — no hand-counted
+  `../../../dist/core/api.js` path remains. Imports stay dynamic (lazy core load).
+- **Build order:** the runtime build now depends on the core being built first (so its `.d.ts`
+  exists for type resolution) — a normal, intended monorepo coupling.
+
+**Verification (all green):** core build, runtime build; runtime suite **354/354**; root suite
+**737/737**; production path smoke-tested (`createAgent` with no injected `planFn` loads the core via
+`import('context-plane')` and creates a session). C3 → CLOSED. Dev-only follow-ups noted as DEBT C10.

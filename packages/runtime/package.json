@@ -24,7 +24,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "context-plane": "file:../.."
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
