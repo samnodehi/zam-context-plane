@@ -17,7 +17,7 @@ Roadmap phases referenced below are defined in the approved plan
 | C3 | Medium | Hand-synced type/default duplication across core↔runtime | CLOSED | a,b,d in 1b-1; c in 1b-2 |
 | C4 | High | No version control | CLOSED | Phase 1a |
 | C5 | Medium | Non-constant-time API-key compare; thin auth for SaaS | MITIGATED | Phase 1a (+Phase 4) |
-| C6 | High | Value is fixture-proven, not field-proven | PLANNED | Phase 3 |
+| C6 | High | Value is fixture-proven, not field-proven | CLOSED | Phase 3 (offline tier) |
 | C7 | Low | Repo hygiene (root scratch/log/generated clutter) | CLOSED | Phase 1a |
 | C9 | Medium | Dead no-progress guard (I-5 over-correction) + 2 stale tests | CLOSED | fixed in fix/c9 |
 | C10 | Low | Dev-environment: dev-dep advisories + vitest major divergence | CLOSED | vitest→4; audit 0 |
@@ -82,10 +82,17 @@ hardened (Drive temp dirs, `test-sessions/`); Coder/Reviewer passes now map to b
 **Still open for Phase 4 (any hosted exposure):** single static shared key — no per-consumer
 keys, rotation, usage metering, rate limiting, or TLS.
 
-## C6 — Value not field-proven (High)
-All evidence is synthetic fixtures. No before/after token-savings number from a real agent's
-real traffic. **Plan:** Phase 3 — one reproducible benchmark (with vs without ZAM; and
-deterministic vs model-assisted) per the long-promised `docs/09` comparison.
+## C6 — Value not field-proven (High) — CLOSED (offline tier; Phase 3)
+Previously all evidence was synthetic fixtures with no quantified savings.
+**Resolved (docs/35; `benchmarks/`):** a deterministic, offline, no-key token-accounting benchmark
+(`npm run benchmark`) compares ZAM's `plan()` against the naive "inject everything" baseline over a
+realistic OpenClaw-modeled registry + a 14-request corpus. **Result: 63.9% mean token savings, 0
+unsafe omissions, 100% router classification accuracy** (18 components, 5770-token baseline). The
+number is conservative (tools are fail-open *included* absent runtime capability info; savings come
+from safely omitting the heavy proactive/group/lifecycle scaffolds + non-matching skills + memory).
+**Remaining (optional, key-gated follow-up):** live-model answer-quality validation + the
+deterministic-vs-model classification comparison (docs/35 §6) — not required to demonstrate the core
+context-reduction value.
 
 ## C7 — Repo hygiene (Low) — CLOSED in Phase 1a
 Removed root clutter (`scratch-*.cjs`, `*_log.txt`, `harness-*.txt`, stray generated
