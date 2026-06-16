@@ -89,6 +89,21 @@ jobs:
           set -o pipefail
           npm test 2>&1 | tee adapter-mcp-test.log
 
+      # --- Adapter package: @zam/adapter-telegram ---
+      - name: Install (adapter-telegram)
+        working-directory: packages/adapter-telegram
+        run: npm install
+
+      - name: Build (adapter-telegram)
+        working-directory: packages/adapter-telegram
+        run: npm run build
+
+      - name: Test (adapter-telegram suite)
+        working-directory: packages/adapter-telegram
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee adapter-telegram-test.log
+
       # --- Status summary (D9): emit live counts to the job summary ---
       - name: Status summary
         if: always()
@@ -100,4 +115,5 @@ jobs:
             echo "- **Runtime suite:** $(grep -oE 'Tests +[0-9]+ passed \([0-9]+\)' packages/runtime/runtime-test.log | tail -1 || echo 'n/a')"
             echo "- **Adapter (openclaw):** $(grep -oE 'Tests +[0-9]+ passed \([0-9]+\)' packages/adapter-openclaw/adapter-test.log | tail -1 || echo 'n/a')"
             echo "- **Adapter (mcp):** $(grep -oE 'Tests +[0-9]+ passed \([0-9]+\)' packages/adapter-mcp/adapter-mcp-test.log | tail -1 || echo 'n/a')"
+            echo "- **Adapter (telegram):** $(grep -oE 'Tests +[0-9]+ passed \([0-9]+\)' packages/adapter-telegram/adapter-telegram-test.log | tail -1 || echo 'n/a')"
           } >> "$GITHUB_STEP_SUMMARY"
