@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   test:
-    name: build + test (root + runtime)
+    name: build + test (root + runtime + adapter)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -57,6 +57,23 @@ jobs:
           set -o pipefail
           npm test 2>&1 | tee runtime-test.log
 
+      # --- Adapter package: @zam/adapter-openclaw ---
+      # `npm install` re-links the workspace-local `context-plane` file: dependency
+      # (core built above) — same pattern as the runtime. Canonical: docs/38.
+      - name: Install (adapter-openclaw)
+        working-directory: packages/adapter-openclaw
+        run: npm install
+
+      - name: Build (adapter-openclaw)
+        working-directory: packages/adapter-openclaw
+        run: npm run build
+
+      - name: Test (adapter-openclaw suite)
+        working-directory: packages/adapter-openclaw
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee adapter-test.log
+
       # --- Status summary (D9): emit live counts to the job summary ---
       - name: Status summary
         if: always()
@@ -66,4 +83,5 @@ jobs:
             echo ""
             echo "- **Root suite:** $(grep -oE 'Tests +[0-9]+ passed \([0-9]+\)' root-test.log | tail -1 || echo 'n/a')"
             echo "- **Runtime suite:** $(grep -oE 'Tests +[0-9]+ passed \([0-9]+\)' packages/runtime/runtime-test.log | tail -1 || echo 'n/a')"
+            echo "- **Adapter (openclaw):** $(grep -oE 'Tests +[0-9]+ passed \([0-9]+\)' packages/adapter-openclaw/adapter-test.log | tail -1 || echo 'n/a')"
           } >> "$GITHUB_STEP_SUMMARY"
