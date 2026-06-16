@@ -5,11 +5,13 @@
  * one ResolvedSelectionDecision per candidate component, a conflict trace for
  * actual conflicts only, and aggregate summary counts.
  *
- * Known spec gaps (fail_open_unresolved as temporary behavior):
- *   - Case 3 (omit vs ordinary defer): no canonical ResolutionRule.
- *   - Case 2A P5 (include vs ordinary defer, non-priority paths): no canonical rule.
- *   - Case 1 P5 (include vs omit, non-priority paths): no canonical rule.
- *   - Single conflict_include: no canonical rule.
+ * Canonical resolution of all conflict cases (docs/06 §11.5; enum values §11.3.1a).
+ * Phase 2c (docs/34) added the four rules that close the former fail_open_unresolved gaps:
+ *   - Case 3 (omit vs ordinary defer) → defer wins (defer_over_omit).
+ *   - Case 2A (include vs ordinary defer) → include wins (include_over_defer).
+ *   - Case 1 (include vs omit, P5) → include wins (include_over_omit).
+ *   - Single conflict_include (ladder Step 4) → include (conflict_include_resolved).
+ * fail_open_unresolved now fires only for a genuinely unmatched conflict group.
  *
  * Internal diagnostics (stderr-only — NOT in globalWarnings[], NOT in trace.json):
  *   - neverInclude_only_unenforced: neverInclude constraint not enforceable in MVP.
@@ -514,19 +516,14 @@ export function runConflictResolver(
       const deferDecisions = decisions.filter(d => d.action === 'defer');
       const ordinaryDeferDecisions = deferDecisions.filter(d => d.path === 'default_defer');
 
-      // -- Single conflict_include (spec gap — before Case 5) --
+      // -- Single conflict_include (ladder Step 4: requiredWhen AND safeToOmitWhen both matched) --
+      // Not an unresolved conflict — a single clean include decision. Resolve to include.
       if (decisions.length === 1 && decisions[0].path === 'conflict_include') {
         finalAction = 'include';
-        finalPath = 'fail_open';
-        rule = 'fail_open_unresolved';
+        finalPath = 'conflict_include';
+        rule = 'conflict_include_resolved';
         losingDecisions = [];
         winnerDecision = decisions[0];
-        unresolvedConflictWarnings.push({
-          componentId,
-          inputDecisionIds: decisionIds,
-          conflictDescription: `Single conflict_include decision — no canonical resolutionRule (Phase 8 spec gap).`,
-          warningCode: 'unresolved_conflict_fail_open',
-        });
       }
 
       // -- Case 12: History-malformed fail-open (before general Case 1) --
@@ -558,79 +555,49 @@ export function runConflictResolver(
         }
       }
 
-      // -- Case 1: Include vs Omit (general) --
+      // -- Case 1: Include vs Omit (P5) — include wins unconditionally (docs/06 §11.5 Case 1) --
       else if (includeDecisions.length > 0 && omitDecisions.length > 0 && ordinaryDeferDecisions.length === 0) {
-        // Determine the winning include.
+        // Determine the winning include (highest-priority include path).
         const winnerD = includeDecisions.reduce((best, d) => {
           const priority = ['safety_override', 'required_match', 'conflict_include', 'fail_open', 'not_evaluated', 'default_include'];
           return priority.indexOf(d.path) < priority.indexOf(best.path) ? d : best;
         }, includeDecisions[0]);
         finalAction = 'include';
         finalPath = winnerD.path;
+        rule = 'include_over_omit';
         winnerDecision = winnerD;
-        losingDecisions = omitDecisions.map(d => makeLosing(d, 'fail_open_unresolved'));
-
-        // Case 1 P5 spec gap: non-priority include paths have no canonical resolutionRule.
-        const nonPriorityPaths: SelectionDecision['path'][] = ['default_include', 'fail_open', 'not_evaluated', 'conflict_include'];
-        if (nonPriorityPaths.includes(winnerD.path)) {
-          rule = 'fail_open_unresolved';
-          finalPath = 'fail_open'; // normalize to fail_open for unresolved
-          if (winnerD.path === 'not_evaluated' && omitDecisions.some(d => d.path === 'safe_to_omit_match')) {
-            warningsEmitted.push('include_vs_omit_with_not_evaluated');
-          }
-          unresolvedConflictWarnings.push({
-            componentId,
-            inputDecisionIds: decisionIds,
-            conflictDescription: `Include (${winnerD.path}) vs omit — no canonical resolutionRule at P5 (Phase 8 spec gap).`,
-            warningCode: 'unresolved_conflict_fail_open',
-          });
-        } else {
-          // Should have been caught by P1–P4; use fail_open_unresolved as safety net.
-          rule = 'fail_open_unresolved';
-          finalPath = 'fail_open';
-          unresolvedConflictWarnings.push({
-            componentId,
-            inputDecisionIds: decisionIds,
-            conflictDescription: `Include vs omit — unexpected path '${winnerD.path}' at P5 (safety fallback).`,
-            warningCode: 'unresolved_conflict_fail_open',
-          });
+        losingDecisions = omitDecisions.map(d => makeLosing(d, 'include_over_omit'));
+        // §11.5 Case 1 narrow note: a not_evaluated (synthetic fail-open) include over a valid
+        // Path A omit still resolves to include, but is flagged for operator awareness.
+        if (winnerD.path === 'not_evaluated' && omitDecisions.some(d => d.path === 'safe_to_omit_match')) {
+          warningsEmitted.push('include_vs_omit_with_not_evaluated');
         }
       }
 
-      // -- Case 2A: Include vs Ordinary Defer (P5 spec gap) --
+      // -- Case 2A: Include vs Ordinary Defer — include wins (docs/06 §11.5 Case 2A) --
       else if (includeDecisions.length > 0 && ordinaryDeferDecisions.length > 0 && omitDecisions.length === 0) {
         const winnerD = includeDecisions.reduce((best, d) => {
           const priority = ['safety_override', 'required_match', 'conflict_include', 'fail_open', 'not_evaluated', 'default_include'];
           return priority.indexOf(d.path) < priority.indexOf(best.path) ? d : best;
         }, includeDecisions[0]);
         finalAction = 'include';
-        finalPath = 'fail_open'; // normalized for spec-gap unresolved
-        rule = 'fail_open_unresolved';
+        finalPath = winnerD.path;
+        rule = 'include_over_defer';
         winnerDecision = winnerD;
-        losingDecisions = ordinaryDeferDecisions.map(d => makeLosing(d, 'include_overrides_defer'));
+        losingDecisions = ordinaryDeferDecisions.map(d => makeLosing(d, 'include_over_defer'));
         warningsEmitted.push('include_overrides_defer');
-        unresolvedConflictWarnings.push({
-          componentId,
-          inputDecisionIds: decisionIds,
-          conflictDescription: `Include (${winnerD.path}) vs ordinary defer — no canonical resolutionRule at P5 (Phase 8 spec gap).`,
-          warningCode: 'unresolved_conflict_fail_open',
-        });
       }
 
-      // -- Case 3: Omit vs Ordinary Defer (spec gap) --
+      // -- Case 3: Omit vs Ordinary Defer — defer wins (docs/06 §11.5 Case 3) --
+      // "omit claims no value; defer says not yet, not never" — defer is the safer exclusion.
       else if (omitDecisions.length > 0 && ordinaryDeferDecisions.length > 0 && includeDecisions.length === 0) {
-        finalAction = 'include';
-        finalPath = 'fail_open';
-        rule = 'fail_open_unresolved';
-        winnerDecision = decisions[0];
-        losingDecisions = decisions.map(d => makeLosing(d, 'defer_overrides_omit_spec_gap'));
+        const winnerD = ordinaryDeferDecisions[0];
+        finalAction = 'defer';
+        finalPath = 'default_defer';
+        rule = 'defer_over_omit';
+        winnerDecision = winnerD;
+        losingDecisions = omitDecisions.map(d => makeLosing(d, 'defer_over_omit'));
         warningsEmitted.push('defer_overrides_omit');
-        unresolvedConflictWarnings.push({
-          componentId,
-          inputDecisionIds: decisionIds,
-          conflictDescription: `Omit vs ordinary defer — no canonical resolutionRule (Phase 8 spec gap; doc says defer wins but enum lacks defer_overrides_omit).`,
-          warningCode: 'unresolved_conflict_fail_open',
-        });
       }
 
       // -- Case 4: Omit vs Omit --

@@ -138,7 +138,7 @@
     "ResolutionRule": {
       "$anchor": "ResolutionRule",
       "title": "Conflict resolution rule enum",
-      "description": "The 14 canonical resolutionRule values in MVP. Canonical owner: docs/06 §11.3.1a. Strict enum — any value not in this list is a harness failure. Future additions require an explicit cross-spec decision pass.",
+      "description": "The 18 canonical resolutionRule values in MVP. Canonical owner: docs/06 §11.3.1a. Strict enum — any value not in this list is a harness failure. Future additions require an explicit cross-spec decision pass. Phase 2c (docs/34) added defer_over_omit, include_over_omit, include_over_defer, conflict_include_resolved to complete the conflict-resolver logic (previously fail_open_unresolved spec gaps).",
       "type": "string",
       "enum": [
         "no_conflict",
@@ -151,6 +151,10 @@
         "path_b_omit_uncontested",
         "path_a_omit_selected_over_path_b",
         "multiple_include_merged",
+        "include_over_omit",
+        "include_over_defer",
+        "defer_over_omit",
+        "conflict_include_resolved",
         "fail_open_unresolved",
         "quarantine_boundary_violation_pass_through",
         "reference_unknown_pass_through",

@@ -13,7 +13,7 @@ Roadmap phases referenced below are defined in the approved plan
 | ID | Severity | Title | Status | Target |
 |----|----------|-------|--------|--------|
 | C1 | High | Core `promptFamily` classifier was a permanent stub | CLOSED | Phase 2a |
-| C2 | Medium | Conflict-resolver canonical-rule gaps; unreachable fixture 13 | PLANNED | Phase 2 |
+| C2 | Medium | Conflict-resolver canonical-rule gaps; unreachable fixture 13 | CLOSED | Phase 2c |
 | C3 | Medium | Hand-synced type/default duplication across core↔runtime | CLOSED | a,b,d in 1b-1; c in 1b-2 |
 | C4 | High | No version control | CLOSED | Phase 1a |
 | C5 | Medium | Non-constant-time API-key compare; thin auth for SaaS | MITIGATED | Phase 1a (+Phase 4) |
@@ -38,12 +38,20 @@ The `--request-signals` bypass (caller/model tier) is preserved and still takes 
 Verified: root suite **757/757** (added classifier + wiring tests; Phase-3 unit tests updated;
 all 28 E2E fixtures unaffected — they bypass via `request-signals`); runtime suite **354/354**.
 
-## C2 — Conflict-resolver gaps (Medium)
-`src/core/conflict-resolver.ts` header documents cases with "no canonical rule →
-fail_open_unresolved as temporary." Fixture 13 (`safety-beats-omit`) is approved-skipped as
-"architecturally unreachable." **Plan:** Phase 2 — either define the missing canonical rules
-or formally document `fail_open_unresolved` as intended terminal behavior and move fixture 13
-to a spec-only set.
+## C2 — Conflict-resolver gaps (Medium) — CLOSED (Phase 2c, option A)
+The resolver fell back to `fail_open_unresolved` for four cases the spec (`docs/06` §11.5) already
+defined. Investigation found **Case 3 was an actual outcome bug** (resolved to `include` while
+emitting a `defer_overrides_omit` warning; spec says defer wins). **Resolved (docs/34):** added four
+canonical `resolutionRule` values to `enums.shared.schema.json` + `src/types/conflict.ts` +
+`docs/06` §11.3.1a and implemented them in `conflict-resolver.ts`:
+- `defer_over_omit` — Case 3 now resolves to **`defer`** (the fix).
+- `include_over_omit` — Case 1 (P5), with the include's real path.
+- `include_over_defer` — Case 2A.
+- `conflict_include_resolved` — single ladder-Step-4 `conflict_include`.
+The spurious "unresolved conflict" warnings for these are gone; `fail_open_unresolved` now fires
+only for a genuinely unmatched group. **Fixture 13** (`safety-beats-omit`) reaffirmed as an
+intended/permanent skip (architecturally unreachable in single-selector MVP; covered by unit test
+SHP-1; docs/34 DQ-4). Verified: phase-8 **85/85**; root **757/757**; 28 E2E fixtures unaffected.
 
 ## C3 — Hand-synced duplication across boundaries (Medium) — MITIGATED (Phase 1b-1)
 The cluster had four items (see `docs/32`):

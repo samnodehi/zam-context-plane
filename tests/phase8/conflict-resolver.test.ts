@@ -372,18 +372,19 @@ describe('Phase 8 — no-conflict fast path', () => {
     expect(result.conflictResolutionTrace.some(e => e.componentId === 'ci1')).toBe(true);
   });
 
-  it('single conflict_include → fail_open_unresolved; finalAction: include; finalPath: fail_open; losingDecisions: []; UnresolvedConflictWarning', () => {
+  it('single conflict_include → conflict_include_resolved; finalAction: include; finalPath: conflict_include; losingDecisions: []; no UnresolvedConflictWarning', () => {
     const comp = makeComponent({ id: 'ci2' });
     const d = makeDecision({ componentId: 'ci2', action: 'include', path: 'conflict_include' });
     const [dec, te] = wire(d);
     const result = runConflictResolver([dec], [te], makeInputs(), makeMap(comp));
 
     const resolved = result.resolvedDecisions.find(r => r.componentId === 'ci2')!;
-    expect(resolved.resolutionRule).toBe('fail_open_unresolved');
+    // docs/34: a single ladder-Step-4 conflict_include is a clean include, not an unresolved conflict.
+    expect(resolved.resolutionRule).toBe('conflict_include_resolved');
     expect(resolved.finalAction).toBe('include');
-    expect(resolved.finalPath).toBe('fail_open');
+    expect(resolved.finalPath).toBe('conflict_include');
     expect(resolved.losingDecisions).toHaveLength(0);
-    expect(result.unresolvedConflictWarnings.some(w => w.componentId === 'ci2')).toBe(true);
+    expect(result.unresolvedConflictWarnings.some(w => w.componentId === 'ci2')).toBe(false);
   });
 
   it('single conflict_include → NOT resolutionRule: multiple_include_merged', () => {
@@ -770,7 +771,7 @@ describe('Phase 8 — Case 12 (history-malformed fail-open)', () => {
 
 describe('Phase 8 — Case 1 (include vs omit)', () => {
 
-  it('default_include vs safe_to_omit_match → fail_open_unresolved (spec gap); UnresolvedConflictWarning', () => {
+  it('default_include vs safe_to_omit_match → include_over_omit; finalPath default_include; no UnresolvedConflictWarning', () => {
     const comp = makeComponent({ id: 'c1a' });
     const d1 = makeDecision({ componentId: 'c1a', action: 'include', path: 'default_include' });
     const d2 = makeDecision({ componentId: 'c1a', action: 'omit', path: 'safe_to_omit_match', selectorName: 'Sel2' });
@@ -779,12 +780,14 @@ describe('Phase 8 — Case 1 (include vs omit)', () => {
     const result = runConflictResolver([dec1, dec2], [te1, te2], makeInputs(), makeMap(comp));
 
     const resolved = result.resolvedDecisions.find(r => r.componentId === 'c1a')!;
-    expect(resolved.resolutionRule).toBe('fail_open_unresolved');
+    // docs/34 Case 1: include wins unconditionally, with the include's real path.
+    expect(resolved.resolutionRule).toBe('include_over_omit');
     expect(resolved.finalAction).toBe('include');
-    expect(result.unresolvedConflictWarnings.some(w => w.componentId === 'c1a')).toBe(true);
+    expect(resolved.finalPath).toBe('default_include');
+    expect(result.unresolvedConflictWarnings.some(w => w.componentId === 'c1a')).toBe(false);
   });
 
-  it('not_evaluated vs safe_to_omit_match (Path A) → fail_open_unresolved; include_vs_omit_with_not_evaluated', () => {
+  it('not_evaluated vs safe_to_omit_match (Path A) → include_over_omit; include_vs_omit_with_not_evaluated', () => {
     const comp = makeComponent({ id: 'c1b' });
     const d1 = makeDecision({ componentId: 'c1b', action: 'include', path: 'not_evaluated' });
     const d2 = makeDecision({ componentId: 'c1b', action: 'omit', path: 'safe_to_omit_match', selectorName: 'Sel2', confidence: 'high' });
@@ -793,18 +796,20 @@ describe('Phase 8 — Case 1 (include vs omit)', () => {
     const result = runConflictResolver([dec1, dec2], [te1, te2], makeInputs(), makeMap(comp));
 
     const resolved = result.resolvedDecisions.find(r => r.componentId === 'c1b')!;
-    expect(resolved.resolutionRule).toBe('fail_open_unresolved');
+    expect(resolved.resolutionRule).toBe('include_over_omit');
+    expect(resolved.finalAction).toBe('include');
+    // The not_evaluated-over-Path-A narrow note is still flagged for awareness.
     expect(resolved.warningsEmitted).toContain('include_vs_omit_with_not_evaluated');
   });
 });
 
 // ---------------------------------------------------------------------------
-// §12 — Case 2A (include vs ordinary defer, spec gaps)
+// §12 — Case 2A (include vs ordinary defer) — include wins (docs/34)
 // ---------------------------------------------------------------------------
 
 describe('Phase 8 — Case 2A (include vs ordinary defer)', () => {
 
-  it('default_include vs default_defer → fail_open_unresolved; include_overrides_defer; UnresolvedConflictWarning', () => {
+  it('default_include vs default_defer → include_over_defer; include_overrides_defer; no UnresolvedConflictWarning', () => {
     const comp = makeComponent({ id: 'c2a1' });
     const d1 = makeDecision({ componentId: 'c2a1', action: 'include', path: 'default_include' });
     const d2 = makeDecision({ componentId: 'c2a1', action: 'defer', path: 'default_defer', selectorName: 'Sel2' });
@@ -813,13 +818,13 @@ describe('Phase 8 — Case 2A (include vs ordinary defer)', () => {
     const result = runConflictResolver([dec1, dec2], [te1, te2], makeInputs(), makeMap(comp));
 
     const resolved = result.resolvedDecisions.find(r => r.componentId === 'c2a1')!;
-    expect(resolved.resolutionRule).toBe('fail_open_unresolved');
+    expect(resolved.resolutionRule).toBe('include_over_defer');
     expect(resolved.finalAction).toBe('include');
     expect(resolved.warningsEmitted).toContain('include_overrides_defer');
-    expect(result.unresolvedConflictWarnings.some(w => w.componentId === 'c2a1')).toBe(true);
+    expect(result.unresolvedConflictWarnings.some(w => w.componentId === 'c2a1')).toBe(false);
   });
 
-  it('fail_open vs default_defer → fail_open_unresolved; include_overrides_defer', () => {
+  it('fail_open vs default_defer → include_over_defer; include_overrides_defer', () => {
     const comp = makeComponent({ id: 'c2a2' });
     const d1 = makeDecision({ componentId: 'c2a2', action: 'include', path: 'fail_open' });
     const d2 = makeDecision({ componentId: 'c2a2', action: 'defer', path: 'default_defer', selectorName: 'Sel2' });
@@ -828,11 +833,11 @@ describe('Phase 8 — Case 2A (include vs ordinary defer)', () => {
     const result = runConflictResolver([dec1, dec2], [te1, te2], makeInputs(), makeMap(comp));
 
     const resolved = result.resolvedDecisions.find(r => r.componentId === 'c2a2')!;
-    expect(resolved.resolutionRule).toBe('fail_open_unresolved');
+    expect(resolved.resolutionRule).toBe('include_over_defer');
     expect(resolved.warningsEmitted).toContain('include_overrides_defer');
   });
 
-  it('not_evaluated vs default_defer → fail_open_unresolved; include_overrides_defer', () => {
+  it('not_evaluated vs default_defer → include_over_defer', () => {
     const comp = makeComponent({ id: 'c2a3' });
     const d1 = makeDecision({ componentId: 'c2a3', action: 'include', path: 'not_evaluated' });
     const d2 = makeDecision({ componentId: 'c2a3', action: 'defer', path: 'default_defer', selectorName: 'Sel2' });
@@ -840,17 +845,17 @@ describe('Phase 8 — Case 2A (include vs ordinary defer)', () => {
     const [dec2, te2] = wire(d2);
     const result = runConflictResolver([dec1, dec2], [te1, te2], makeInputs(), makeMap(comp));
 
-    expect(result.resolvedDecisions.find(r => r.componentId === 'c2a3')!.resolutionRule).toBe('fail_open_unresolved');
+    expect(result.resolvedDecisions.find(r => r.componentId === 'c2a3')!.resolutionRule).toBe('include_over_defer');
   });
 });
 
 // ---------------------------------------------------------------------------
-// §13 — Case 3 (omit vs ordinary defer, spec gap)
+// §13 — Case 3 (omit vs ordinary defer) — defer wins (docs/34)
 // ---------------------------------------------------------------------------
 
 describe('Phase 8 — Case 3 (omit vs ordinary defer)', () => {
 
-  it('omit vs default_defer → fail_open_unresolved (spec gap); defer_overrides_omit in warningsEmitted; finalAction: include', () => {
+  it('omit vs default_defer → defer_over_omit; finalAction: defer; finalPath: default_defer; defer_overrides_omit; no UnresolvedConflictWarning', () => {
     const comp = makeComponent({ id: 'c3a' });
     const d1 = makeDecision({ componentId: 'c3a', action: 'omit', path: 'safe_to_omit_match' });
     const d2 = makeDecision({ componentId: 'c3a', action: 'defer', path: 'default_defer', selectorName: 'Sel2' });
@@ -859,10 +864,12 @@ describe('Phase 8 — Case 3 (omit vs ordinary defer)', () => {
     const result = runConflictResolver([dec1, dec2], [te1, te2], makeInputs(), makeMap(comp));
 
     const resolved = result.resolvedDecisions.find(r => r.componentId === 'c3a')!;
-    expect(resolved.resolutionRule).toBe('fail_open_unresolved');
-    expect(resolved.finalAction).toBe('include');
+    // docs/34 Case 3: defer wins (defer is the safer exclusion). Outcome is defer, not include.
+    expect(resolved.resolutionRule).toBe('defer_over_omit');
+    expect(resolved.finalAction).toBe('defer');
+    expect(resolved.finalPath).toBe('default_defer');
     expect(resolved.warningsEmitted).toContain('defer_overrides_omit');
-    expect(result.unresolvedConflictWarnings.some(w => w.componentId === 'c3a')).toBe(true);
+    expect(result.unresolvedConflictWarnings.some(w => w.componentId === 'c3a')).toBe(false);
   });
 });
 
@@ -992,11 +999,12 @@ describe('Phase 8 — resolutionRule enum and losingDecisions', () => {
     'no_conflict','runtime_unavailable_defer','safety_hard_protection',
     'user_constraint_include','registry_require_include','history_durability_include',
     'path_a_omit_uncontested','path_b_omit_uncontested','path_a_omit_selected_over_path_b',
-    'multiple_include_merged','fail_open_unresolved','quarantine_boundary_violation_pass_through',
+    'multiple_include_merged','include_over_omit','include_over_defer','defer_over_omit',
+    'conflict_include_resolved','fail_open_unresolved','quarantine_boundary_violation_pass_through',
     'reference_unknown_pass_through','history_malformed_fail_open',
   ]);
 
-  it('all resolutionRule values are from the canonical 14-value enum', () => {
+  it('all resolutionRule values are from the canonical 18-value enum', () => {
     const comp1 = makeComponent({ id: 'e1' });
     const comp2 = makeComponent({ id: 'e2' });
     const d1 = makeDecision({ componentId: 'e1', action: 'include', path: 'default_include' });
