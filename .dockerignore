@@ -24,8 +24,6 @@ fixtures-future/
 schemas/
 
 # Development and research
-.agents/
-agent-board/
 docs/
 evaluations/
 scratch/
