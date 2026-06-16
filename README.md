@@ -113,4 +113,7 @@ SATISFIED WITH 1 APPROVED SKIP(S)
 
 ## License
 
-TBD
+Private during development. The open reference implementation is intended to be released under
+**Apache-2.0** (permissive + explicit patent grant) at the public flip; the `LICENSE` file is added
+at that point, not before. See [`docs/37`](docs/37_OPEN_CORE_BOUNDARY_AND_ADAPTER_STRATEGY.md) for the
+open-core boundary (what is open vs. commercial).
