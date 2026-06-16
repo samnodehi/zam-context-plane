@@ -4,7 +4,7 @@
 > **Status:** Scoping pass — no code changes authorized by this document.
 > **MVP authority:** None — does not change any existing MVP schema, fixture, test, enum, warning code, trace shape, or core pipeline behavior.
 > **Implementation status:** Not implemented. This is the scoping specification that defines the architecture, decisions, and execution contract for Phase V4: Product Distribution & Packaging.
-> **Canonical sources:** `PROJECT_MASTER_PLAN.md` §14 (Product Direction), `docs/18_HTTP_API_AND_ADAPTER_SPEC.md` (HTTP API contract), `docs/21_HTTP_API_IMPLEMENTATION_PLAN.md` (IQ-2, IQ-3 decisions), `docs/30_HTTP_API_STABILIZATION.md` (V3 foundation — HTTP service now production-grade), `agent-board/zam-planner-board.md` (Product Strategy, Quality Standard, Three-Phase Roadmap).
+> **Canonical sources:** `PROJECT_MASTER_PLAN.md` §14 (Product Direction), `docs/18_HTTP_API_AND_ADAPTER_SPEC.md` (HTTP API contract), `docs/21_HTTP_API_IMPLEMENTATION_PLAN.md` (IQ-2, IQ-3 decisions), `docs/30_HTTP_API_STABILIZATION.md` (V3 foundation — HTTP service now production-grade). (Note: the original `agent-board/` planner board was retired in 2026-06; product strategy/roadmap now live in git history, `DEBT.md`, and the session plan.)
 
 ---
 
