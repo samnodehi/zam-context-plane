@@ -37,11 +37,29 @@ behavior. This unblocks every later phase that touches both packages.
 
 ## 4. Decisions
 
-### DQ-1 — Workspace layout
-**Decision:** npm **workspaces**; add one new package `packages/types` (`@zam/types`). Core stays at
-repo root (`context-plane`); runtime stays at `packages/runtime`. Root `package.json` gains
-`"workspaces": ["packages/*"]`. **Rationale:** kills the `rootDir` driver with minimal blast radius;
-avoids the risky Option B move.
+### Finding during implementation-prep (2026-06-16) — refines DQ-1/DQ-3
+Reading the actual setup surfaced facts the initial scoping under-weighted:
+- Root and runtime have **separate installs** and **divergent test tooling** (`vitest ^4` at root,
+  `vitest ^3` in runtime). A full npm-workspaces hoist would reshuffle the runtime's working
+  `node_modules`/lockfile and force the two vitest majors to coexist — real risk against the
+  "zero behavior change / 737 unchanged" bar.
+- The runtime's `tsconfig` **excludes `tests/`**, and the integration test already cross-imports core
+  via a **relative source path** (`../../../../src/core/api.js`), injected as `planFn`. So the
+  fragile `create-agent.ts` dynamic import (item c) is **not exercised by any test** — only by tsc and
+  production.
+- The duplicated types are pure **`[FUTURE-ONLY]` interfaces** → consumable as **type-only** imports.
+
+**Consequence:** the type/dedup items (a, b, d) can be closed with **zero packaging risk** and without
+workspaces. Item c (DQ-3) is the only part that needs a module-resolution mechanism, and is the only
+risky piece. We therefore **split** the pass (see §8).
+
+### DQ-1 — Workspace layout (refined)
+**Decision:** Do **not** convert to full npm-workspaces hoisting now. Add `packages/types`
+(`@zam/types`) as the single owner of the shared types, consumed via **tsconfig `paths` + `import
+type`** (erased at emit; esbuild/vitest never resolve it; no install, no hoist, no lockfile churn).
+Core re-exports the moved types so existing core imports are unchanged. **Rationale:** closes the
+duplication driver (`rootDir`) with the smallest possible blast radius; defers the heavier
+workspaces/vitest-alignment work to when it's actually needed (publishing, Phase 4).
 
 ### DQ-2 — Contents of `@zam/types`
 **Decision:** only the genuinely cross-boundary types: `AnalyzerOutput` (canonical, from
@@ -49,14 +67,18 @@ avoids the risky Option B move.
 `src/types/*` (so existing core imports are unchanged); runtime imports from `@zam/types`.
 **Rationale:** minimal, grounded extraction — only what is duplicated today.
 
-### DQ-3 — The fragile core import (item c) — **needs Sam's pick**
-- **Option A (recommended):** with workspaces, `context-plane` is resolvable from `@zam/runtime`, so
-  replace `new URL('../../../dist/core/api.js', …)` with a clean `await import('context-plane')`.
-  Keeps the dynamic/decoupled design (no static compile dependency) but removes the fragile path.
-- **Option B:** leave item c untouched (types-only fix). Lower change, but knowingly leaves debt —
-  conflicts with the R-DEBT rule.
-- **Option C:** static `import { plan } from 'context-plane'`. Cleanest types, but changes the
-  intentional runtime→core decoupling and build ordering. Higher risk.
+### DQ-3 — The fragile core import (item c)
+**Sam picked Option A** (`await import('context-plane')` by package name). The implementation-prep
+finding shows A *requires* `context-plane` to be resolvable from the runtime — which means either the
+npm-workspaces hoist (now deferred per refined DQ-1, due to the vitest-major risk) or a `file:` local
+dependency (risks a node_modules symlink cycle to the workspace root). Either carries the exact risk
+we are deliberately deferring, and item c is **not test-covered**, so the win is compile-time
+cleanliness only.
+
+**Therefore c is split to a dedicated follow-up** (Phase 1b-2), bundled with the workspaces +
+`vitest` alignment when that is done properly. Until then the existing dynamic import remains (it
+works); it stays tracked in `DEBT.md` C3 as partially-open. This is burning inherited debt down in
+order (allowed), not parking new debt.
 
 ### DQ-4 — Class-B defaults (item b)
 **Decision:** extract the four defaults to a single exported constant in core (e.g.
@@ -109,3 +131,22 @@ exactly those 2 — not more).
 5. grep: zero `mirrors`/`must stay in sync`/`../../../dist/core/api.js` left (per DQ-3 choice).
 
 *Code begins only after Sam approves the scope and picks DQ-3.*
+
+---
+
+## 10. Phase 1b-1 outcome (2026-06-16) — DONE
+
+Sam approved the split (1b-1 now; c → 1b-2) and DQ-3=A. Landed in this pass:
+- **a — CLOSED.** `@zam/types` (`packages/types/index.d.ts`, hand-authored `.d.ts`) is the single
+  owner of `AnalyzerOutput`, `ProposalDecision`, `ModelSelectorOutput`. Consumed via tsconfig `paths`
+  + `import type` (both packages). Core (`src/types/analyzer.ts`, `src/types/model-selector.ts`) and
+  runtime (`request-analyzer.ts`, `model-selector.ts`) re-export/import it; no duplicate interfaces remain.
+- **b — CLOSED.** `src/core/class-b-defaults.ts` is the single source; `api.ts`, `input-loader.ts`,
+  `body-mapper.ts` import it.
+- **d — CLOSED.** `packages/runtime/src/merge-registries.ts` is the single source; `create-agent.ts`
+  and `cli/index.ts` import it.
+- **c — DEFERRED to Phase 1b-2** (workspaces + `vitest` alignment), tracked in `DEBT.md` C3.
+
+**Verification (all green):** core `tsc` build, runtime `tsc` build; root suite **737/737**; runtime
+suite unchanged (same 2 pre-existing C9 failures, 352/354). Grep confirms zero leftover duplicate
+interfaces, default consts, `mergeRegistries` definitions, or "stay in sync" comments.

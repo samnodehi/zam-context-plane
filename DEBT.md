@@ -14,7 +14,7 @@ Roadmap phases referenced below are defined in the approved plan
 |----|----------|-------|--------|--------|
 | C1 | High | Core `promptFamily` classifier is a permanent stub | PLANNED | Phase 2 |
 | C2 | Medium | Conflict-resolver canonical-rule gaps; unreachable fixture 13 | PLANNED | Phase 2 |
-| C3 | Medium | Hand-synced type/default duplication across core↔runtime | PLANNED | Phase 1b |
+| C3 | Medium | Hand-synced type/default duplication across core↔runtime | MITIGATED | 1b-1 done (a,b,d); c→1b-2 |
 | C4 | High | No version control | CLOSED | Phase 1a |
 | C5 | Medium | Non-constant-time API-key compare; thin auth for SaaS | MITIGATED | Phase 1a (+Phase 4) |
 | C6 | High | Value is fixture-proven, not field-proven | PLANNED | Phase 3 |
@@ -41,12 +41,22 @@ fail_open_unresolved as temporary." Fixture 13 (`safety-beats-omit`) is approved
 or formally document `fail_open_unresolved` as intended terminal behavior and move fixture 13
 to a spec-only set.
 
-## C3 — Hand-synced duplication across boundaries (Medium)
-`AnalyzerOutput` is re-declared in `packages/runtime/src/request-analyzer.ts` "due to rootDir
-constraint"; `src/core/api.ts` warns Class-B defaults "MUST stay identical" across
-`input-loader.ts` and `http/body-mapper.ts` by hand. Root cause: no shared types package.
-**Plan:** Phase 1b — npm workspaces + a single canonical types package; collapse the three
-default sites to one exported constant.
+## C3 — Hand-synced duplication across boundaries (Medium) — MITIGATED (Phase 1b-1)
+The cluster had four items (see `docs/32`):
+- **a (CLOSED)** — `AnalyzerOutput` / `ProposalDecision` re-declared in the runtime. Canonical
+  definitions moved to `@zam/types` (`packages/types/index.d.ts`), a hand-authored `.d.ts` consumed
+  via tsconfig `paths` + `import type` (erased at emit; no install/build/hoist). Core re-exports them.
+- **b (CLOSED)** — Class-B defaults triplicated across `api.ts` / `input-loader.ts` / `body-mapper.ts`
+  → single source `src/core/class-b-defaults.ts`.
+- **d (CLOSED)** — `mergeRegistries` duplicated → single source `packages/runtime/src/merge-registries.ts`.
+- **c (OPEN → Phase 1b-2)** — the fragile `../../../dist/core/api.js` dynamic import in the runtime.
+  Sam picked DQ-3=A (`import('context-plane')`), but a finding showed that needs the npm-workspaces
+  hoist, which collides with the runtime/root `vitest` major divergence (^3 vs ^4) and separate
+  installs. Deferred to a dedicated **Phase 1b-2** that does workspaces + vitest alignment properly.
+  Until then the existing import remains (it works; not test-covered). This is burning inherited debt
+  down in order, not parking new debt.
+
+Verified: 737/737 root suite unchanged; runtime suite unchanged (same 2 C9 fails); both builds green.
 
 ## C4 — No version control (High) — CLOSED in Phase 1a
 Repo was Google-Drive-synced only. **Resolved:** `git init` + baseline commit; `.gitignore`

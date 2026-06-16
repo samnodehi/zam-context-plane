@@ -24,6 +24,7 @@ import { LocalWorkspace } from './local-workspace.js';
 import { LocalPermissionGate } from './permission-gate.js';
 import { LocalToolOutputOptimizer } from './tool-output-optimizer.js';
 import { DEFAULT_TOOL_REGISTRY, CORE_TOOL_DEFINITIONS } from './default-registry.js';
+import { mergeRegistries } from './merge-registries.js';
 import type {
   RuntimeConfig,
   RuntimeResult,
@@ -229,33 +230,4 @@ export async function createAgent(options?: AgentOptions): Promise<Agent> {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Internal helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Merge two registry arrays, with entries in `primary` taking precedence
- * over entries in `defaults` when they share the same `id` field.
- *
- * Duplicates the logic from cli/index.ts — must not import from CLI module
- * to keep the factory independent of CLI internals.
- */
-function mergeRegistries(primary: unknown[], defaults: unknown[]): unknown[] {
-  const primaryIds = new Set<string>();
-  for (const entry of primary) {
-    if (entry && typeof entry === 'object' && 'id' in entry) {
-      primaryIds.add((entry as { id: string }).id);
-    }
-  }
-
-  const merged = [...primary];
-  for (const entry of defaults) {
-    if (entry && typeof entry === 'object' && 'id' in entry) {
-      const id = (entry as { id: string }).id;
-      if (!primaryIds.has(id)) {
-        merged.push(entry);
-      }
-    }
-  }
-  return merged;
-}
+// Internal registry-merge helper moved to ./merge-registries.ts (shared with the CLI).

@@ -1,0 +1,10 @@
+{
+  "name": "@zam/types",
+  "version": "0.1.0",
+  "description": "Canonical cross-package type declarations shared by ZAM Core and ZAM Runtime",
+  "private": true,
+  "types": "./index.d.ts",
+  "files": [
+    "index.d.ts"
+  ]
+}
