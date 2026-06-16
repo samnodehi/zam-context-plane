@@ -20,7 +20,7 @@ Roadmap phases referenced below are defined in the approved plan
 | C6 | High | Value is fixture-proven, not field-proven | PLANNED | Phase 3 |
 | C7 | Low | Repo hygiene (root scratch/log/generated clutter) | CLOSED | Phase 1a |
 | C9 | Medium | Dead no-progress guard (I-5 over-correction) + 2 stale tests | CLOSED | fixed in fix/c9 |
-| C10 | Low | Dev-environment only: dev-dep advisories (prod=0) + vitest major divergence | OPEN | when convenient |
+| C10 | Low | Dev-environment: dev-dep advisories + vitest major divergence | CLOSED | vitest→4; audit 0 |
 | C-status | Low | Stale `651` test count + `zero tech debt` wording | MITIGATED | Phase 1a (+CI Phase 2) |
 
 ---
@@ -103,15 +103,14 @@ one was a genuine logic defect, not just a stale test:
 **Outcome:** runtime suite **354/354**; root suite **737/737** unchanged. **Follow-up (Phase 2 D9):**
 CI must run *all* package suites (not just root) so runtime health can't go untracked again.
 
-## C10 — Dev-environment tooling (Low)
-Surfaced during Phase 1b-2; neither affects shipped/production code:
-- **Dev-dependency advisories.** `npm audit` reports high-severity advisories in the dependency
-  tree, but `npm audit --omit=dev` at the root reports **0** — they are all in dev dependencies
-  (vitest/tsx/esbuild chain) which never ship (the image installs with `npm ci --only=production`).
-  Low urgency; revisit during a dependency-maintenance pass.
-- **`vitest` major divergence.** Root uses `vitest ^4`, `packages/runtime` uses `^3`. A minor
-  dev-tooling inconsistency (not incorrect logic). The Phase 1b-2 `file:` dep fix did not require
-  aligning them. Align when convenient (bump runtime to ^4 and re-run its suite).
+## C10 — Dev-environment tooling (Low) — CLOSED (chore/c10-align-vitest)
+Surfaced during Phase 1b-2; neither affected shipped/production code. Both resolved:
+- **`vitest` major divergence.** `packages/runtime` bumped `vitest ^3.2.0` → `^4.1.9` to match the
+  root. Runtime suite passes **354/354** under vitest 4 — the major bump required no test changes.
+- **Dev-dependency advisories.** Aligning vitest cleared the vitest-3 chain (5 high → 1); a
+  non-breaking `npm audit fix` then patched the remaining `esbuild` dev advisory. `npm audit` now
+  reports **0 vulnerabilities** (both full tree and `--omit=dev`). Runtime build + suite re-verified
+  green after the fix.
 
 ## C-status — Stale claims (Low) — MITIGATED in Phase 1a
 Docs quoted `651/651` and "zero technical debt." Real full suite is **735/735**; `651` is the
