@@ -75,7 +75,7 @@ export async function runLoop(
   let turnIndex = 0;
   const startTime = Date.now();
   let lastPlanHash: string | null = null;
-  let lastEventCount = 0;
+  let lastMeaningfulEventCount = -1;
   let lastResponseText = '';
   let lastToolCallHash: string | null = null;
 
@@ -90,11 +90,15 @@ export async function runLoop(
 
   // Main loop
   while (true) {
-    // Snapshot the current EventStream length before any work this iteration.
-    // Used by Step 3b to distinguish genuine no-progress (plan AND history both
-    // unchanged) from valid re-entry turns where new events exist (tool results,
-    // errors) even though the plan structure hash is the same.
-    const currentEventCount = session.eventStream.read().length;
+    // Snapshot the count of MEANINGFUL progress events before any work this
+    // iteration. "Meaningful" = new external observations/input (tool_result,
+    // user_message) — NOT internal bookkeeping (analyzer_completed, zam_plan,
+    // model_response, error), which append every iteration. Comparing raw event
+    // counts here made the Step 3b guard unreachable (the I-5 over-correction);
+    // counting only meaningful events catches a genuinely-stuck loop while still
+    // treating a real re-entry (a new tool_result) as progress.
+    // Canonical: DEBT.md C9; docs/28 §4 I-5.
+    const currentMeaningfulEventCount = countMeaningfulEvents(session.eventStream.read());
 
     // Step 1: Check fail-safes
     if (turnIndex >= session.config.loop.maxTurns) {
@@ -381,16 +385,15 @@ export async function runLoop(
       } satisfies ZamPlanContent,
     });
 
-    // Step 3b: No-progress detection (plan hash + event count).
-    // A plan hash match alone is not sufficient to declare no-progress:
-    // on valid re-entry turns, new tool results or errors are appended to the
-    // EventStream between iterations, changing currentEventCount even when the
-    // component selection (plan structure) remains the same.
-    // The guard fires only when BOTH the plan structure AND the event stream
-    // are fully unchanged — indicating the loop is genuinely stuck.
-    // Canonical: docs/28 §4 I-5 fix.
+    // Step 3b: No-progress detection (plan hash + meaningful-progress count).
+    // A plan-hash match alone is not sufficient: on valid re-entry turns a new
+    // tool_result is appended (genuine progress) even when the plan structure is
+    // unchanged. The guard fires only when BOTH the plan structure AND the
+    // meaningful-progress count are unchanged — i.e. the loop produced the same
+    // plan with no new external observation, so it is genuinely stuck.
+    // Canonical: DEBT.md C9; docs/28 §4 I-5.
     const planHash = hashObject(zamResponse.promptPlan);
-    if (planHash === lastPlanHash && currentEventCount === lastEventCount) {
+    if (planHash === lastPlanHash && currentMeaningfulEventCount === lastMeaningfulEventCount) {
       appendAndPublish(session, subscriberBus, {
         sessionId: session.sessionId,
         turnIndex,
@@ -408,7 +411,7 @@ export async function runLoop(
       };
     }
     lastPlanHash = planHash;
-    lastEventCount = currentEventCount;
+    lastMeaningfulEventCount = currentMeaningfulEventCount;
 
     // Step 4: Assemble prompt from plan
     // Phase R6: Pass user request text, tool definitions, and EventStream
@@ -669,6 +672,22 @@ export async function runLoop(
 // ---------------------------------------------------------------------------
 // Internal helpers
 // ---------------------------------------------------------------------------
+
+/**
+ * Count EventStream entries that represent genuine external progress — a new
+ * tool result the model can react to, or new user input. Internal bookkeeping
+ * events (analyzer_completed, zam_plan, model_response, error) append every
+ * iteration and are deliberately excluded, so the no-progress guard (Step 3b)
+ * measures real progress rather than loop activity.
+ * Canonical: DEBT.md C9; docs/28 §4 I-5.
+ */
+function countMeaningfulEvents(entries: EventStreamEntry[]): number {
+  let count = 0;
+  for (const entry of entries) {
+    if (entry.type === 'tool_result' || entry.type === 'user_message') count++;
+  }
+  return count;
+}
 
 /**
  * Compute a deterministic hash of an object for no-progress detection.
