@@ -107,7 +107,8 @@ SATISFIED WITH 1 APPROVED SKIP(S)
   deterministic ladder (Step 3 fires before Step 7). Covered by unit test **SHP-1**
   in `tests/phase8/conflict-resolver.test.ts`.
 - Gate-B core suite (phases 0–12): **651/651**
-- Full suite (incl. HTTP API + model-assisted future-harness): **735/735** — verified 2026-06-16
+- Live test counts are emitted by CI on every push/PR (root + runtime suites + both builds) —
+  see [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Latest: root **757/757**, runtime **354/354**.
 - Tracked known gaps and technical debt: see [`DEBT.md`](DEBT.md)
 
 ## License
