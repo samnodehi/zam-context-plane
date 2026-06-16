@@ -54,8 +54,10 @@ The code path is implemented and covered by unit test **SHP-1** in `tests/phase8
 
 ## Test Results
 
-- **Full suite:** 651/651 — 14 test files, all pass
+- **Gate-B core suite (phases 0–12):** 651/651 — 14 test files, all pass
+- **Full suite (incl. HTTP API + model-assisted future-harness):** 735/735 — verified 2026-06-16
 - **Evaluate:** `passed=27 failed=0 skipped=1 blocked=0 EXIT:0`
+- **Tracked known gaps:** see `DEBT.md`
 
 ---
 

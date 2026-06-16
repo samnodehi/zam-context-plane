@@ -106,7 +106,9 @@ SATISFIED WITH 1 APPROVED SKIP(S)
   `safety_hard_protection` is architecturally unreachable through the current MVP
   deterministic ladder (Step 3 fires before Step 7). Covered by unit test **SHP-1**
   in `tests/phase8/conflict-resolver.test.ts`.
-- Full test suite: **651/651**
+- Gate-B core suite (phases 0–12): **651/651**
+- Full suite (incl. HTTP API + model-assisted future-harness): **735/735** — verified 2026-06-16
+- Tracked known gaps and technical debt: see [`DEBT.md`](DEBT.md)
 
 ## License
 
