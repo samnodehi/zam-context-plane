@@ -28,38 +28,16 @@ import type {
 import type { PlanningWarning } from '../types/warnings.js';
 import type { AnalyzerOutput } from '../types/analyzer.js';
 import type { ModelSelectorOutput } from '../types/model-selector.js';
+import {
+  ACTIVE_IDS_DEFAULT,
+  RUNTIME_DEFAULT,
+  HISTORY_DEFAULT,
+  POLICY_DEFAULT,
+} from '../core/class-b-defaults.js';
 
 // ---------------------------------------------------------------------------
-// Class B defaults — must stay identical to input-loader.ts constants
+// Class B defaults — imported from ../core/class-b-defaults.ts (single source).
 // ---------------------------------------------------------------------------
-
-const ACTIVE_IDS_DEFAULT: ActiveIds = {
-  activeSkillIds: [],
-  activeToolIds: [],
-  activeMemoryIds: [],
-};
-
-const RUNTIME_DEFAULT: RuntimeCapabilities = {
-  availableToolIds: [],
-  unavailableToolIds: [],
-  capabilityInventoryComplete: false,
-  runtimeLabel: 'missing',
-};
-
-const HISTORY_DEFAULT: HistoryStateSummary = {
-  lanesPresent: [],
-  durableConstraintsPresent: false,
-  openCommitmentsPresent: false,
-  recentRawTurnCount: 0,
-  totalHistoryTokensApprox: 0,
-  historyMalformed: true,
-};
-
-const POLICY_DEFAULT: SelectorPolicy = {
-  failOpenThreshold: 0.7,
-  deterministicOnly: true,
-  injectionSuspectAction: 'warn_and_continue',
-};
 
 // ---------------------------------------------------------------------------
 // HTTP request body shape

@@ -8,35 +8,13 @@ import type { ProviderClient, SelectorConfig } from './types.js';
 import { buildSelectorPrompt, type SelectorPromptData } from './selector-prompt.js';
 
 /**
- * A minimal local mirror of ProposalDecision from src/types/model-selector.ts.
- *
- * Cross-package imports are intentionally avoided in the runtime package
- * (see zam-client.ts comment; tsconfig rootDir constraint).
- * This type mirrors the canonical shape from docs/19 §8 and must stay in sync
- * with src/types/model-selector.ts. The canonical source remains src/types/model-selector.ts.
- *
+ * ProposalDecision — canonical definition lives in @zam/types (single source
+ * shared with core; DEBT.md C3 / docs/32). Imported as a type (fully erased at
+ * emit) and re-exported to preserve this module's export surface.
  * Canonical: docs/19 §8; docs/26 §4.5.
  */
-export interface ProposalDecision {
-  componentId: string;
-  action: 'include' | 'omit' | 'defer' | 'reference_unknown';
-  confidence: 'high' | 'medium' | 'low';
-  reason: string;
-  evidence: string[];
-  path:
-    | 'required_match'
-    | 'safe_to_omit_match'
-    | 'default_action_omit'
-    | 'default_include'
-    | 'default_defer'
-    | 'fail_open'
-    | 'conflict_include'
-    | 'safety_override'
-    | 'runtime_unavailable'
-    | 'not_evaluated'
-    | 'reference_unknown'
-    | 'quarantine_boundary_violation';
-}
+import type { ProposalDecision } from '@zam/types';
+export type { ProposalDecision };
 
 /**
  * Result of executing the model-assisted selector.

@@ -19,6 +19,7 @@ import { LocalPermissionGate } from '../permission-gate.js';
 import { LocalToolOutputOptimizer } from '../tool-output-optimizer.js';
 import { DEFAULT_TOOL_REGISTRY, CORE_TOOL_DEFINITIONS } from '../default-registry.js';
 import type { ZamPlanRequestBody, ZamPlanResponse, ToolAction } from '../types.js';
+import { mergeRegistries } from '../merge-registries.js';
 
 const program = new Command();
 
@@ -241,30 +242,7 @@ async function createCorePlanFn(
   };
 }
 
-/**
- * Merge two registry arrays, with entries in `primary` taking precedence
- * over entries in `defaults` when they share the same `id` field.
- */
-function mergeRegistries(primary: unknown[], defaults: unknown[]): unknown[] {
-  const primaryIds = new Set<string>();
-  for (const entry of primary) {
-    if (entry && typeof entry === 'object' && 'id' in entry) {
-      primaryIds.add((entry as { id: string }).id);
-    }
-  }
-
-  const merged = [...primary];
-  for (const entry of defaults) {
-    if (entry && typeof entry === 'object' && 'id' in entry) {
-      const id = (entry as { id: string }).id;
-      if (!primaryIds.has(id)) {
-        merged.push(entry);
-      }
-    }
-  }
-
-  return merged;
-}
+// Registry-merge helper imported from ../merge-registries.ts (shared with createAgent).
 
 /**
  * Fallback plan function used when the ZAM core library API is not available.

@@ -51,6 +51,12 @@ import { runBudgeter } from './budgeter.js';
 import { runPromptPlanGenerator } from './prompt-plan-generator.js';
 import { runTraceAssembler, runSummaryAssembler } from './trace-summary-assembler.js';
 import { integrateAnalyzerOutput } from './analyzer-integrator.js';
+import {
+  ACTIVE_IDS_DEFAULT,
+  RUNTIME_DEFAULT,
+  HISTORY_DEFAULT,
+  POLICY_DEFAULT,
+} from './class-b-defaults.js';
 
 // ============================================================================
 // Public Types
@@ -135,38 +141,9 @@ export class PlanValidationError extends Error {
 }
 
 // ============================================================================
-// Class B Defaults — Canonical values from docs/06 §2 and input-loader.ts
+// Class B Defaults — single source of truth in ./class-b-defaults.ts.
+// (Imported above. Canonical: docs/06 §2; docs/32.)
 // ============================================================================
-// These MUST stay identical to the defaults in src/core/input-loader.ts and
-// src/http/body-mapper.ts. Any change to defaults must be synchronized.
-
-const ACTIVE_IDS_DEFAULT: ActiveIds = {
-  activeSkillIds: [],
-  activeToolIds: [],
-  activeMemoryIds: [],
-};
-
-const RUNTIME_DEFAULT: RuntimeCapabilities = {
-  availableToolIds: [],
-  unavailableToolIds: [],
-  capabilityInventoryComplete: false,
-  runtimeLabel: 'missing',
-};
-
-const HISTORY_DEFAULT: HistoryStateSummary = {
-  lanesPresent: [],
-  durableConstraintsPresent: false,
-  openCommitmentsPresent: false,
-  recentRawTurnCount: 0,
-  totalHistoryTokensApprox: 0,
-  historyMalformed: true,
-};
-
-const POLICY_DEFAULT: SelectorPolicy = {
-  failOpenThreshold: 0.7,
-  deterministicOnly: true,
-  injectionSuspectAction: 'warn_and_continue',
-};
 
 // ============================================================================
 // Input Mapping

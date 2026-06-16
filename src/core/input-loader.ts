@@ -18,6 +18,13 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import {
+  ACTIVE_IDS_DEFAULT,
+  RUNTIME_DEFAULT,
+  HISTORY_DEFAULT,
+  POLICY_DEFAULT,
+} from './class-b-defaults.js';
+
 import { createRequire as _createRequire } from 'node:module';
 const _require = _createRequire(import.meta.url);
 // AJV draft 2020-12 — loaded via createRequire because ajv/dist/2020 is CJS.
@@ -245,33 +252,7 @@ function validateClassA(flag: string, schemaFile: string, data: unknown, filePat
 // Class B loaders — each returns [value, warnings]
 // ---------------------------------------------------------------------------
 
-const ACTIVE_IDS_DEFAULT: ActiveIds = {
-  activeSkillIds: [],
-  activeToolIds: [],
-  activeMemoryIds: [],
-};
-
-const RUNTIME_DEFAULT: RuntimeCapabilities = {
-  availableToolIds: [],
-  unavailableToolIds: [],
-  capabilityInventoryComplete: false,
-  runtimeLabel: 'missing',
-};
-
-const HISTORY_DEFAULT: HistoryStateSummary = {
-  lanesPresent: [],
-  durableConstraintsPresent: false,
-  openCommitmentsPresent: false,
-  recentRawTurnCount: 0,
-  totalHistoryTokensApprox: 0,
-  historyMalformed: true,
-};
-
-const POLICY_DEFAULT: SelectorPolicy = {
-  failOpenThreshold: 0.7,
-  deterministicOnly: true,
-  injectionSuspectAction: 'warn_and_continue',
-};
+// Class B defaults are imported from ./class-b-defaults.ts (single source of truth).
 
 function warn(warnings: PlanningWarning[], code: string, message: string, context?: Record<string, unknown>): void {
   warnings.push({ code, message, ...(context ? { context } : {}) });

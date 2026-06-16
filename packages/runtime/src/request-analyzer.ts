@@ -16,28 +16,14 @@ import { createProviderClient } from './provider-client.js';
 import { buildTier1AnalyzerPrompt, buildTier2AnalyzerPrompt } from './analyzer-prompt.js';
 
 // ---------------------------------------------------------------------------
-// AnalyzerOutput type — mirrors src/types/analyzer.ts exactly.
-// Re-declared here because packages/runtime/src cannot import from src/types/
-// due to rootDir constraint. Canonical: docs/15 §4; schemas/future/analyzer-output.schema.json.
+// AnalyzerOutput — canonical definition lives in @zam/types (single source
+// shared with core; DEBT.md C3 / docs/32). Imported as a type (fully erased at
+// emit) and re-exported to preserve this module's existing export surface.
+// Canonical: docs/15 §4; schemas/future/analyzer-output.schema.json.
 // ---------------------------------------------------------------------------
 
-export interface AnalyzerOutput {
-  analyzerVersion: string;
-  tier: 0 | 1 | 2 | 3;
-  promptFamily: string;
-  requestType?: string;
-  taskType?: string;
-  analyzerConfidence: number;
-  assessedRequestRiskLevel: 'low' | 'medium' | 'high' | 'critical';
-  neededLanes: string[];
-  requiresHistory: boolean;
-  requiresTools: boolean;
-  requiresFiles: boolean;
-  failOpenTriggered: boolean;
-  failOpenReason: string | null;
-  evidence: string[];
-  analyzerTraceId: string;
-}
+import type { AnalyzerOutput } from '@zam/types';
+export type { AnalyzerOutput };
 
 // ---------------------------------------------------------------------------
 // AJV Bootstrap (CJS interop — mirrors src/core/input-loader.ts pattern)
