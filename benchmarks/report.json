@@ -1,0 +1,160 @@
+{
+  "generatedBy": "benchmarks/run.mjs (docs/35, C6)",
+  "method": "deterministic token-accounting; ZAM plan() vs naive inject-everything baseline; no model/key",
+  "registryComponents": 18,
+  "baselineTokens": 5770,
+  "requestCount": 14,
+  "meanSavingsPct": 0.6385243872245604,
+  "totalUnsafeOmissions": 0,
+  "classificationAccuracy": 1,
+  "byFamilyMeanSavingsPct": {
+    "simple_greeting": 0.7504332755632582,
+    "coding_build_debug": 0.584055459272097,
+    "research_investigation": 0.5944540727902946,
+    "ops_security_change_risk": 0.5805892547660312,
+    "history_sensitive": 0.6672443674176777,
+    "general_default": 0.6672443674176777
+  },
+  "perRequest": [
+    {
+      "id": "greet-1",
+      "family": "simple_greeting",
+      "classifiedAsExpected": true,
+      "zamTokens": 1440,
+      "baselineTokens": 5770,
+      "tokensSaved": 4330,
+      "savingsPct": 0.7504332755632582,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "greet-2",
+      "family": "simple_greeting",
+      "classifiedAsExpected": true,
+      "zamTokens": 1440,
+      "baselineTokens": 5770,
+      "tokensSaved": 4330,
+      "savingsPct": 0.7504332755632582,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "code-1",
+      "family": "coding_build_debug",
+      "classifiedAsExpected": true,
+      "zamTokens": 2400,
+      "baselineTokens": 5770,
+      "tokensSaved": 3370,
+      "savingsPct": 0.584055459272097,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "code-2",
+      "family": "coding_build_debug",
+      "classifiedAsExpected": true,
+      "zamTokens": 2400,
+      "baselineTokens": 5770,
+      "tokensSaved": 3370,
+      "savingsPct": 0.584055459272097,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "code-3",
+      "family": "coding_build_debug",
+      "classifiedAsExpected": true,
+      "zamTokens": 2400,
+      "baselineTokens": 5770,
+      "tokensSaved": 3370,
+      "savingsPct": 0.584055459272097,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "research-1",
+      "family": "research_investigation",
+      "classifiedAsExpected": true,
+      "zamTokens": 2340,
+      "baselineTokens": 5770,
+      "tokensSaved": 3430,
+      "savingsPct": 0.5944540727902946,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "research-2",
+      "family": "research_investigation",
+      "classifiedAsExpected": true,
+      "zamTokens": 2340,
+      "baselineTokens": 5770,
+      "tokensSaved": 3430,
+      "savingsPct": 0.5944540727902946,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "ops-1",
+      "family": "ops_security_change_risk",
+      "classifiedAsExpected": true,
+      "zamTokens": 2420,
+      "baselineTokens": 5770,
+      "tokensSaved": 3350,
+      "savingsPct": 0.5805892547660312,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "ops-2",
+      "family": "ops_security_change_risk",
+      "classifiedAsExpected": true,
+      "zamTokens": 2420,
+      "baselineTokens": 5770,
+      "tokensSaved": 3350,
+      "savingsPct": 0.5805892547660312,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "hist-1",
+      "family": "history_sensitive",
+      "classifiedAsExpected": true,
+      "zamTokens": 1920,
+      "baselineTokens": 5770,
+      "tokensSaved": 3850,
+      "savingsPct": 0.6672443674176777,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "neutral-1",
+      "family": "general_default",
+      "classifiedAsExpected": true,
+      "zamTokens": 1920,
+      "baselineTokens": 5770,
+      "tokensSaved": 3850,
+      "savingsPct": 0.6672443674176777,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "neutral-2",
+      "family": "general_default",
+      "classifiedAsExpected": true,
+      "zamTokens": 1920,
+      "baselineTokens": 5770,
+      "tokensSaved": 3850,
+      "savingsPct": 0.6672443674176777,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "neutral-3",
+      "family": "general_default",
+      "classifiedAsExpected": true,
+      "zamTokens": 1920,
+      "baselineTokens": 5770,
+      "tokensSaved": 3850,
+      "savingsPct": 0.6672443674176777,
+      "unsafeOmissions": []
+    },
+    {
+      "id": "neutral-4",
+      "family": "general_default",
+      "classifiedAsExpected": true,
+      "zamTokens": 1920,
+      "baselineTokens": 5770,
+      "tokensSaved": 3850,
+      "savingsPct": 0.6672443674176777,
+      "unsafeOmissions": []
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+[
+  { "id": "greet-1", "text": "hi", "expectedFamily": "simple_greeting" },
+  { "id": "greet-2", "text": "thanks!", "expectedFamily": "simple_greeting" },
+  { "id": "code-1", "text": "Debug this null pointer exception in the typescript compiler output.", "expectedFamily": "coding_build_debug" },
+  { "id": "code-2", "text": "Refactor the build script; the npm lint step throws a syntax error.", "expectedFamily": "coding_build_debug" },
+  { "id": "code-3", "text": "Why does this routine segfault under load?", "expectedFamily": "coding_build_debug" },
+  { "id": "research-1", "text": "Research and compare the available caching strategies.", "expectedFamily": "research_investigation" },
+  { "id": "research-2", "text": "Investigate the root cause and summarize the sources.", "expectedFamily": "research_investigation" },
+  { "id": "ops-1", "text": "Deploy the service to production and rotate the API key.", "expectedFamily": "ops_security_change_risk" },
+  { "id": "ops-2", "text": "Delete the staging database and roll back the migration.", "expectedFamily": "ops_security_change_risk" },
+  { "id": "hist-1", "text": "As I said earlier, keep using the same approach.", "expectedFamily": "history_sensitive" },
+  { "id": "neutral-1", "text": "Please take care of this for me.", "expectedFamily": "general_default" },
+  { "id": "neutral-2", "text": "Proceed with the next item on the list.", "expectedFamily": "general_default" },
+  { "id": "neutral-3", "text": "Give me an overview of where things stand.", "expectedFamily": "general_default" },
+  { "id": "neutral-4", "text": "Let's continue with the plan we have.", "expectedFamily": "general_default" }
+]

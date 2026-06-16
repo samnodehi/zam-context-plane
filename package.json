@@ -27,7 +27,8 @@
     "build": "tsc",
     "dev": "tsx src/cli/index.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "benchmark": "npm run build && node benchmarks/run.mjs"
   },
   "dependencies": {
     "@fastify/type-provider-typebox": "^6.1.0",
