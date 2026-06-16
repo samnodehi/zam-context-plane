@@ -692,7 +692,7 @@ Phase V4 Phase 1 is complete when ALL of the following are true:
 | SDK plan call works | `new ZAMClient({...}).plan({...})` returns `PlanResponse` with correct TypeScript types |
 | Developer onboarding < 10 minutes | A developer following `DEVELOPER_GUIDE.md` from zero reaches a successful `/plan` call in under 10 minutes |
 | Zero regressions | Existing `651/651` core tests pass; existing `33/33` HTTP tests pass (no source changed in core or http paths) |
-| Zero technical debt | No TODO comments, no skipped tests, no known issues deferred |
+| Tracked technical debt | Known gaps recorded in `DEBT.md` rather than asserted absent; no undocumented deferrals |
 
 ---
 

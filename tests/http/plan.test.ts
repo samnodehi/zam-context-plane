@@ -244,6 +244,54 @@ describe('POST /plan', () => {
     }
   });
 
+  // Constant-time key comparison (timingSafeEqual over SHA-256 digests) must
+  // reject wrong keys of BOTH a different length and the same length, without
+  // throwing on the length mismatch. Canonical: DEBT.md C5; src/http/server.ts.
+  it('returns 401 for a wrong key of different length', async () => {
+    process.env['ZAM_API_KEY'] = 'test-secret-key';
+    const authServer = await buildServer({ logger: false });
+    await authServer.ready();
+
+    try {
+      const response = await authServer.inject({
+        method: 'POST',
+        url: '/plan',
+        payload: { request: { text: 'test' }, registry: REGISTRY_TWO_COMPONENTS },
+        headers: { 'content-type': 'application/json', 'x-zam-api-key': 'x' },
+      });
+
+      expect(response.statusCode).toBe(401);
+      const body = JSON.parse(response.body) as Record<string, unknown>;
+      expect((body['error'] as Record<string, unknown>)['code']).toBe('AUTH_ERROR');
+    } finally {
+      await authServer.close();
+      delete process.env['ZAM_API_KEY'];
+    }
+  });
+
+  it('returns 401 for a wrong key of the same length', async () => {
+    process.env['ZAM_API_KEY'] = 'test-secret-key';
+    const authServer = await buildServer({ logger: false });
+    await authServer.ready();
+
+    try {
+      const response = await authServer.inject({
+        method: 'POST',
+        url: '/plan',
+        payload: { request: { text: 'test' }, registry: REGISTRY_TWO_COMPONENTS },
+        // Same length as 'test-secret-key' (15 chars), different content.
+        headers: { 'content-type': 'application/json', 'x-zam-api-key': 'WRONG-secret-ky' },
+      });
+
+      expect(response.statusCode).toBe(401);
+      const body = JSON.parse(response.body) as Record<string, unknown>;
+      expect((body['error'] as Record<string, unknown>)['code']).toBe('AUTH_ERROR');
+    } finally {
+      await authServer.close();
+      delete process.env['ZAM_API_KEY'];
+    }
+  });
+
   it('[P10] returns 200 and includes analyzer-proposed lane via fail_open advisory path', async () => {
     /**
      * Scenario:

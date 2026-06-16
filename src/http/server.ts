@@ -16,6 +16,8 @@
  * Canonical: docs/21 §2 IQ-2, IQ-3; docs/18 §4.1.
  */
 
+import { createHash, timingSafeEqual } from 'node:crypto';
+
 import Fastify from 'fastify';
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 
@@ -24,6 +26,25 @@ import { planRoutes } from './routes/plan.js';
 import { traceRoutes } from './routes/trace.js';
 import { evaluateRoutes } from './routes/evaluate.js';
 import { buildError } from './errors.js';
+
+/**
+ * Constant-time API-key comparison.
+ *
+ * A naive `provided !== expected` string compare short-circuits on the first
+ * differing byte, leaking key-prefix information through response timing. We
+ * hash both inputs to fixed-length SHA-256 digests and compare with
+ * `timingSafeEqual`, which runs in time independent of where they differ.
+ * Hashing also sidesteps `timingSafeEqual`'s equal-length requirement and
+ * avoids leaking the expected key's length.
+ *
+ * Behavior is identical to the previous compare: returns true only for an
+ * exact match. Canonical: docs/21 §2 IQ-3 (auth), DEBT.md C5.
+ */
+function timingSafeKeyMatch(provided: string, expected: string): boolean {
+  const providedDigest = createHash('sha256').update(provided).digest();
+  const expectedDigest = createHash('sha256').update(expected).digest();
+  return timingSafeEqual(providedDigest, expectedDigest);
+}
 
 /**
  * Build and return a configured Fastify instance.
@@ -59,8 +80,9 @@ export async function buildServer(opts: { logger?: boolean | { level: string } }
         if (request.url === '/health') return;
 
         const providedKey = request.headers['x-zam-api-key'];
-        // Key value intentionally not logged (docs/21 §2 IQ-3)
-        if (typeof providedKey !== 'string' || providedKey !== apiKey) {
+        // Key value intentionally not logged (docs/21 §2 IQ-3).
+        // Comparison is constant-time to avoid leaking the key via timing.
+        if (typeof providedKey !== 'string' || !timingSafeKeyMatch(providedKey, apiKey)) {
           return reply.status(401).send(
             buildError('AUTH_ERROR', 'Missing or invalid X-ZAM-API-Key header.'),
           );

@@ -5,9 +5,9 @@ This is the living roadmap and state-tracker for the project, maintained by the 
 ## Core Identity & Invariants
 - **Product:** A portable Context Governance / Control Plane for AI agents (not an agent runtime).
 - **Goal:** Smaller context only when safe. Fail-open on uncertainty.
-- **MVP State:** Deterministic, offline, strictly audited. CLI implementation (Phases 0-13) is 100% complete and verified (651/651 tests pass).
+- **MVP State:** Deterministic, offline, strictly audited. CLI implementation (Phases 0-13) is 100% complete and verified (Gate-B core 651/651; full suite 735/735 as of 2026-06-16). Tracked gaps: see `DEBT.md`.
 - **Golden Rule:** Model proposes, deterministic guardrails enforce.
-- **Technical Lead Rule:** The Reviewer/Planner acts as the Technical Lead. It defines the roadmap, makes decisions based on the project plan, ensures zero technical debt, enforces correct logic, and proposes the next step to Sam. Sam provides his opinion to reach a consensus in case of disagreement.
+- **Technical Lead Rule:** The Reviewer/Planner acts as the Technical Lead. It defines the roadmap, makes decisions based on the project plan, tracks technical debt openly in `DEBT.md` (rather than asserting its absence), enforces correct logic, and proposes the next step to Sam. Sam provides his opinion to reach a consensus in case of disagreement.
 
 ## Product Strategy — Context Governance as Infrastructure
 
@@ -121,7 +121,7 @@ Formalize the public Library API, build automated integration tests (Core + Runt
 - [x] V2-F: Documentation update and planner board finalization
 
 ### Completed Epic: Phase V3 — HTTP API Stabilization
-Formalize, harden, and stabilize the existing HTTP service implementation. Scoping doc: `docs/30_HTTP_API_STABILIZATION.md`. **COMPLETE — Zero technical debt.**
+Formalize, harden, and stabilize the existing HTTP service implementation. Scoping doc: `docs/30_HTTP_API_STABILIZATION.md`. **COMPLETE.** (Tracked debt: see `DEBT.md`.)
 - [x] V3-A: Compliance audit (`docs/18` contract vs `src/http/` implementation)
 - [x] V3-B: Package exports (`context-plane/http` subpath for `buildServer()`)
 - [x] V3-C: Test hardening (edge-case tests HT-1 through HT-10)
@@ -177,4 +177,4 @@ Formalize, harden, and stabilize the existing HTTP service implementation. Scopi
 - `/src/types`: TypeScript interfaces (`budget.ts`, `candidate.ts`, `conflict.ts`, `registry.ts`, `selection.ts`, etc.) defining post-AJV in-memory states.
 - `/src/cli` & `/dist`: Command-line interface and compiled output files.
 - `/schemas`: **[AUTHORITY]** Authoritative JSON Schema validation boundaries (`inputs`, `outputs`, `internal`, `shared`).
-- `/tests`: Evaluation harness driven by `harness.test.ts`, currently covering 651 test cases across Phase 0-12.
+- `/tests`: Evaluation harness driven by `harness.test.ts`, covering 651 Gate-B core cases (Phase 0-12); full suite is 735 incl. HTTP API + model-assisted future-harness.

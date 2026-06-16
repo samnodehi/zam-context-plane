@@ -6,6 +6,10 @@ coverage/
 # .env.example is the committed template — keep it tracked despite .env.* above
 !.env.example
 *.js.map
+*.tsbuildinfo
+
+# Claude Code machine-local settings (per-machine permissions; not shared)
+.claude/settings.local.json
 
 # Google Drive sync temp dirs (this workspace is Drive-synced; git is source of truth)
 .tmp.drivedownload/
