@@ -1,5 +1,13 @@
 # 31 Product Distribution & Packaging — Phase V4 Scoping
 
+> **⚠️ SUPERSEDED (2026-06-16) by [`docs/37`](37_OPEN_CORE_BOUNDARY_AND_ADAPTER_STRATEGY.md) + locked decision F1 (open-core).**
+> This document's driving thesis — *"ZAM source code must never be directly accessible to consumers"*
+> and the closed Docker → SDK → SaaS funnel — is **retired**. ZAM is **open-core**: the spec, registry
+> format, and reference implementation are open; the business is hosting / adapters / support, not
+> secrecy. This file is **kept for history**; its container/SDK *mechanics* may be revisited later
+> strictly as open-core *deployment* convenience (never for source protection). See `docs/37` for the
+> current boundary.
+
 > **Document type:** Scoping Specification — Phase V4
 > **Status:** Scoping pass — no code changes authorized by this document.
 > **MVP authority:** None — does not change any existing MVP schema, fixture, test, enum, warning code, trace shape, or core pipeline behavior.
