@@ -21,7 +21,7 @@ Roadmap phases referenced below are defined in the approved plan
 | C7 | Low | Repo hygiene (root scratch/log/generated clutter) | CLOSED | Phase 1a |
 | C9 | Medium | Dead no-progress guard (I-5 over-correction) + 2 stale tests | CLOSED | fixed in fix/c9 |
 | C10 | Low | Dev-environment: dev-dep advisories + vitest major divergence | CLOSED | vitest→4; audit 0 |
-| C-status | Low | Stale `651` test count + `zero tech debt` wording | MITIGATED | Phase 1a (+CI Phase 2) |
+| C-status | Low | Stale `651` test count + `zero tech debt` wording | CLOSED | Phase 1a + CI Phase 2d |
 
 ---
 
@@ -111,8 +111,9 @@ one was a genuine logic defect, not just a stale test:
   asserted `requestSignals` undefined, but `buildZamInput` intentionally always populates it now
   (docs/25 §7.1). Assertion corrected to check that `reentryTurn` specifically is unset.
 
-**Outcome:** runtime suite **354/354**; root suite **737/737** unchanged. **Follow-up (Phase 2 D9):**
-CI must run *all* package suites (not just root) so runtime health can't go untracked again.
+**Outcome:** runtime suite **354/354**; root suite **737/737** unchanged. **Follow-up — DONE (Phase 2d):**
+`.github/workflows/ci.yml` now runs *all* package suites (root + runtime) + both builds on every
+push/PR, so runtime health can no longer go untracked.
 
 ## C10 — Dev-environment tooling (Low) — CLOSED (chore/c10-align-vitest)
 Surfaced during Phase 1b-2; neither affected shipped/production code. Both resolved:
@@ -123,8 +124,10 @@ Surfaced during Phase 1b-2; neither affected shipped/production code. Both resol
   reports **0 vulnerabilities** (both full tree and `--omit=dev`). Runtime build + suite re-verified
   green after the fix.
 
-## C-status — Stale claims (Low) — MITIGATED in Phase 1a
-Docs quoted `651/651` and "zero technical debt." Real full suite is **735/735**; `651` is the
-Gate-B core subset (phases 0–12). **Mitigated:** status text clarified across README, release
-notes, and the planner board; this register replaces the "zero debt" wording. **Phase 2** adds
-a CI step that emits the count so it can't drift again.
+## C-status — Stale claims (Low) — CLOSED (Phase 1a + CI Phase 2d)
+Docs quoted `651/651` and "zero technical debt." (Root full suite is now **757/757** after the
+Phase-2a classifier/wiring tests; `651` was the Gate-B core subset, phases 0–12.) **Phase 1a**
+clarified the status text across README, release notes, and the planner board, and this register
+replaced the "zero debt" wording. **Phase 2d** closes it: `.github/workflows/ci.yml` emits the live
+root + runtime test counts to the job summary on every run, so the numbers are generated, not
+hand-maintained — they can't silently drift again.
