@@ -39,19 +39,27 @@ Design properties (the spine of the project):
 
 ## Evidence (measured, not asserted)
 
+**Try it in one command — offline, deterministic, no API key:** `npm run benchmark` reproduces the
+headline number on a realistic registry.
+
 - **Offline benchmark** (`benchmarks/`): **63.9% mean token savings** with **0 unsafe omissions** vs.
   the naive "inject everything" baseline.
-- **Live benchmark**: the cheap *deterministic* router agrees with a *model's* classification **85.7%**
-  of the time — and both disagreements were on the **safe side** (it fell back to fuller context).
-  Answer-quality preservation ~**80%**.
-- **Three reference adapters** prove the contract is **surface-independent** — the same deterministic
-  core governs three very different surfaces with **zero core changes**:
+- **Live benchmark** (optional, key-gated): the cheap *deterministic* router agrees with a *model's*
+  classification **85.7%** of the time — and both disagreements were on the **safe side** (it fell back
+  to fuller context). Answer-quality preservation ~**80%**.
+- **Three reference adapters** demonstrate the contract is **surface-independent** — the same
+  deterministic core governs three very different surfaces with **zero core changes**:
 
   | Adapter | Surface | What it shows |
   |---|---|---|
-  | [`@zam/adapter-openclaw`](packages/adapter-openclaw) | agent **workspace files** | 73% saved on a greeting, 53% on a coding request; safety always kept |
+  | [`@zam/adapter-openclaw`](packages/adapter-openclaw) | agent **workspace** (Markdown files) | 73% saved on a greeting, 53% on a coding request; safety always kept |
   | [`@zam/adapter-mcp`](packages/adapter-mcp) | **MCP** tools / resources / prompts | prunes the tool list per request; destructive tools surfaced **only** for ops |
   | [`@zam/adapter-telegram`](packages/adapter-telegram) | Telegram **bot metadata** | uses the `requestSignals` caller tier (group / reply → family) |
+
+  These are **reference adapters** run against *documented, synthetic* inputs (each package's README
+  states its scope) — they demonstrate the planning contract and its portability, not live production
+  integrations. ("OpenClaw" here denotes a generic agent-workspace shape — `AGENTS.md`-style scaffolds,
+  skills, tools — not a third-party dependency.)
 
 ## How it works
 
@@ -75,6 +83,13 @@ selected components, and feed it back to the host's loop. No per-turn model call
 npm install
 npm run build
 npm test
+```
+
+**See the value (offline, deterministic, no API key):**
+
+```bash
+npm run benchmark
+# prints mean token savings + 0 unsafe omissions on a realistic OpenClaw-modeled registry
 ```
 
 **CLI:**
