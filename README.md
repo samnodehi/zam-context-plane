@@ -79,6 +79,14 @@ selected components, and feed it back to the host's loop. No per-turn model call
 
 ## Quickstart
 
+**Add it to your project:**
+
+```bash
+npm install context-plane
+```
+
+**Or develop ZAM itself** — clone, then:
+
 ```bash
 npm install
 npm run build

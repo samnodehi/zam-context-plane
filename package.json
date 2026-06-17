@@ -1,8 +1,30 @@
 {
   "name": "context-plane",
   "version": "0.1.0",
-  "description": "Portable Context Control Plane CLI MVP",
+  "description": "Portable, deterministic context governance layer for AI agents — decides what context each request gets (include/omit/defer), with an auditable trace.",
   "type": "module",
+  "license": "Apache-2.0",
+  "author": "Sam Noodehi",
+  "homepage": "https://github.com/samnodehi/zam-context-plane#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samnodehi/zam-context-plane.git"
+  },
+  "bugs": {
+    "url": "https://github.com/samnodehi/zam-context-plane/issues"
+  },
+  "keywords": [
+    "ai-agents",
+    "llm",
+    "context-management",
+    "prompt-engineering",
+    "context-governance",
+    "mcp",
+    "agentic-ai",
+    "deterministic",
+    "open-core",
+    "typescript"
+  ],
   "engines": {
     "node": ">=20"
   },
@@ -23,13 +45,18 @@
   "bin": {
     "context-plane": "./dist/cli/index.js"
   },
+  "files": [
+    "dist",
+    "schemas"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/cli/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "benchmark": "npm run build && node benchmarks/run.mjs",
-    "benchmark:live": "npm run build && node benchmarks/live-run.mjs"
+    "benchmark:live": "npm run build && node benchmarks/live-run.mjs",
+    "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {
     "@fastify/type-provider-typebox": "^6.1.0",
