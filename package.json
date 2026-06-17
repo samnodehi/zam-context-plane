@@ -1,6 +1,6 @@
 {
   "name": "context-plane",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Portable, deterministic context governance layer for AI agents — decides what context each request gets (include/omit/defer), with an auditable trace.",
   "type": "module",
   "license": "Apache-2.0",

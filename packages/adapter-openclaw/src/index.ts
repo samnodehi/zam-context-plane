@@ -1,4 +1,4 @@
-// @zam/adapter-openclaw — the first reference adapter (docs/38).
+// zam-adapter-openclaw — the first reference adapter (docs/38).
 //
 // Demonstrates the docs/37 §5 adapter contract end-to-end for an OpenClaw-shaped
 // workspace: extract files -> ZAM registry, run the deterministic core plan(),

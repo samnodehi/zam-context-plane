@@ -1,4 +1,4 @@
-// @zam/adapter-mcp — the strategic second reference adapter (docs/39).
+// zam-adapter-mcp — the strategic second reference adapter (docs/39).
 //
 // Governs an MCP client's aggregated capabilities: map tools/resources/prompts to
 // a ZAM registry, run the deterministic core plan(), and return only the subset to
