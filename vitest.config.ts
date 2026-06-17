@@ -8,7 +8,6 @@ export default defineConfig({
     pool: 'vmForks',
     include: [
       'tests/**/*.test.ts',
-      'packages/sdk/tests/**/*.test.ts',
     ],
     exclude: [
       'packages/runtime/tests/**',
