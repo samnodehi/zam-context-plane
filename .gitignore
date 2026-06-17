@@ -26,6 +26,8 @@ benchmarks/live-report.json
 
 # Scratch / temporary files
 scratch/
+# Throwaway dir for verifying published npm tarballs (npm pack extraction)
+.verify-pub/
 
 # Ad-hoc test artifacts (evaluations/ itself is committable for intentional reports)
 evaluations/scratch/
