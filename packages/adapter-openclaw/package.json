@@ -35,7 +35,7 @@
     }
   },
   "bin": {
-    "zam-openclaw": "./dist/cli.js"
+    "zam-openclaw": "dist/cli.js"
   },
   "files": [
     "dist",

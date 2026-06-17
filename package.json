@@ -1,6 +1,6 @@
 {
   "name": "context-plane",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Portable, deterministic context governance layer for AI agents — decides what context each request gets (include/omit/defer), with an auditable trace.",
   "type": "module",
   "license": "Apache-2.0",
@@ -43,14 +43,14 @@
     }
   },
   "bin": {
-    "context-plane": "./dist/cli/index.js"
+    "context-plane": "dist/cli/index.js"
   },
   "files": [
     "dist",
     "schemas"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/add-cli-shebang.mjs",
     "dev": "tsx src/cli/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
