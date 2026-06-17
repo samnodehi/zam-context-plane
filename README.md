@@ -1,119 +1,134 @@
-# Context Control Plane — CLI MVP
+# ZAM — Context Governance Layer
 
-Portable, vendor-neutral context governance layer for AI agent runtimes.
-Produces auditable context decisions: what to include, omit, defer, and why.
+> A portable, vendor-neutral layer that decides **what context an AI agent receives** for each
+> request — smaller, safer prompts, *only when safe*.
 
-## Purpose
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![CI](https://github.com/samnodehi/zam-context-plane/actions/workflows/ci.yml/badge.svg)](https://github.com/samnodehi/zam-context-plane/actions/workflows/ci.yml)
 
-Before an agent sends a prompt to a model, the Context Control Plane decides which
-components belong in the prompt, which are safe to omit, and which must be deferred.
-Every decision is traceable, schema-validated, and deterministic.
+ZAM (a "Context Control Plane") runs **before** an agent builds its prompt. Given the user's request
+and an inventory of available context components — system scaffolds, skills, tools, memory, history —
+it decides which ones to **include**, **omit**, or **defer**, and records *why*. It emits a structured
+*plan*, never assembled prompt text: **the model proposes, deterministic guardrails enforce.**
 
-Primary deliverables per planning run:
+## The problem
 
-- `prompt-plan.json` — structured context plan with selected, omitted, and deferred components
-- `trace.json` — full decision trace per phase, keyed by phase name
-- `summary.md` — deterministic human-readable narrative
+Most agent runtimes inject *everything* every turn — every skill, every tool definition, every memory
+lane — regardless of what the user actually asked. That bloats the prompt (cost + latency), buries the
+relevant context, and degrades answers. Trimming it by hand is risky: drop the wrong thing and you
+silently break safety or correctness.
 
-## MVP Scope
+## What ZAM does
 
-- Offline, deterministic, CLI-only
-- No provider calls, no live prompt omission, no runtime mutation
-- Input: operator-supplied JSON files
-- Output: `prompt-plan.json`, `trace.json`, `summary.md`
-- 8 deterministic selector types, 12-step ladder, fail-open by default
+A deterministic pipeline classifies the request and runs a 12-step selector ladder, a conflict
+resolver, and a budgeter to produce, per turn:
 
-## Non-Goals (MVP)
+- `prompt-plan.json` — the selected / omitted / deferred components,
+- `trace.json` — the full, auditable decision trace,
+- `summary.md` — a human-readable narrative.
 
-- No OpenClaw adapter, n8n adapter, or Telegram adapter (Gate D — deferred by design)
-- No model-assisted selectors
-- No live provider or model calls
-- No agent runtime integration
+Design properties (the spine of the project):
 
-## Install
+- **Fail-open on uncertainty** — it only makes the context smaller when it is *safe* to; when unsure,
+  it includes more. "Smaller context only when safe."
+- **Deterministic & reproducible** — no model call is required to plan; the same input yields the same
+  plan.
+- **Schema-validated & fail-closed outputs** — it refuses to emit an invalid plan.
+- **Auditable** — every decision carries a reason and a trace.
+- **Portable** — the core depends on no particular runtime; adapters map any host into it.
+
+## Evidence (measured, not asserted)
+
+- **Offline benchmark** (`benchmarks/`): **63.9% mean token savings** with **0 unsafe omissions** vs.
+  the naive "inject everything" baseline.
+- **Live benchmark**: the cheap *deterministic* router agrees with a *model's* classification **85.7%**
+  of the time — and both disagreements were on the **safe side** (it fell back to fuller context).
+  Answer-quality preservation ~**80%**.
+- **Three reference adapters** prove the contract is **surface-independent** — the same deterministic
+  core governs three very different surfaces with **zero core changes**:
+
+  | Adapter | Surface | What it shows |
+  |---|---|---|
+  | [`@zam/adapter-openclaw`](packages/adapter-openclaw) | agent **workspace files** | 73% saved on a greeting, 53% on a coding request; safety always kept |
+  | [`@zam/adapter-mcp`](packages/adapter-mcp) | **MCP** tools / resources / prompts | prunes the tool list per request; destructive tools surfaced **only** for ops |
+  | [`@zam/adapter-telegram`](packages/adapter-telegram) | Telegram **bot metadata** | uses the `requestSignals` caller tier (group / reply → family) |
+
+## How it works
+
+```
+request ──▶ request router (deterministic) ──▶ 12-step selector ladder
+                                                     │
+                                            conflict resolver
+                                                     │
+                                                 budgeter
+                                                     │
+                              prompt-plan.json · trace.json · summary.md
+```
+
+An adapter's job (see any of the three above, and `docs/37 §5`) is always the same four steps:
+**extract** the host's context into a ZAM registry, call `plan()`, **assemble** the prompt from the
+selected components, and feed it back to the host's loop. No per-turn model call is required.
+
+## Quickstart
 
 ```bash
 npm install
-```
-
-## Build
-
-```bash
 npm run build
-```
-
-## Test
-
-```bash
 npm test
 ```
 
-## Usage
-
-### Plan
+**CLI:**
 
 ```bash
-context-plane plan \
-  --request <path> \
-  --registry <path> \
-  --active-ids <path> \
-  --runtime <path> \
-  --history <path> \
-  --budget <path> \
-  --constraints <path> \
-  --policy <path> \
-  --request-signals <path> \
-  --output-dir <path>
+context-plane plan --request <text-file> --registry <registry.json> --output-dir ./out
+# writes out/prompt-plan.json, out/trace.json, out/summary.md
 ```
 
-| Flag | Class | Description |
-|---|---|---|
-| `--request` | **A — required** | Request text file (plain text) |
-| `--registry` | **A — required** | Component registry JSON |
-| `--active-ids` | B — optional | Active IDs JSON |
-| `--runtime` | B — optional | Runtime capabilities JSON |
-| `--history` | B — optional | History state JSON |
-| `--budget` | B — optional | Budget state JSON |
-| `--constraints` | B — optional | User constraints JSON |
-| `--policy` | B — optional | Selector policy JSON |
-| `--request-signals` | B — optional | Pre-normalized request signals JSON. Absent: MVP uses safe default normalization. Present: bypasses default stub and supplies `promptFamily`, `familyConfidence`, and `injectionSuspect` directly. |
-| `--output-dir` | optional | Output directory (default: working directory) |
+**As a library:**
 
-Outputs `prompt-plan.json`, `trace.json`, and `summary.md` to `--output-dir`.
+```ts
+import { plan } from 'context-plane';
 
-### Evaluate
-
-```bash
-context-plane evaluate \
-  --fixtures <dir> \
-  --report <path>
+const { promptPlan, trace, summary } = plan({
+  request: { text: 'Help me debug the failing build.' },
+  registry, // ComponentRegistryEntry[] — see docs/05
+});
+console.log(promptPlan.selectedComponents);
 ```
 
-| Flag | Description |
+**As an HTTP service** (language-agnostic): the `./http` export serves a `POST /plan` endpoint with
+constant-time API-key auth (`X-ZAM-API-Key`). See `src/http`.
+
+## Repository layout
+
+| Path | What |
 |---|---|
-| `--fixtures` | Path to fixtures directory |
-| `--report` | Path to write evaluation report JSON |
+| `src/` | the deterministic core (router → ladder → conflict resolver → budgeter), CLI, and HTTP service |
+| `packages/runtime/` | a thin agent runtime used as a validation harness |
+| `packages/types/` | shared hand-authored types (`@zam/types`) |
+| `packages/adapter-openclaw/`, `adapter-mcp/`, `adapter-telegram/` | the three reference adapters |
+| `benchmarks/` | the offline (committed, deterministic) and live (key-gated) value benchmarks |
+| `schemas/` | JSON Schemas for every input/output (the open registry + plan formats) |
+| `docs/` | numbered scoping records — the engineering decision log, one document per change |
+| `fixtures/`, `tests/` | the E2E fixture corpus and the test suites |
 
+## Status
 
-## Gate B Status
+The roadmap is complete and the tree is green: core suite **743/743**, runtime **354/354**, adapters
+**12 + 11 + 10**, all run in CI on every push/PR. Known gaps and tracked debt live honestly in
+[`DEBT.md`](DEBT.md) rather than being asserted absent.
 
-```
-SATISFIED WITH 1 APPROVED SKIP(S)
-```
+## Open-core
 
-- 27 of 28 E2E fixtures passed
-- 1 fixture (`13-conflict-resolution/safety-beats-omit`) is approved-skipped:
-  `safety_hard_protection` is architecturally unreachable through the current MVP
-  deterministic ladder (Step 3 fires before Step 7). Covered by unit test **SHP-1**
-  in `tests/phase8/conflict-resolver.test.ts`.
-- Gate-B core suite (phases 0–12): **651/651**
-- Live test counts are emitted by CI on every push/PR (root + runtime suites + both builds) —
-  see [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Latest: root **757/757**, runtime **354/354**.
-- Tracked known gaps and technical debt: see [`DEBT.md`](DEBT.md)
+This repository is the **open** reference: the spec, the registry/plan formats (`schemas/`), the
+reference implementation, and the reference adapters — under **Apache-2.0**. Managed hosting, bespoke
+adapters, and support are the commercial side. The boundary is drawn in
+[`docs/37`](docs/37_OPEN_CORE_BOUNDARY_AND_ADAPTER_STRATEGY.md).
+
+## Contributing & security
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md).
 
 ## License
 
-Private during development. The open reference implementation is intended to be released under
-**Apache-2.0** (permissive + explicit patent grant) at the public flip; the `LICENSE` file is added
-at that point, not before. See [`docs/37`](docs/37_OPEN_CORE_BOUNDARY_AND_ADAPTER_STRATEGY.md) for the
-open-core boundary (what is open vs. commercial).
+[Apache-2.0](LICENSE) — permissive, with an explicit patent grant.
