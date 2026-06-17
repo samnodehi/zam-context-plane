@@ -17,7 +17,9 @@ The **Portable Context Control Plane** is a system that decides which context co
 - It does not modify live agent runtimes.
 - It does not handle live tool execution.
 - It does not implement history mutation.
-- It does not provide an OpenClaw adapter yet.
+- ~~It does not provide an OpenClaw adapter yet.~~ **(Update 2026-06: reference adapters now ship as
+  separate packages — OpenClaw, MCP, Telegram; see `docs/37`–`docs/40`. The core stays independent of
+  all of them.)**
 
 **Why it must remain portable and independent from OpenClaw:**
 OpenClaw's prompt assembly is tightly coupled to its internal runtime (Decision Log #1). Building this system inside OpenClaw first would produce brittle, unportable code and make correctness testing nearly impossible. The core must run standalone — from a file, from a CLI, from a library — without requiring any particular agent runtime to be present.
@@ -53,7 +55,8 @@ Fail-open is not the same as always including everything. It is a gated decision
 
 ## 4. Non-Goals (MVP)
 
-**Product scope reminder:** This system is a **Context Governance Layer** that runs before agent runtimes — it is not an agent runtime itself, not an OpenClaw clone, and not a provider execution system. Adapters (OpenClaw, n8n, etc.) are future integration surfaces, not MVP targets.
+**Product scope reminder:** This system is a **Context Governance Layer** that runs before agent runtimes — it is not an agent runtime itself, not an OpenClaw clone, and not a provider execution system. Adapters (OpenClaw, n8n, etc.) were future integration surfaces *in the MVP*; reference
+adapters (OpenClaw, MCP, Telegram) now ship as separate packages post-MVP — see `docs/37`–`docs/40`.
 
 - No provider/model calls in MVP.
 - No live OpenClaw mutation.

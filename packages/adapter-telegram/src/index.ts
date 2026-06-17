@@ -1,4 +1,4 @@
-// @zam/adapter-telegram — the third reference adapter (docs/40).
+// zam-adapter-telegram — the third reference adapter (docs/40).
 //
 // Governs a Telegram bot's per-message context: build the bot's context inventory
 // into a registry, derive requestSignals from the update metadata (chat type, reply)

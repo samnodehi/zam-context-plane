@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/inputs/active-ids.schema.json",
+  "title": "Portable Context Control Plane — Active IDs Input",
+  "description": "Schema for the --active-ids CLI input file. Supplies the three active-ID arrays used as optional selector signals: activeSkillIds, activeToolIds, activeMemoryIds. Class B input — if absent, treat all three arrays as empty []; if present but malformed, emit active_ids_missing warning and treat as empty. Unknown active IDs (IDs not found in componentsById) produce active_id_unknown planning warnings per unknown ID — they do NOT produce reference_unknown SelectionDecision records. ID validation against the registry is NOT performed at schema boundary; validation occurs at the core orchestrator boundary before selector fan-out. Canonical owners: docs/06 §2.1 optional selector signals; docs/11 §4.1; docs/12 §3.4; 15-Q2 resolved.",
+  "$comment": "Pass 4.9C-2B — Batch B. No code. No runtime. No provider/model calls. No docs edited. Canonical sources: docs/06 §2.1, docs/11 §4.1, docs/12 §3.4.",
+
+  "type": "object",
+  "required": ["activeSkillIds", "activeToolIds", "activeMemoryIds"],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "activeSkillIds": {
+      "title": "Active skill IDs",
+      "description": "IDs of skill components currently active in this context. Strings only — no validation against registry at schema boundary. Unknown IDs produce active_id_unknown warnings at the orchestrator; they do not produce reference_unknown SelectionDecision records. Absent from registry does not mean absent from plan — selectors treat unknown active IDs as absent signals, not as errors that halt planning.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+
+    "activeToolIds": {
+      "title": "Active tool IDs",
+      "description": "IDs of tool components currently active at this runtime. Strings only — no registry validation at schema boundary. Unknown IDs produce active_id_unknown warnings per unknown ID. The tool selector also checks runtimeCapabilities for availability; active-ID signals and runtime-capability signals are independent.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+
+    "activeMemoryIds": {
+      "title": "Active memory IDs",
+      "description": "IDs of memory components currently active in this context. Strings only — no registry validation at schema boundary. Unknown IDs produce active_id_unknown warnings per unknown ID.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    }
+
+  },
+
+  "examples": [
+    {
+      "activeSkillIds": ["skill.code_review", "skill.web_search"],
+      "activeToolIds": ["tool.read_file"],
+      "activeMemoryIds": []
+    },
+    {
+      "activeSkillIds": [],
+      "activeToolIds": [],
+      "activeMemoryIds": []
+    }
+  ]
+}

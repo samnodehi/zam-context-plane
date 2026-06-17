@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/internal/trace-entry.schema.json",
+  "title": "Portable Context Control Plane — TraceEntry",
+  "description": "Internal object schema for a single TraceEntry record embedded in selectorPhase.selectorTrace[]. TraceEntry is NOT a SelectionDecision — they are two distinct companion object types with a bi-directional reference relationship (SelectionDecision.traceRefs[] points to TraceEntry.decisionId). Canonical owner: docs/04 §7.8; also docs/06 §3.2, §17.6.",
+  "$comment": "Pass 4.9C-3 (Batch C creation). No code. No runtime. No provider/model calls. Canonical: docs/04 §7.8; docs/06 §3.2, §17.6. CRITICAL: selectorTrace is array of TraceEntry, not array of SelectionDecision — do not conflate these types.",
+
+  "type": "object",
+  "required": [
+    "decisionId",
+    "componentId",
+    "module",
+    "action",
+    "reason",
+    "evidence",
+    "confidence",
+    "risk",
+    "estimatedSavings",
+    "failOpen",
+    "selector"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "decisionId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "UUID-style identifier linking this trace entry to its SelectionDecision. Referenced in SelectionDecision.traceRefs[]. Provides the bi-directional link between the decision record and the trace event. Canonical: docs/06 §3.2; docs/04 §7.8."
+    },
+
+    "componentId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Registry ID of the component that was evaluated for this trace event. Must not contain raw component content. Canonical: docs/04 §7.8."
+    },
+
+    "module": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Selector module name that produced this trace entry (e.g., 'ScaffoldSelector', 'ToolSelector', 'HistorySelector'). Canonical: docs/04 §7.8."
+    },
+
+    "action": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionAction",
+      "description": "The action produced by this trace event. Must match the action in the corresponding SelectionDecision. Canonical: docs/04 §7.8."
+    },
+
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable explanation for the trace event. Must not contain raw component content, raw history turn content, or raw user message text. Canonical: docs/04 §7.8."
+    },
+
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Signal atoms recorded for this trace event (e.g., 'promptFamily=simple_greeting', 'requiredWhen=coding_build_debug', 'injection_suspect_seen=true'). Must not contain raw component content or raw user text. Note: 'injection_suspect_seen' is a trace/evidence atom, not a warning code — it appears here in evidence[], not in warningsEmitted. Canonical: docs/04 §7.8; docs/06 §17.3.1."
+    },
+
+    "confidence": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionConfidence",
+      "description": "Selector confidence for this trace event: high, medium, or low. Canonical: docs/04 §7.8."
+    },
+
+    "risk": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#RiskLevel",
+      "description": "Component risk level at the time this trace entry was produced (read from registry metadata). Canonical: docs/04 §7.8."
+    },
+
+    "estimatedSavings": {
+      "type": "object",
+      "required": ["tokens"],
+      "additionalProperties": false,
+      "properties": {
+        "tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Estimated token savings if this component is omitted. Must be 0 for include and defer decisions. Must never be nonzero for runtime_unavailable defer decisions — a deferred unavailable tool is not token savings. Canonical: docs/06 §14.3 invariant; docs/06 §20.3 rule 8."
+        }
+      },
+      "description": "Token savings estimate for omit decisions only. Always present; tokens: 0 for include and defer. Must not claim nonzero savings for runtime_unavailable defer. Canonical: docs/04 §7.8."
+    },
+
+    "failOpen": {
+      "type": "boolean",
+      "description": "true if this trace event was a fail-open outcome (action: include, path: fail_open, or any injection-gate override to include/fail_open). false otherwise. Canonical: docs/04 §7.8."
+    },
+
+    "selector": {
+      "type": "string",
+      "const": "deterministic",
+      "description": "Identifies the selector mode. Always 'deterministic' in MVP — model-assisted selectors are not implemented. Canonical: docs/04 §7.8; docs/06 §16."
+    },
+
+    "injectionSuspect": {
+      "type": "boolean",
+      "description": "Optional. true when requestSignals.injectionSuspect was true at the time this trace entry was produced. Present only when injectionSuspect: true. When present, must be true. Canonical: docs/06 §17.6."
+    },
+
+    "injectionSuspectAction": {
+      "type": "string",
+      "description": "Optional. The effective applied injection policy value ('warn_and_continue' or 'fail_open_all') that governed behavior for this decision. Present only when injectionSuspect: true. This is the effective policy — not the requested policy if a fallback occurred. Canonical: docs/06 §17.6."
+    },
+
+    "actionChanged": {
+      "type": "boolean",
+      "description": "Optional. true if the injection gate overrode the candidate action (e.g., converted an omit to include/fail_open). false if the candidate passed through unchanged. Present only when injectionSuspect: true. When true, originalCandidateAction and originalCandidatePath are required. Canonical: docs/06 §17.4, §17.6; F-20 resolved."
+    },
+
+    "originalCandidateAction": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionAction",
+      "description": "Optional. The action the deterministic ladder produced before the injection gate overrode it (e.g., 'omit'). Required when actionChanged: true. This is the canonical source of pre-gate action context for the Conflict Resolver (via SelectionDecision.traceRefs). Canonical: docs/06 §17.6; F-20 resolved."
+    },
+
+    "originalCandidatePath": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionPath",
+      "description": "Optional. The path the deterministic ladder produced before the injection gate overrode it (e.g., 'safe_to_omit_match'). Required when actionChanged: true. Canonical: docs/06 §17.6; F-20 resolved."
+    },
+
+    "warningsEmitted": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Optional. Array of warning codes emitted for this specific trace entry (e.g., injection_suspect_omit_allowed, injection_suspect_policy_override, path_a_null_evidence). Per-decision warnings only — must NOT include global per-run codes (injection_suspect_warn_and_continue, injection_suspect_fail_open_all). Canonical: docs/06 §17.6."
+    }
+
+  }
+}

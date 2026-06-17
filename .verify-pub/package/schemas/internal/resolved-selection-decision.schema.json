@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/internal/resolved-selection-decision.schema.json",
+  "title": "Portable Context Control Plane — ResolvedSelectionDecision",
+  "description": "Internal object schema for a single ResolvedSelectionDecision record produced by the Conflict Resolver. Extends the SelectionDecision shape with conflict-resolution additions (resolvedBy, inputDecisionIds, resolutionRule, losingDecisions) and budget-hint survival fields from docs/06 §27. Canonical owner: docs/06 §11 and §27.",
+  "$comment": "Pass 4.9C-3 (Batch C creation). No code. No runtime. No provider/model calls. resolutionRule $refs enums.shared.schema.json#ResolutionRule. Canonical: docs/06 §11.3, §11.6, §27.",
+
+  "type": "object",
+  "required": [
+    "componentId",
+    "finalAction",
+    "finalPath",
+    "resolvedBy",
+    "inputDecisionIds",
+    "resolutionRule",
+    "losingDecisions",
+    "warningsEmitted",
+    "resolvedAt"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "componentId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The validated registry component ID this resolved decision applies to. Canonical: docs/06 §11.3.1."
+    },
+
+    "finalAction": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionAction",
+      "description": "The resolved action value for this component after conflict resolution. Canonical: docs/06 §11.3.1."
+    },
+
+    "finalPath": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionPath",
+      "description": "The resolved path value for this component after conflict resolution. Must be consistent with finalAction. Canonical: docs/06 §11.3.1."
+    },
+
+    "resolvedBy": {
+      "type": "string",
+      "const": "conflict_resolver",
+      "description": "Identifies the producing module. Always 'conflict_resolver' for ResolvedSelectionDecision records. Canonical: docs/06 §11.3.1."
+    },
+
+    "inputDecisionIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "description": "IDs of all SelectionDecision records that were inputs to this conflict resolution. For a no-conflict component (resolutionRule: no_conflict), this contains exactly one ID. Canonical: docs/06 §11.3.1."
+    },
+
+    "resolutionRule": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#ResolutionRule",
+      "description": "The canonical priority rule that produced the winning decision. Strict 14-value enum per docs/06 §11.3.1a — any unrecognized value is a harness failure. 'no_conflict' is valid only for no-conflict components (single unambiguous decision). Future additions require an explicit cross-spec decision pass. Canonical: docs/06 §11.3.1a."
+    },
+
+    "losingDecisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["decisionId", "action", "path", "defeatedBy"],
+        "additionalProperties": false,
+        "properties": {
+          "decisionId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "ID of the losing SelectionDecision record."
+          },
+          "action": {
+            "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionAction",
+            "description": "The action from the losing decision."
+          },
+          "path": {
+            "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionPath",
+            "description": "The path from the losing decision."
+          },
+          "defeatedBy": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Human-readable or coded reason why this decision was defeated (e.g., 'safety_hard_protection', 'runtime_unavailable_defer'). Must not contain raw content."
+          }
+        }
+      },
+      "description": "Array of losing decisions. Each entry records the decisionId, action, path, and defeatedBy reason. Empty array when no decision was a true loser (e.g., when resolutionRule is no_conflict or when all inputs are include decisions merged into a single winner with no distinct loser). Canonical: docs/06 §11.3.1, §11.5 Case 5."
+    },
+
+    "warningsEmitted": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Array of warning codes emitted during this conflict resolution entry. Empty array if no warnings were emitted for this component. Canonical: docs/06 §11.6."
+    },
+
+    "resolvedAt": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Monotonic step counter value at the time this decision was resolved. Not wall-clock time. Canonical: docs/06 §11.6."
+    },
+
+    "hadGateConvertedDecisions": {
+      "type": "boolean",
+      "description": "Optional. true if one or more input decisions had actionChanged: true in their selectorTrace entry (i.e., the injection gate converted the action before the Conflict Resolver received it). Present only when gate conversion was detected. Canonical: docs/06 §11.6."
+    },
+
+    "gateConvertedTraceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Optional. Array of trace entry IDs (from SelectionDecision.traceRefs) for each gate-converted input decision. Present only when hadGateConvertedDecisions: true. The referenced selectorTrace entries carry originalCandidateAction and originalCandidatePath as the canonical source of pre-gate context. Canonical: docs/06 §11.6."
+    },
+
+    "preGateActions": {
+      "type": "array",
+      "items": {
+        "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionAction"
+      },
+      "description": "Optional. Array of originalCandidateAction values from each gate-converted input decision, in the same order as gateConvertedTraceRefs. Informational summary only; selectorTrace is canonical. Present only when hadGateConvertedDecisions: true. Canonical: docs/06 §11.6."
+    },
+
+    "preGatePaths": {
+      "type": "array",
+      "items": {
+        "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionPath"
+      },
+      "description": "Optional. Array of originalCandidatePath values from each gate-converted input decision, in the same order as gateConvertedTraceRefs. Informational summary only; selectorTrace is canonical. Present only when hadGateConvertedDecisions: true. Canonical: docs/06 §11.6."
+    },
+
+    "budgetHint": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#BudgetHint",
+      "description": "Budget hint merged from input decisions via the §27.5 priority order. The highest-priority hint across all input decisions wins — this is not necessarily the hint from the action/path-winning decision. Absent if no input decision had any budget hint and mergeRule is 'no_hint'. Must be absent for resolved defer/runtime_unavailable decisions (runtime_unavailable suppresses generic budget hints). Canonical: docs/06 §27.3-§27.5."
+    },
+
+    "budgetReason": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Coded atom from the source decision that contributed the budgetHint. Present only when budgetHint is present. Canonical: docs/06 §27.3."
+    },
+
+    "tokensApproxObserved": {
+      "type": ["integer", "null"],
+      "description": "tokensApprox value from the source decision that contributed the budgetHint. Present only when budgetHint is present. Canonical: docs/06 §27.3."
+    },
+
+    "budgetPriorityObserved": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "maximum": 10,
+      "description": "budgetPriority from the action/path-winning decision. Present only when budgetHint is present. Canonical: docs/06 §27.3."
+    },
+
+    "budgetCriticalObserved": {
+      "type": "boolean",
+      "description": "budgetCritical flag from the action/path-winning decision. Present only when budgetHint is present. Canonical: docs/06 §27.3."
+    },
+
+    "budgetWarningCodes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Merged union of all budgetWarningCodes from all input decisions. Present only when budgetHint is present or when runtime_unavailable_no_budget_savings was on any input. Canonical: docs/06 §27.3-§27.4."
+    },
+
+    "tokenSource": {
+      "type": "string",
+      "enum": ["tokensApprox", "charsApprox_estimate", "absent"],
+      "description": "Which cost source was used for the promoted budgetHint (from §23). Present only when budgetHint is expensive_optional or candidate_optional. Canonical: docs/06 §23.5, §27.3."
+    },
+
+    "thresholdUsed": {
+      "type": "integer",
+      "const": 500,
+      "description": "The static MVP expensive_optional threshold applied (always 500 in MVP). Present only when budgetHint is expensive_optional. Canonical: docs/06 §23.2, §23.5."
+    },
+
+    "estimatedTokensFromChars": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "ceil(charsApprox / 4) computed when tokenSource is charsApprox_estimate. Present only when tokenSource is charsApprox_estimate. Canonical: docs/06 §23.3 Rule 2."
+    },
+
+    "charsApproxObserved": {
+      "type": ["integer", "null"],
+      "description": "charsApprox value from the source decision when tokenSource is charsApprox_estimate. Present only when tokenSource is charsApprox_estimate. Canonical: docs/06 §23.5."
+    },
+
+    "thresholdCrossed": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Field-name atom identifying which budget limit was exceeded for over_budget_protected (e.g., 'totalPromptTokenTarget', 'maxScaffoldTokens'). Must be a field-name atom, not free-form string. Present only when budgetHint is over_budget_protected. Canonical: docs/06 §25.4, §27.3."
+    },
+
+    "applicableBudgetLimit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "The integer value of the budget limit that was crossed (from budgetState). Present only when budgetHint is over_budget_protected. Canonical: docs/06 §25.4, §27.3."
+    },
+
+    "riskFlag": {
+      "type": "string",
+      "const": "budget_infeasible_protected_component",
+      "description": "Risk flag promoted from any input decision carrying budget_infeasible_protected_component, regardless of which decision won the action/path. Present only when budgetHint is over_budget_protected. Canonical: docs/06 §25.3, §27.3."
+    },
+
+    "mergeRuleTrace": {
+      "type": "string",
+      "enum": [
+        "budget_hint_kept_from_winning_decision",
+        "budget_hint_promoted_from_losing_decision",
+        "no_hint",
+        "runtime_unavailable_skip"
+      ],
+      "description": "Which budget-hint merge rule was applied during Conflict Resolution. Must be exactly one of the four coded values. Present on all resolved decisions where budget-hint merge logic ran. Canonical: docs/06 §27.4, §27.7."
+    },
+
+    "budgetHintSourceDecisionId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "ID of the losing input decision from which the budgetHint was promoted. Present only when mergeRuleTrace is budget_hint_promoted_from_losing_decision. Canonical: docs/06 §27.4, §27.7."
+    }
+
+  }
+}

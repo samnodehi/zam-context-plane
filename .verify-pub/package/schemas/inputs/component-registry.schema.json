@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/inputs/component-registry.schema.json",
+  "title": "Portable Context Control Plane — Component Registry Input",
+  "description": "Schema for the --registry CLI input file. A bare JSON array of component objects, validated before selector fan-out. Class A input — if absent or unloadable, the planning run halts immediately. Each component entry is validated against the Component $def below. Non-MVP fields contentInline, dependencies, budgetTrimmable, and privacyLevel must NOT appear here. Provider, model, cache, OpenClaw adapter, and model-assisted analyzer fields must NOT appear here. Cross-field validation rules (riskLevel: critical requiring at least one hard protection; tokensApprox: 0 only valid with metadataOnly: true; duplicate id detection; defaultAction: omit overridden by loader when paired with retainPolicy: mandatory/safety_critical or omissionPolicy: never) are loader/orchestrator logic, not JSON Schema logic. evidenceRequired grammar is loader/orchestrator validation — the schema accepts any non-empty string at the boundary. Canonical owners: docs/05 §3–§8; docs/12 §3.2.",
+  "$comment": "Pass 4.9C-5B — Batch B extension. No code. No runtime. No provider/model calls. No docs edited. Source count note: docs/12 §3.2 states '16 required fields + 2 optional MVP fields' but docs/05 §3 Minimum Required Fields table lists 18 fields (id, type, title, summary, source, tokensApprox, charsApprox, riskLevel, requiredWhen, safeToOmitWhen, defaultAction, omissionPolicy, retainPolicy, budgetPriority, evidenceRequired, tags, version, hash). This schema follows the docs/05 §3 table (18 required) as the canonical source. The docs/12 §3.2 '16' count is an out-of-scope docs/12 discrepancy to be resolved in a later pass. Canonical sources: docs/05 §3–§8; docs/12 §3.2.",
+
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "$ref": "#/$defs/Component"
+  },
+
+  "$defs": {
+    "Component": {
+      "title": "Component registry entry",
+      "description": "A single component object in the registry. Validated at load time before selector fan-out. All 18 required fields must be present. Optional MVP fields metadataOnly and formatTag are recognized. additionalProperties: false — unknown fields (including all future-only excluded fields) are rejected at the schema boundary. Cross-field rules (e.g. riskLevel: critical protection requirement; tokensApprox: 0 only with metadataOnly: true; defaultAction: omit override on mandatory/safety_critical components; duplicate id detection) are enforced by the registry loader and orchestrator, not by JSON Schema.",
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "id",
+        "type",
+        "title",
+        "summary",
+        "source",
+        "tokensApprox",
+        "charsApprox",
+        "riskLevel",
+        "requiredWhen",
+        "safeToOmitWhen",
+        "defaultAction",
+        "omissionPolicy",
+        "retainPolicy",
+        "budgetPriority",
+        "evidenceRequired",
+        "tags",
+        "version",
+        "hash"
+      ],
+
+      "properties": {
+
+        "id": {
+          "title": "Component ID",
+          "description": "Stable dot-namespaced identifier for this component. Must be unique within the registry. Duplicate detection is loader/orchestrator logic — JSON Schema does not validate uniqueness across array items. Pattern: ^[a-z][a-z0-9._-]*$ — lowercase start, then alphanumeric, dots, underscores, hyphens. Canonical: docs/05 §3.",
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]*$"
+        },
+
+        "type": {
+          "title": "Component type",
+          "description": "Component category. Must be one of the 8 canonical MVP component types. Determines which selector handles this component during fan-out. Canonical: docs/05 §4.",
+          "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#ComponentType"
+        },
+
+        "title": {
+          "title": "Component title",
+          "description": "Human-readable name for this component. Non-empty, max 120 characters. Canonical: docs/05 §3.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+
+        "summary": {
+          "title": "Component summary",
+          "description": "One-sentence description of what this component provides. Non-empty, max 300 characters. Must not contain raw component content. Canonical: docs/05 §3.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+
+        "source": {
+          "title": "Component source",
+          "description": "Where the component content comes from. File path, logical ID, or URI. Format is runtime-specific. Must not be empty. Canonical: docs/05 §3.",
+          "type": "string",
+          "minLength": 1
+        },
+
+        "tokensApprox": {
+          "title": "Approximate token count",
+          "description": "Estimated token count of this component's content. Must be >= 1 unless metadataOnly: true (in which case 0 is permitted). The constraint tokensApprox >= 1 when metadataOnly is false or absent is a cross-field rule enforced by the loader, not JSON Schema — this schema enforces only minimum: 0. Canonical: docs/05 §3.",
+          "type": "integer",
+          "minimum": 0
+        },
+
+        "charsApprox": {
+          "title": "Approximate character count",
+          "description": "Estimated character count of this component's content. Must be >= 1 unless metadataOnly: true (in which case 0 is permitted). Same cross-field boundary as tokensApprox. Canonical: docs/05 §3.",
+          "type": "integer",
+          "minimum": 0
+        },
+
+        "riskLevel": {
+          "title": "Risk level",
+          "description": "How dangerous omission of this component is. Must be one of the 4 canonical values. riskLevel: critical requires at least one hard protection (retainPolicy: safety_critical OR omissionPolicy: never) — this cross-field constraint is loader validation, not JSON Schema. Canonical: docs/05 §5.",
+          "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#RiskLevel"
+        },
+
+        "requiredWhen": {
+          "title": "Required-when tag list",
+          "description": "Prompt family tags for which this component must be included. An empty array means no tag triggers a required-include rule for this component. Matching is exact string comparison against the resolved promptFamily. Canonical: docs/05 §3 and §6.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+
+        "safeToOmitWhen": {
+          "title": "Safe-to-omit-when tag list",
+          "description": "Prompt family tags for which it is safe to omit this component (Path A). An empty array means Path A is unavailable for this component (safeToOmitWhen match is required for Path A). Matching is exact string comparison. Canonical: docs/05 §3 and §6.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+
+        "defaultAction": {
+          "title": "Default action",
+          "description": "What to do when no requiredWhen or safeToOmitWhen tag matches. Must be one of: include, omit, defer. defaultAction: omit combined with retainPolicy: mandatory/safety_critical or omissionPolicy: never is overridden to include by the loader (non-fatal warning, not halt). This cross-field override is loader logic, not JSON Schema. Canonical: docs/05 §5.",
+          "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#DefaultAction"
+        },
+
+        "omissionPolicy": {
+          "title": "Omission policy",
+          "description": "How to behave when selector evidence is insufficient. allow = omission permitted if evidence supports it. fail_open = include when uncertain (not trimmable by Budgeter in MVP). never = always include regardless of selector output. Canonical: docs/05 §5.",
+          "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#OmissionPolicy"
+        },
+
+        "retainPolicy": {
+          "title": "Retain policy",
+          "description": "How the Budgeter and selectors must treat this component. optional = budget-trimmable if low-priority. durable = retain unless strong evidence. mandatory = must be in every plan. safety_critical = cannot be removed under any circumstance; triggers budgetOverflow rather than trim. Canonical: docs/05 §5.",
+          "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#RetainPolicy"
+        },
+
+        "budgetPriority": {
+          "title": "Budget priority",
+          "description": "Budgeter trim order. Integer 1–10. Lower value = trimmed first; higher value = trimmed last. Used as a tie-breaker when multiple optional components must be dropped. Valid schema data must have budgetPriority in [1, 10] — this schema rejects out-of-range values. Any pre-schema clamping or normalization of out-of-range values is a separate loader pre-normalization step and is not represented as valid schema data. Canonical: docs/05 §5.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+
+        "evidenceRequired": {
+          "title": "Evidence required expression",
+          "description": "Additional signal conditions for Path A omission, beyond the safeToOmitWhen tag match. null = no additional evidence required; safeToOmitWhen match alone is sufficient for Path A (a validation warning is emitted by the loader if omissionPolicy: allow and safeToOmitWhen is non-empty). Non-null string = constrained expression using recognized MVP atoms (promptFamily=<value>, riskLevel=<value>, explicitUserConstraint=false) combined with AND. Grammar validation and atom recognition are loader/orchestrator logic — this schema accepts any non-empty string at the boundary. Invalid grammar disables Path A for the component (not normalized to null). OR and NOT are not supported in MVP. Key must always be present; value may be null. Canonical: docs/05 §7.",
+          "type": ["string", "null"],
+          "if": { "type": "string" },
+          "then": { "minLength": 1 }
+        },
+
+        "tags": {
+          "title": "Classification tags",
+          "description": "Classification labels for filtering and grouping. May be empty array. Each element must be non-empty string. Canonical: docs/05 §3.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+
+        "version": {
+          "title": "Component version",
+          "description": "Version of this component definition. Semver or opaque version string. Required for registry evolution and future drift tracking. Canonical: docs/05 §3.",
+          "type": "string",
+          "minLength": 1
+        },
+
+        "hash": {
+          "title": "Content hash",
+          "description": "SHA-256 content hash for drift detection. Key must always be present. Value is null when hash has not yet been computed. If non-null, must be exactly 64 lowercase hexadecimal characters. Hash mismatch (field present but not matching content) is detected by the loader, not JSON Schema. Canonical: docs/05 §3.",
+          "type": ["string", "null"],
+          "if": { "type": "string" },
+          "then": { "pattern": "^[a-f0-9]{64}$" }
+        },
+
+        "metadataOnly": {
+          "title": "Metadata only flag",
+          "description": "Optional MVP field. If true, this component is a metadata descriptor with no inline content (e.g., history lane descriptors). tokensApprox and charsApprox may be 0 when this is true. Default: false if absent. Canonical: docs/05 §3.",
+          "type": "boolean"
+        },
+
+        "formatTag": {
+          "title": "Output format tag",
+          "description": "Optional MVP field. Output-format tag matched by the output_format selector against outputFormatHint in requestSignals. Meaningful only for type: output_format components — other types should omit this field or set it to null. If absent or null on an output_format component, the selector cannot authorize omission via outputFormatHint matching and must fail open. Canonical: docs/05 §3.",
+          "type": ["string", "null"],
+          "if": { "type": "string" },
+          "then": { "minLength": 1 }
+        }
+
+      }
+    }
+  },
+
+  "examples": [
+    [
+      {
+        "id": "scaffold.general_assistant",
+        "type": "scaffold",
+        "title": "General Assistant Persona",
+        "summary": "Defines the agent's general assistant persona and behavioral guidelines.",
+        "source": "scaffold/general_assistant.md",
+        "tokensApprox": 320,
+        "charsApprox": 1280,
+        "riskLevel": "low",
+        "requiredWhen": ["general_default", "simple_greeting"],
+        "safeToOmitWhen": [],
+        "defaultAction": "include",
+        "omissionPolicy": "fail_open",
+        "retainPolicy": "optional",
+        "budgetPriority": 4,
+        "evidenceRequired": null,
+        "tags": ["persona", "scaffold"],
+        "version": "1.0.0",
+        "hash": null
+      },
+      {
+        "id": "policy.privacy_constraints",
+        "type": "policy",
+        "title": "Privacy Constraint Policy",
+        "summary": "Defines what the agent must not disclose, share, or expose about user data.",
+        "source": "policies/privacy_constraints.md",
+        "tokensApprox": 260,
+        "charsApprox": 1040,
+        "riskLevel": "critical",
+        "requiredWhen": [],
+        "safeToOmitWhen": [],
+        "defaultAction": "include",
+        "omissionPolicy": "never",
+        "retainPolicy": "safety_critical",
+        "budgetPriority": 10,
+        "evidenceRequired": null,
+        "tags": ["policy", "privacy", "safety"],
+        "version": "3.1.0",
+        "hash": "a3f1b2c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2"
+      },
+      {
+        "id": "history.durable_constraints",
+        "type": "history",
+        "title": "Durable Constraints History Lane",
+        "summary": "Metadata descriptor for the durable_constraints history lane. Turns in this lane must never be dropped.",
+        "source": "history:lane:durable_constraints",
+        "tokensApprox": 0,
+        "charsApprox": 0,
+        "metadataOnly": true,
+        "riskLevel": "critical",
+        "requiredWhen": [],
+        "safeToOmitWhen": [],
+        "defaultAction": "include",
+        "omissionPolicy": "never",
+        "retainPolicy": "safety_critical",
+        "budgetPriority": 10,
+        "evidenceRequired": null,
+        "tags": ["history", "lane", "durable"],
+        "version": "1.0.0",
+        "hash": null
+      }
+    ]
+  ]
+}

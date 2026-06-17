@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/internal/planning-warning.schema.json",
+  "title": "Portable Context Control Plane — PlanningWarning",
+  "description": "Internal object schema for a single planning warning record. Planning warnings are machine-readable string-code objects placed in planningWarnings[] (global per-run), SelectionDecision.warnings[] (per-decision), TraceEntry.warningsEmitted[] (per-decision), conflictResolutionTrace[].warningsEmitted[] (per-conflict), and SelectionDecision.budgetWarningCodes[] (budget per-decision). Warning codes are typed as string with an advisory (open) enum of known codes — NOT a closed strict enum. This allows forward compatibility as new warning codes are added across passes. Canonical owner: docs/06 §3.4; docs/12 §6.2.",
+  "$comment": "Pass 4.9C-3 (Batch C creation). No code. No runtime. No provider/model calls. Canonical: docs/06 §3.4; docs/12 §6.2. WARNING: warning code enum is ADVISORY OPEN — do NOT enforce it as a closed enum. Harness checks compare against exact string literals directly.",
+
+  "type": "object",
+  "required": [
+    "code",
+    "message"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "code": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Machine-readable warning code. Must be a known coded string constant — no free-form prose. The enum below is ADVISORY and OPEN: new codes may be added across passes without a schema change. Harness checks must compare against exact string literals, not against a schema-enforced closed enum. Canonical: docs/06 §3.4; docs/12 §6.2.",
+
+      "$comment": "Advisory enum of known warning codes as of Pass 4.9C-3 (corrected in Pass 4.9C-3R). This list is not exhaustive and must not be enforced as a closed enum by the schema validator. New codes added in future passes do not require a schema change — the 'string' type is the enforcement boundary. INTENTIONAL EXCLUSION: 'injection_suspect_seen' is NOT a warning code and is deliberately absent from this list — it is a trace/evidence atom that belongs in TraceEntry.evidence[] only. It must never appear in planningWarnings[] or warningsEmitted[]. Canonical: docs/06 §3.4; docs/12 §6.2.",
+
+      "examples": [
+        "injection_suspect_warn_and_continue",
+        "injection_suspect_fail_open_all",
+        "policy_value_not_implemented",
+        "injection_action_unknown",
+        "family_confidence_fail_open_escalation",
+        "history_malformed_conflict_occurred",
+        "runtime_capabilities_missing",
+        "selector_policy_defaulted",
+        "injection_suspect_policy_override",
+        "injection_suspect_omit_allowed",
+        "history_malformed_conflict",
+        "budget_cost_unknown",
+        "over_budget_protected",
+        "budget_pressure_seen",
+        "runtime_capability_unavailable",
+        "active_id_unknown",
+        "lane_missing",
+        "conflicting_tags",
+        "prompt_family_unknown",
+        "evidence_required_invalid",
+        "default_action_unknown",
+        "active_skill_ids_malformed",
+        "active_tool_ids_malformed",
+        "active_memory_ids_malformed",
+        "runtime_capability_unknown",
+        "hard_protected_tool_unavailable",
+        "always_include_unavailable_tool",
+        "history_malformed_fail_open",
+        "history_state_summary_missing",
+        "history_lane_missing",
+        "policy_high_risk_fail_open",
+        "output_format_hint_malformed",
+        "format_tag_missing",
+        "capability_inventory_incomplete",
+        "path_a_null_evidence",
+        "unexpected_ladder_fallback",
+        "unexpected_quarantine_reference",
+        "always_include_overrides_never_include",
+        "safety_override_never_include",
+        "safety_override_omit_decision",
+        "unresolved_conflict_fail_open",
+        "include_vs_omit_with_not_evaluated",
+        "include_overrides_defer",
+        "defer_overrides_omit",
+        "path_a_omit_selected_over_path_b",
+        "multiple_include_merged",
+        "runtime_unavailable_no_budget_savings",
+        "budget_infeasible_protected_component",
+        "over_budget_protected_policy",
+        "family_confidence_missing",
+        "injection_suspect_malformed",
+        "schema_invalid",
+        "duplicate_id_rejected",
+        "fatal_duplicate_id",
+        "hash_drift",
+        "unsupported_candidate_set_policy"
+      ]
+    },
+
+    "componentId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional. The registry component ID associated with this warning, when the warning is specific to a particular component. Absent for global per-run warnings that are not tied to a specific component. Canonical: docs/12 §6.2."
+    },
+
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable description of the warning. Must not contain raw component content, raw history turn content, raw user message text, secrets, credentials, or matched injection pattern text. Canonical: docs/12 §6.2."
+    }
+
+  }
+}

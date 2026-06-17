@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/inputs/budget-state.schema.json",
+  "title": "Portable Context Control Plane — Budget State Input",
+  "description": "Schema for the --budget CLI input file. Supplies the MVP budget configuration. Class B input — if absent: treat budget as unconstrained; selectors remain budget-aware but not budget-enforcing; emit budget_config_missing warning. Selectors use budget state as informational context only — budget enforcement is exclusively the Budgeter's responsibility after selector fan-out. Non-MVP fields explicitly excluded: dynamic threshold config, provider pricing, model cost fields, cache pricing/TTL/cache key fields. budgetCritical is a pre-computed flag indicating whether protected components already exceed target — not a dynamic threshold. Canonical owners: docs/06 §2.7; docs/11 §4.1; docs/12 §3.8.",
+  "$comment": "Pass 4.9C-2B — Batch B. No code. No runtime. No provider/model calls. No docs edited. Non-MVP excluded: dynamic threshold config, provider/model cost fields, cache pricing fields. Canonical sources: docs/06 §2.7, docs/04 §7.5, docs/11 §4.1, docs/12 §3.8.",
+
+  "type": "object",
+  "required": [
+    "totalPromptTokenTarget",
+    "maxScaffoldTokens",
+    "maxSkillTokens",
+    "maxToolTokens",
+    "maxHistoryTokens",
+    "reservedUserTokens",
+    "budgetCritical"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "totalPromptTokenTarget": {
+      "title": "Total prompt token target",
+      "description": "The overall token budget ceiling for the assembled prompt. Integer >= 0. If 0 or missing, the Budgeter treats budget as unconstrained and emits a budget_config_missing warning. The Budgeter enforces this limit after selector fan-out; selectors are budget-aware (use this as context) but must not use budget pressure as an omission justification.",
+      "type": "integer",
+      "minimum": 0
+    },
+
+    "maxScaffoldTokens": {
+      "title": "Max scaffold tokens",
+      "description": "Maximum token allocation for scaffold-type components. Integer >= 0. Operator-supplied per-type budget slice. Used by the Budgeter for per-category trim decisions.",
+      "type": "integer",
+      "minimum": 0
+    },
+
+    "maxSkillTokens": {
+      "title": "Max skill tokens",
+      "description": "Maximum token allocation for skill-type components. Integer >= 0. Operator-supplied per-type budget slice.",
+      "type": "integer",
+      "minimum": 0
+    },
+
+    "maxToolTokens": {
+      "title": "Max tool tokens",
+      "description": "Maximum token allocation for tool-type components. Integer >= 0. Operator-supplied per-type budget slice.",
+      "type": "integer",
+      "minimum": 0
+    },
+
+    "maxHistoryTokens": {
+      "title": "Max history tokens",
+      "description": "Maximum token allocation for history-type components and turns. Integer >= 0. Operator-supplied per-type budget slice.",
+      "type": "integer",
+      "minimum": 0
+    },
+
+    "reservedUserTokens": {
+      "title": "Reserved user tokens",
+      "description": "Number of tokens reserved for the user turn (current request and expected response). Integer >= 0. Subtracted from totalPromptTokenTarget to determine available context tokens before component selection.",
+      "type": "integer",
+      "minimum": 0
+    },
+
+    "budgetCritical": {
+      "title": "Budget critical flag",
+      "description": "Pre-computed flag: true if protected components (mandatory, safety_critical) already exceed totalPromptTokenTarget before any optional trimming. When true, selectors may use this as an informational budget-pressure signal to compute informational budgetHint annotations on SelectionDecision records. Budget pressure does NOT authorize omission — only the Budgeter may trim, and only trim-eligible components. Canonical: docs/06 §2.7; docs/04 §7.5 no-unsafe-omission invariant.",
+      "type": "boolean"
+    }
+
+  },
+
+  "examples": [
+    {
+      "totalPromptTokenTarget": 4096,
+      "maxScaffoldTokens": 800,
+      "maxSkillTokens": 600,
+      "maxToolTokens": 500,
+      "maxHistoryTokens": 1200,
+      "reservedUserTokens": 500,
+      "budgetCritical": false
+    },
+    {
+      "totalPromptTokenTarget": 2048,
+      "maxScaffoldTokens": 400,
+      "maxSkillTokens": 400,
+      "maxToolTokens": 300,
+      "maxHistoryTokens": 600,
+      "reservedUserTokens": 256,
+      "budgetCritical": true
+    }
+  ]
+}

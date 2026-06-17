@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/outputs/prompt-plan.schema.json",
+  "title": "Portable Context Control Plane — prompt-plan.json Output Schema",
+  "description": "Output schema for the prompt-plan.json file produced by the Prompt Plan Generator (PPG) at the end of a planning run. Three mutually exclusive, exhaustive component partition arrays (selectedComponents, omittedComponents, deferredComponents) plus budget, token estimate, risk, and warning fields. Every candidate component must appear in exactly one partition. deferredComponents entries carry a required path field so harnesses can distinguish runtime_unavailable from default_defer. No raw component text, no raw history content, no provider/cache/model fields. Canonical owners: docs/04 §7.7; docs/06 §3, §27; docs/12 §5.1.",
+  "$comment": "Pass 4.9C-4C + 4.9C-4C.1 + 4.9C-4C.2 (Batch D output schema creation + repair). No code. No runtime. No provider/model calls. Partition entry shape: componentId/action/path/reason required; tokensApprox optional; action+path both locked per partition array via allOf (Fix 1 / 4.9C-4C.2). budgetPlan.additionalProperties: false (Fix 3). estimatedTokens.additionalProperties: false (Fix 4). reference_unknown excluded from all partition arrays. budgetHintSummary is optional PPG-only convenience field per docs/06 §27.6. Cache advisory fields (cacheStability, stablePrefixHash, etc.) are post-MVP and must not be added. contentInline excluded per docs/12 §9. Canonical: docs/04 §7.7; docs/06 §3, §27; docs/12 §5.1.",
+
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "promptFamily",
+    "selectedComponents",
+    "omittedComponents",
+    "deferredComponents",
+    "budgetPlan",
+    "estimatedTokens",
+    "riskFlags",
+    "failOpenReasons",
+    "planningWarnings"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Schema version identifier for this prompt-plan.json document. Allows consumers to detect breaking changes across schema versions. Must always be present. Canonical: docs/04 §7.7.",
+      "examples": ["v0"]
+    },
+
+    "promptFamily": {
+      "$ref": "https://portable-context-control-plane/schemas/shared/prompt-family.schema.json#PromptFamilyValue",
+      "description": "The prompt family that governed this planning run. Canonical: docs/06 §2.2; docs/04 §7.7."
+    },
+
+    "selectedComponents": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/PartitionEntry" },
+          {
+            "properties": {
+              "action": { "const": "include" },
+              "path": {
+                "type": "string",
+                "enum": [
+                  "required_match",
+                  "default_include",
+                  "fail_open",
+                  "conflict_include",
+                  "safety_override",
+                  "not_evaluated",
+                  "quarantine_boundary_violation"
+                ],
+                "description": "Path values valid for include actions only. reference_unknown is excluded from partition arrays. Canonical: docs/06 §4; Pass 4.9C-4C.2."
+              }
+            }
+          }
+        ]
+      },
+      "description": "Components included in the prompt plan for this run. action MUST be 'include'; path MUST be one of: required_match, default_include, fail_open, conflict_include, safety_override, not_evaluated, quarantine_boundary_violation — schema enforces both via allOf. reference_unknown is not a valid partition path. Mutually exclusive with omittedComponents and deferredComponents. No raw component content. Canonical: docs/04 §7.7 F-13; Pass 4.9C-4C.2.",
+      "examples": [
+        [{"componentId": "scaffold.system_rules", "action": "include", "path": "required_match", "reason": "requiredWhen tag matched: coding_build_debug", "tokensApprox": 400}]
+      ]
+    },
+
+    "omittedComponents": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/PartitionEntry" },
+          {
+            "properties": {
+              "action": { "const": "omit" },
+              "path": {
+                "type": "string",
+                "enum": [
+                  "safe_to_omit_match",
+                  "default_action_omit",
+                  "budget_trim"
+                ],
+                "description": "Path values valid for omit actions. safe_to_omit_match and default_action_omit are selector-origin paths. budget_trim is a plan-phase Budgeter-origin path applied by PPG after Budgeter; it must correspond to a budgetPhase.trimActions[] entry and must not be emitted by selectors or the Conflict Resolver. reference_unknown is excluded from all partition arrays. Canonical: docs/06 \u00a74; Pass 4.9C-4C.2; Pass 4.9D-2AB."
+              }
+            }
+          }
+        ]
+      },
+      "description": "Components excluded from the prompt plan. action MUST be 'omit'; path MUST be one of: safe_to_omit_match, default_action_omit, budget_trim — schema enforces both via allOf. safe_to_omit_match and default_action_omit are selector-origin omit paths. budget_trim is a plan-phase Budgeter-origin path applied by PPG after Budgeter; it must correspond to a budgetPhase.trimActions[] entry and must not be emitted by selectors or the Conflict Resolver. Omission is a positive decision. reference_unknown is not a valid partition path. Must not include runtime_unavailable entries — those belong in deferredComponents. Mutually exclusive with selectedComponents and deferredComponents. Canonical: docs/04 §7.7 F-13; Pass 4.9C-4C.2; Pass 4.9D-2AB.",
+      "examples": [
+        [{"componentId": "scaffold.heartbeat_proactive", "action": "omit", "path": "safe_to_omit_match", "reason": "safeToOmitWhen matched: simple_greeting", "tokensApprox": 200}]
+      ]
+    },
+
+    "deferredComponents": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/PartitionEntry" },
+          {
+            "properties": {
+              "action": { "const": "defer" },
+              "path": {
+                "type": "string",
+                "enum": [
+                  "default_defer",
+                  "runtime_unavailable"
+                ],
+                "description": "Path values valid for defer actions only. Harnesses MUST filter by path (not action alone) to distinguish runtime_unavailable from default_defer. reference_unknown is excluded from partition arrays. Canonical: docs/06 §4; 5-Q7/F-28; Pass 4.9C-4C.2."
+              }
+            }
+          }
+        ]
+      },
+      "description": "Components intentionally not included now and not counted as budget savings. action MUST be 'defer'; path MUST be one of: default_defer, runtime_unavailable — schema enforces both via allOf. Harnesses must filter by path (not action alone) to distinguish runtime_unavailable from default_defer. reference_unknown is not a valid partition path. Mutually exclusive with selectedComponents and omittedComponents. Canonical: docs/04 §7.7 F-13; docs/12 §5.1; 5-Q7/F-28; Pass 4.9C-4C.2.",
+      "examples": [
+        [{"componentId": "tool.code_executor", "action": "defer", "path": "runtime_unavailable", "reason": "Tool not available in current runtime environment", "tokensApprox": 150}]
+      ]
+    },
+
+    "budgetPlan": {
+      "type": "object",
+      "required": ["totalPromptTokenTarget", "selectedTokensApprox", "projectedOverflow"],
+      "additionalProperties": false,
+      "$comment": "additionalProperties: false (Pass 4.9C-4C.1 Fix 3) — prevents provider/model/cache fields from being added accidentally. MVP budget fields are fully enumerated here. Future additions require an explicit schema pass.",
+      "properties": {
+        "totalPromptTokenTarget": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total prompt token target from budgetState input. Canonical: docs/06 §2.7."
+        },
+        "selectedTokensApprox": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Approximate total tokens for selectedComponents. Based on registry metadata — no live tokenizer calls. Canonical: docs/06 §20.2."
+        },
+        "projectedOverflow": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Projected overflow: max(0, selectedTokensApprox - totalPromptTokenTarget). Zero means no overflow. Canonical: docs/04 §7.5."
+        }
+      },
+      "description": "Budget planning summary extracted from BudgetReport. additionalProperties: false — no provider cost, cache pricing, or model billing fields permitted. Canonical: docs/04 §7.7."
+    },
+
+    "estimatedTokens": {
+      "type": "object",
+      "required": ["total"],
+      "additionalProperties": false,
+      "$comment": "additionalProperties: false (Pass 4.9C-4C.1 Fix 4) — MVP token breakdown fields are fully enumerated: scaffold, skills, tools, history, total. Prevents provider/cache/model token fields from being added. Future per-type additions require an explicit schema pass. 'total' is always required.",
+      "properties": {
+        "scaffold": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Approximate tokens from selected scaffold components."
+        },
+        "skills": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Approximate tokens from selected skill components."
+        },
+        "tools": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Approximate tokens from selected tool components."
+        },
+        "history": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Approximate tokens from selected history components."
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total approximate tokens across all selected components. Always present. Canonical: docs/04 §7.7."
+        }
+      },
+      "description": "Approximate token estimates per component type, summed from registry metadata. additionalProperties: false — no provider/cache/model token fields permitted. No live tokenizer calls in MVP. Canonical: docs/04 §7.7."
+    },
+
+    "riskFlags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Machine-readable risk flag strings surfaced from BudgetReport.riskFlags and other planning phases. Must not contain raw component text or raw user input. Examples: 'budget_infeasible_protected_component'. Canonical: docs/04 §7.7.",
+      "examples": [["budget_infeasible_protected_component"]]
+    },
+
+    "failOpenReasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Reasons why fail-open behavior was invoked during this planning run. Each entry identifies a module and the uncertainty that triggered fail-open inclusion. Must not contain raw user text. Canonical: docs/04 §7.7.",
+      "examples": [["ScaffoldSelector: familyConfidence below threshold — general_default substituted"]]
+    },
+
+    "planningWarnings": {
+      "type": "array",
+      "items": {
+        "$ref": "https://portable-context-control-plane/schemas/internal/planning-warning.schema.json"
+      },
+      "description": "Global planning warnings emitted during this run. Each warning has a machine-readable code and a human-readable message. Warning codes use an advisory open enum — do not enforce as a closed enum. Canonical: docs/06 §3.4; docs/12 §6.2.",
+      "examples": [
+        [{"code": "selector_policy_defaulted", "message": "selectorPolicy absent — safe defaults applied: failOpenThreshold=0.7, deterministicOnly=true, injectionSuspectAction=warn_and_continue"}]
+      ]
+    },
+
+    "budgetHintSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "$comment": "Optional. PPG-only convenience field. Must not appear before Budgeter completes. PPG is the sole module that computes this — it aggregates hint counts from resolved decisions. Budgeter does not consume this field. Any mismatch between summary and resolved decisions is a harness failure. Canonical: docs/06 §27.6; docs/04 §7.7.",
+      "properties": {
+        "protectedCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of components with budgetHint: protected."
+        },
+        "overBudgetProtectedCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of components with budgetHint: over_budget_protected."
+        },
+        "candidateOptionalCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of components with budgetHint: candidate_optional."
+        },
+        "expensiveOptionalCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of components with budgetHint: expensive_optional (>= 500 token threshold)."
+        },
+        "unknownCostCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of components with budgetHint: unknown_cost."
+        }
+      },
+      "description": "Optional. Aggregated count of budget hints from resolved decisions, computed by PPG after BudgetReport received. Must not be computed before Budgeter completes. Must not be passed as Budgeter input. Canonical: docs/06 §27.6."
+    }
+
+  },
+
+  "$defs": {
+
+    "PartitionEntry": {
+      "$anchor": "PartitionEntry",
+      "title": "Component partition entry",
+      "description": "A single component entry in one of the three partition arrays (selectedComponents, omittedComponents, deferredComponents). Every entry requires componentId, action, path, and reason. tokensApprox is optional. path is required on ALL entries — especially critical on deferredComponents entries where it distinguishes runtime_unavailable from default_defer. Do not embed full SelectionDecision or ResolvedSelectionDecision objects here — use IDs only. No raw component text, no raw history content, no contentInline, no cache advisory fields. Canonical: docs/04 §7.7 F-13; docs/12 §5.1; Pass 4.9C-4B decision #1.",
+      "type": "object",
+      "required": ["componentId", "action", "path", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "componentId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The validated registry component ID. For reference_unknown entries, this carries the unknown string (no separate unknownId field in MVP — safe-defer 5-Q4). Must not contain raw component content. Canonical: docs/06 §4."
+        },
+        "action": {
+          "$ref": "https://portable-context-control-plane/schemas/shared/enums.shared.schema.json#SelectionAction",
+          "description": "The final resolved action for this component. Must match the partition list: include for selectedComponents, omit for omittedComponents, defer for deferredComponents. Canonical: docs/06 §4."
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The final output partition path for this component. The valid path values are constrained further by each partition array's local allOf rules — see selectedComponents, omittedComponents, and deferredComponents item schemas. Required on ALL partition entries. On deferredComponents entries, harnesses MUST filter by path (not by action alone) to distinguish runtime_unavailable from default_defer (5-Q7/F-28). Canonical: docs/06 \u00a74; docs/12 \u00a75.1."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable audit reason for this partition decision. Must not contain raw component content, raw history turn content, or raw user request text. Canonical: docs/04 §7.7."
+        },
+        "tokensApprox": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Optional. Approximate token count for this component from registry metadata. Absent when cost is unknown or not meaningful. No live tokenizer calls in MVP. Canonical: docs/04 §7.5; docs/06 §20.2."
+        }
+      }
+    }
+
+  }
+}
