@@ -52,9 +52,9 @@ headline number on a realistic registry.
 
   | Adapter | Surface | What it shows |
   |---|---|---|
-  | [`@zam/adapter-openclaw`](packages/adapter-openclaw) | agent **workspace** (Markdown files) | 73% saved on a greeting, 53% on a coding request; safety always kept |
-  | [`@zam/adapter-mcp`](packages/adapter-mcp) | **MCP** tools / resources / prompts | prunes the tool list per request; destructive tools surfaced **only** for ops |
-  | [`@zam/adapter-telegram`](packages/adapter-telegram) | Telegram **bot metadata** | uses the `requestSignals` caller tier (group / reply → family) |
+  | [`zam-adapter-openclaw`](packages/adapter-openclaw) | agent **workspace** (Markdown files) | 73% saved on a greeting, 53% on a coding request; safety always kept |
+  | [`zam-adapter-mcp`](packages/adapter-mcp) | **MCP** tools / resources / prompts | prunes the tool list per request; destructive tools surfaced **only** for ops |
+  | [`zam-adapter-telegram`](packages/adapter-telegram) | Telegram **bot metadata** | uses the `requestSignals` caller tier (group / reply → family) |
 
   These are **reference adapters** run against *documented, synthetic* inputs (each package's README
   states its scope) — they demonstrate the planning contract and its portability, not live production

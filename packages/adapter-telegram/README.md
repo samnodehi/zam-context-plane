@@ -1,4 +1,4 @@
-# @zam/adapter-telegram
+# zam-adapter-telegram
 
 The third reference adapter for the ZAM context plane (`docs/40`). It governs a Telegram bot's
 **per-message** context, and it is the adapter that exercises the core's **`requestSignals` caller
@@ -28,7 +28,7 @@ no core change.
 ## Usage
 
 ```ts
-import { governUpdate } from '@zam/adapter-telegram';
+import { governUpdate } from 'zam-adapter-telegram';
 
 const { promptFamily, signals, prompt, stats } = governUpdate({
   components,                                   // the bot's context inventory
@@ -47,7 +47,7 @@ zam-telegram --bot ./example-bot.json --text "hi everyone" --chat-type group   #
 ## Build & test
 
 ```bash
-npm install   # links the workspace-local `context-plane` (file:../..); build the core first
+npm install   # installs context-plane from npm
 npm run build
 npm test
 ```
