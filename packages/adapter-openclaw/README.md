@@ -1,4 +1,4 @@
-# @zam/adapter-openclaw
+# zam-adapter-openclaw
 
 The first **reference adapter** for the ZAM context plane. It demonstrates the adapter contract
 (`docs/37 §5`) end-to-end on an **OpenClaw-shaped agent workspace**: take files on disk, govern them
@@ -21,7 +21,7 @@ report.
 ## Usage
 
 ```ts
-import { governWorkspace } from '@zam/adapter-openclaw';
+import { governWorkspace } from 'zam-adapter-openclaw';
 
 const { promptFamily, prompt, stats } = governWorkspace({
   workspaceDir: './example-workspace',
@@ -67,7 +67,7 @@ version: 1.0.0
 ## Build & test
 
 ```bash
-npm install   # links the workspace-local `context-plane` (file:../..); build the core first
+npm install   # installs context-plane from npm
 npm run build
 npm test
 ```

@@ -1,8 +1,28 @@
 {
-  "name": "@zam/adapter-telegram",
+  "name": "zam-adapter-telegram",
   "version": "0.1.0",
   "description": "Reference adapter: governs a Telegram bot's per-message context via the ZAM context plane, deriving requestSignals from update metadata (chat type, reply).",
   "type": "module",
+  "license": "Apache-2.0",
+  "author": "Sam Noodehi",
+  "homepage": "https://github.com/samnodehi/zam-context-plane/tree/main/packages/adapter-telegram#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samnodehi/zam-context-plane.git",
+    "directory": "packages/adapter-telegram"
+  },
+  "bugs": {
+    "url": "https://github.com/samnodehi/zam-context-plane/issues"
+  },
+  "keywords": [
+    "zam",
+    "context-plane",
+    "context-governance",
+    "ai-agents",
+    "adapter",
+    "telegram",
+    "bot"
+  ],
   "engines": {
     "node": ">=20"
   },
@@ -18,13 +38,18 @@
   "bin": {
     "zam-telegram": "./dist/cli.js"
   },
+  "files": [
+    "dist",
+    "example-bot.json"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/cli.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {
-    "context-plane": "file:../.."
+    "context-plane": "^0.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

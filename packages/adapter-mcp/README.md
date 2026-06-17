@@ -1,4 +1,4 @@
-# @zam/adapter-mcp
+# zam-adapter-mcp
 
 The **strategic second** reference adapter for the ZAM context plane (`docs/39`). It governs an MCP
 client's aggregated capabilities: given the tools/resources/prompts exposed by the connected MCP
@@ -27,7 +27,7 @@ point: it proves the deterministic core is **surface-independent** (portability)
 ## Usage
 
 ```ts
-import { governCapabilities } from '@zam/adapter-mcp';
+import { governCapabilities } from 'zam-adapter-mcp';
 
 const { promptFamily, surfaced, stats } = governCapabilities({
   capabilities,                 // { servers: [{ name, tools?, resources?, prompts? }] }
@@ -55,7 +55,7 @@ zam-mcp --capabilities ./example-capabilities.json --request "Deploy the service
 ## Build & test
 
 ```bash
-npm install   # links the workspace-local `context-plane` (file:../..); build the core first
+npm install   # installs context-plane from npm
 npm run build
 npm test
 ```
