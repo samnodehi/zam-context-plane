@@ -36,7 +36,7 @@
     }
   },
   "bin": {
-    "zam-mcp": "./dist/cli.js"
+    "zam-mcp": "dist/cli.js"
   },
   "files": [
     "dist",
