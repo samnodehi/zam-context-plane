@@ -11,6 +11,11 @@ and an inventory of available context components — system scaffolds, skills, t
 it decides which ones to **include**, **omit**, or **defer**, and records *why*. It emits a structured
 *plan*, never assembled prompt text: **the model proposes, deterministic guardrails enforce.**
 
+> 🧪 **Early and open (v0.1.x).** It's published and tested (743 passing), but young — feedback is very
+> welcome. Try it (`npm install context-plane`) and tell me what's confusing, missing, or broken via an
+> [issue](https://github.com/samnodehi/zam-context-plane/issues) or a
+> [discussion](https://github.com/samnodehi/zam-context-plane/discussions).
+
 ## The problem
 
 Most agent runtimes inject *everything* every turn — every skill, every tool definition, every memory
