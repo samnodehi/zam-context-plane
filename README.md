@@ -6,6 +6,8 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![CI](https://github.com/samnodehi/zam-context-plane/actions/workflows/ci.yml/badge.svg)](https://github.com/samnodehi/zam-context-plane/actions/workflows/ci.yml)
 
+![ZAM deciding what context each request needs — what it keeps, what it drops, and why](https://raw.githubusercontent.com/samnodehi/zam-context-plane/main/docs/demo.gif)
+
 ZAM (a "Context Control Plane") runs **before** an agent builds its prompt. Given the user's request
 and an inventory of available context components — system scaffolds, skills, tools, memory, history —
 it decides which ones to **include**, **omit**, or **defer**, and records *why*. It emits a structured
