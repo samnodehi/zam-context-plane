@@ -101,8 +101,8 @@ npm test
 **See the value (offline, deterministic, no API key):**
 
 ```bash
-npm run benchmark
-# prints mean token savings + 0 unsafe omissions on a realistic OpenClaw-modeled registry
+npm run demo        # narrated walkthrough — watch ZAM keep/drop context per request
+npm run benchmark   # the metrics — 63.9% mean token savings, 0 unsafe omissions
 ```
 
 **CLI:**
