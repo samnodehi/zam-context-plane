@@ -34,9 +34,7 @@
  * Canonical: docs/06 §2.1, §2.2; docs/11 §6 Phase 3; docs/33.
  */
 
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createRequire as _createRequire } from 'node:module';
+import { createAjv2020, getSchema, type AjvInstance, type ValidateFn } from './schema-store.js';
 
 import type { LoadedInputs } from '../types/inputs.js';
 import type { RegistryResult } from '../types/registry.js';
@@ -47,31 +45,8 @@ import type { PlanningWarning } from '../types/warnings.js';
 import { classifyRequest } from './request-router.js';
 
 // ---------------------------------------------------------------------------
-// AJV — local duplicate of Phase 1 pattern (intentional; input-loader.ts
-// does not export its AJV instance; no shared utility file in Phase 3 scope)
+// AJV + schemas via the shared, bundler-safe schema-store (createAjv2020/getSchema).
 // ---------------------------------------------------------------------------
-
-const _require = _createRequire(import.meta.url);
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const AjvCtor = (_require('ajv/dist/2020') as any).default as new (opts?: Record<string, unknown>) => AjvInstance;
-type AjvInstance = {
-  addSchema(schema: unknown): AjvInstance;
-  compile(schema: unknown): ValidateFn;
-};
-type ValidateFn = {
-  (data: unknown): boolean;
-  errors?: Array<{ instancePath: string; message?: string }>;
-};
-
-/**
- * Resolve the path to the schemas/ directory regardless of whether running
- * via tsx from src/ or from compiled dist/. Identical pattern to Phase 1.
- */
-function resolveSchemaBase(): string {
-  const thisFile = fileURLToPath(import.meta.url);
-  const thisDir = resolve(thisFile, '..');
-  return resolve(thisDir, '../../schemas');
-}
 
 // Lazily built singleton AJV instance for Phase 3 (request-signals validation)
 let _ajv: AjvInstance | null = null;
@@ -84,18 +59,9 @@ let _ajv: AjvInstance | null = null;
  * before compiling request-signals.schema.json.
  */
 function buildRequestSignalsValidator(): ValidateFn {
-  const schemaBase = resolveSchemaBase();
-
-  const promptFamilySchema = _require(
-    resolve(schemaBase, 'shared/prompt-family.schema.json'),
-  ) as Record<string, unknown>;
-  const requestSignalsSchema = _require(
-    resolve(schemaBase, 'inputs/request-signals.schema.json'),
-  ) as Record<string, unknown>;
-
-  const ajv = new AjvCtor({ strict: false, allErrors: false });
-  ajv.addSchema(promptFamilySchema);
-  return ajv.compile(requestSignalsSchema);
+  const ajv = createAjv2020({ strict: false, allErrors: false });
+  ajv.addSchema(getSchema('shared/prompt-family.schema.json'));
+  return ajv.compile(getSchema('inputs/request-signals.schema.json'));
 }
 
 /**

@@ -50,8 +50,11 @@
     "schemas"
   ],
   "scripts": {
-    "build": "tsc && node scripts/add-cli-shebang.mjs",
+    "gen:schemas": "node scripts/gen-embedded-schemas.mjs",
+    "prepare": "npm run gen:schemas",
+    "build": "npm run gen:schemas && tsc && node scripts/add-cli-shebang.mjs",
     "dev": "tsx src/cli/index.ts",
+    "pretest": "npm run gen:schemas",
     "test": "vitest run",
     "test:watch": "vitest",
     "benchmark": "npm run build && node benchmarks/run.mjs",

@@ -22,41 +22,11 @@
  *            schemas/future/model-selector-output.schema.json.
  */
 
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createRequire as _createRequire } from 'node:module';
+import { createAjv2020, getSchema } from '../../core/schema-store.js';
 
 import type { AnalyzerOutput } from '../../types/analyzer.js';
 import type { ModelSelectorOutput } from '../../types/model-selector.js';
 import type { PlanningWarning } from '../../types/warnings.js';
-
-const _require = _createRequire(import.meta.url);
-
-// AJV draft 2020-12 — loaded via createRequire (CJS interop), same pattern as input-loader.ts.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const AjvCtor = (_require('ajv/dist/2020') as any).default as new (opts?: Record<string, unknown>) => {
-  compile(schema: unknown): (data: unknown) => boolean & {
-    errors?: Array<{ instancePath: string; message?: string }> | null;
-  };
-};
-
-// ---------------------------------------------------------------------------
-// Schema path resolution
-// ---------------------------------------------------------------------------
-
-/**
- * Resolve the path to the schemas/future/ directory.
- *
- * This file lives at src/http/validation/schemas.ts (3 levels below project root).
- * Same logic as resolveSchemaBase() in src/core/input-loader.ts, adjusted for
- * a 3-level depth rather than 2.
- */
-function resolveFutureSchemaBase(): string {
-  const thisFile = fileURLToPath(import.meta.url);
-  const thisDir = resolve(thisFile, '..');
-  // src/http/validation → src/http → src → project root → schemas/future
-  return resolve(thisDir, '../../../schemas/future');
-}
 
 // ---------------------------------------------------------------------------
 // Compiled validator (lazy singleton, isolated from MVP AJV instance)
@@ -83,10 +53,10 @@ function getAnalyzerOutputValidator(): ValidateFnWithErrors | null {
   if (_validateAnalyzerOutput !== null) return _validateAnalyzerOutput;
 
   try {
-    const futureBase = resolveFutureSchemaBase();
-    const schema = _require(resolve(futureBase, 'analyzer-output.schema.json')) as Record<string, unknown>;
-    const futureAjv = new AjvCtor({ strict: false, allErrors: false });
-    _validateAnalyzerOutput = futureAjv.compile(schema) as ValidateFnWithErrors;
+    const futureAjv = createAjv2020({ strict: false, allErrors: false });
+    _validateAnalyzerOutput = futureAjv.compile(
+      getSchema('future/analyzer-output.schema.json'),
+    ) as ValidateFnWithErrors;
     return _validateAnalyzerOutput;
   } catch (err) {
     _validatorLoadError = err instanceof Error ? err.message : String(err);
@@ -104,10 +74,10 @@ function getModelSelectorOutputValidator(): ValidateFnWithErrors | null {
   if (_validateModelSelectorOutput !== null) return _validateModelSelectorOutput;
 
   try {
-    const futureBase = resolveFutureSchemaBase();
-    const schema = _require(resolve(futureBase, 'model-selector-output.schema.json')) as Record<string, unknown>;
-    const futureAjv = new AjvCtor({ strict: false, allErrors: false });
-    _validateModelSelectorOutput = futureAjv.compile(schema) as ValidateFnWithErrors;
+    const futureAjv = createAjv2020({ strict: false, allErrors: false });
+    _validateModelSelectorOutput = futureAjv.compile(
+      getSchema('future/model-selector-output.schema.json'),
+    ) as ValidateFnWithErrors;
     return _validateModelSelectorOutput;
   } catch (err) {
     _modelSelectorValidatorLoadError = err instanceof Error ? err.message : String(err);

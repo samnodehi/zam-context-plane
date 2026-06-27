@@ -10,21 +10,18 @@
  * credentials. The auth bypass is enforced in src/http/server.ts.
  *
  * Response shape: { status: 'ok', version: string }
- * Version is read from package.json at module load time — never hardcoded.
+ * Version is inlined from package.json at build time (src/generated/version.ts).
  *
  * Canonical: docs/31_PRODUCT_DISTRIBUTION_AND_PACKAGING.md §3 DQ-7.
  */
 
-import { createRequire } from 'node:module';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
-// Read package.json version at module load time.
-// createRequire(import.meta.url) is the correct ESM-compatible approach for
-// requiring JSON files. dist/http/routes/health.js is 3 levels below the project
-// root, so '../../../package.json' resolves correctly at runtime.
-const require = createRequire(import.meta.url);
-const pkg = require('../../../package.json') as { version: string };
-const VERSION: string = pkg.version;
+import { PACKAGE_VERSION } from '../../generated/version.js';
+
+// Version is inlined (src/generated/version.ts, generated from package.json at
+// build time) so it survives single-binary bundling and never drifts.
+const VERSION: string = PACKAGE_VERSION;
 
 /**
  * Register the GET /health route on the Fastify instance.

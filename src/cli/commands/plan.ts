@@ -1,8 +1,8 @@
 import { Command } from 'commander';
 import { writeFileSync, mkdirSync } from 'node:fs';
-import { join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createRequire as _createRequire } from 'node:module';
+import { join } from 'node:path';
+import { createAjv2020, getSchema } from '../../core/schema-store.js';
+import type { AjvInstance, ValidateFn } from '../../core/schema-store.js';
 import { loadInputs, loadAnalyzerOutput, ClassAError } from '../../core/input-loader.js';
 import type { PlanOptions } from '../../core/input-loader.js';
 import type { PlanningWarning } from '../../types/warnings.js';
@@ -13,45 +13,23 @@ import { runCorePipeline } from '../../core/api.js';
 // ---------------------------------------------------------------------------
 // AJV setup for Phase 10 output validation
 // ---------------------------------------------------------------------------
-// AJV draft 2020-12 — same CJS-require pattern as input-loader.ts.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const _require = _createRequire(import.meta.url);
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const AjvCtor = (_require('ajv/dist/2020') as any).default as new (opts?: Record<string, unknown>) => AjvInstance;
-type AjvInstance = {
-  addSchema(schema: unknown): AjvInstance;
-  compile(schema: unknown): ValidateFn;
-};
-
-/**
- * AJV validate-function shape returned by ajv.compile().
- * Exported so tests can construct a compatible fake validator without depending
- * on the AJV runtime.
- */
-export type ValidateFn = {
-  (data: unknown): boolean;
-  errors?: Array<{ instancePath: string; message?: string }>;
-};
-
-function resolveSchemaBase(): string {
-  const thisFile = fileURLToPath(import.meta.url);
-  const thisDir = resolve(thisFile, '..');
-  return resolve(thisDir, '../../../schemas');
-}
+// Schemas are inlined and AJV is a static import via ../../core/schema-store.js
+// (bundler-safe — no runtime schema disk I/O). ValidateFn is re-exported so tests
+// can still construct a compatible fake validator from this module.
+export type { ValidateFn };
 
 function buildOutputAjv(): AjvInstance {
-  const schemaBase = resolveSchemaBase();
-  const ajv = new AjvCtor({ strict: false, allErrors: false });
-  ajv.addSchema(_require(resolve(schemaBase, 'shared/enums.shared.schema.json')) as Record<string, unknown>);
-  ajv.addSchema(_require(resolve(schemaBase, 'shared/prompt-family.schema.json')) as Record<string, unknown>);
-  ajv.addSchema(_require(resolve(schemaBase, 'shared/warning-code.schema.json')) as Record<string, unknown>);
-  ajv.addSchema(_require(resolve(schemaBase, 'internal/planning-warning.schema.json')) as Record<string, unknown>);
-  ajv.addSchema(_require(resolve(schemaBase, 'internal/selector-summary.schema.json')) as Record<string, unknown>);
-  ajv.addSchema(_require(resolve(schemaBase, 'internal/trace-entry.schema.json')) as Record<string, unknown>);
-  ajv.addSchema(_require(resolve(schemaBase, 'internal/selection-decision.schema.json')) as Record<string, unknown>);
-  ajv.addSchema(_require(resolve(schemaBase, 'internal/resolved-selection-decision.schema.json')) as Record<string, unknown>);
-  ajv.addSchema(_require(resolve(schemaBase, 'internal/conflict-resolution-trace.schema.json')) as Record<string, unknown>);
-  ajv.addSchema(_require(resolve(schemaBase, 'internal/budget-report.schema.json')) as Record<string, unknown>);
+  const ajv = createAjv2020({ strict: false, allErrors: false });
+  ajv.addSchema(getSchema('shared/enums.shared.schema.json'));
+  ajv.addSchema(getSchema('shared/prompt-family.schema.json'));
+  ajv.addSchema(getSchema('shared/warning-code.schema.json'));
+  ajv.addSchema(getSchema('internal/planning-warning.schema.json'));
+  ajv.addSchema(getSchema('internal/selector-summary.schema.json'));
+  ajv.addSchema(getSchema('internal/trace-entry.schema.json'));
+  ajv.addSchema(getSchema('internal/selection-decision.schema.json'));
+  ajv.addSchema(getSchema('internal/resolved-selection-decision.schema.json'));
+  ajv.addSchema(getSchema('internal/conflict-resolution-trace.schema.json'));
+  ajv.addSchema(getSchema('internal/budget-report.schema.json'));
   return ajv;
 }
 
@@ -61,20 +39,16 @@ let _validateTrace: ValidateFn | null = null;
 
 function getPromptPlanValidator(): ValidateFn {
   if (_validatePromptPlan === null) {
-    const schemaBase = resolveSchemaBase();
     const ajv = (_outputAjv ??= buildOutputAjv());
-    const schema = _require(resolve(schemaBase, 'outputs/prompt-plan.schema.json')) as Record<string, unknown>;
-    _validatePromptPlan = ajv.compile(schema);
+    _validatePromptPlan = ajv.compile(getSchema('outputs/prompt-plan.schema.json'));
   }
   return _validatePromptPlan;
 }
 
 function getTraceValidator(): ValidateFn {
   if (_validateTrace === null) {
-    const schemaBase = resolveSchemaBase();
     const ajv = (_outputAjv ??= buildOutputAjv());
-    const schema = _require(resolve(schemaBase, 'outputs/trace.schema.json')) as Record<string, unknown>;
-    _validateTrace = ajv.compile(schema);
+    _validateTrace = ajv.compile(getSchema('outputs/trace.schema.json'));
   }
   return _validateTrace;
 }

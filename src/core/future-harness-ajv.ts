@@ -14,21 +14,11 @@
  * Canonical: docs/22_MODEL_ASSISTED_HARNESS_SCOPING.md §5.3, §9 (Phase P3).
  */
 
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createRequire as _createRequire } from 'node:module';
+import { createAjv2020, getSchema, type AjvInstance } from './schema-store.js';
 
 // ---------------------------------------------------------------------------
-// AJV bootstrap (CJS interop — mirrors harness-ajv.ts pattern)
+// AJV bootstrap (static import via schema-store — bundler-safe)
 // ---------------------------------------------------------------------------
-
-const _require = _createRequire(import.meta.url);
-// AJV draft 2020-12 — loaded via createRequire because ajv/dist/2020 is CJS.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const AjvCtor = (_require('ajv/dist/2020') as any).default as new (opts?: Record<string, unknown>) => AjvInstance;
-type AjvInstance = {
-  compile(schema: unknown): ValidateFn;
-};
 
 /**
  * Minimal ValidateFn shape — compatible with the project's harness.ts ValidateFn
@@ -37,21 +27,6 @@ type AjvInstance = {
 export type ValidateFn = ((data: unknown) => boolean) & {
   errors?: Array<{ instancePath: string; message?: string }> | null;
 };
-
-// ---------------------------------------------------------------------------
-// Schema base path resolution
-// ---------------------------------------------------------------------------
-
-/**
- * Resolve the schemas/future/ directory regardless of whether we run via tsx
- * from src/ or from compiled dist/. schemas/ is always at the project root,
- * two levels above src/ or dist/.
- */
-function resolveFutureSchemaBase(): string {
-  const thisFile = fileURLToPath(import.meta.url);
-  const thisDir = resolve(thisFile, '..');
-  return resolve(thisDir, '../../schemas/future');
-}
 
 // ---------------------------------------------------------------------------
 // Singleton AJV instance for future harness validators
@@ -63,7 +38,7 @@ function getFutureHarnessAjv(): AjvInstance {
   if (_futureHarnessAjv !== null) return _futureHarnessAjv;
   // strict: false — future schemas use $anchor which AJV strict mode flags.
   // allErrors: false — fail fast on first error (same as MVP harness pattern).
-  _futureHarnessAjv = new AjvCtor({ strict: false, allErrors: false });
+  _futureHarnessAjv = createAjv2020({ strict: false, allErrors: false });
   return _futureHarnessAjv;
 }
 
@@ -85,12 +60,8 @@ let _validateAnalyzerOutput: ValidateFn | null = null;
  */
 export function getAnalyzerOutputValidator(): ValidateFn {
   if (_validateAnalyzerOutput !== null) return _validateAnalyzerOutput;
-  const futureSchemaBase = resolveFutureSchemaBase();
   const ajv = getFutureHarnessAjv();
-  const schema = _require(
-    resolve(futureSchemaBase, 'analyzer-output.schema.json'),
-  ) as Record<string, unknown>;
-  _validateAnalyzerOutput = ajv.compile(schema);
+  _validateAnalyzerOutput = ajv.compile(getSchema('future/analyzer-output.schema.json'));
   return _validateAnalyzerOutput;
 }
 
@@ -112,12 +83,8 @@ let _validateCompressorOutput: ValidateFn | null = null;
  */
 export function getCompressorOutputValidator(): ValidateFn {
   if (_validateCompressorOutput !== null) return _validateCompressorOutput;
-  const futureSchemaBase = resolveFutureSchemaBase();
   const ajv = getFutureHarnessAjv();
-  const schema = _require(
-    resolve(futureSchemaBase, 'history-compressor-output.schema.json'),
-  ) as Record<string, unknown>;
-  _validateCompressorOutput = ajv.compile(schema);
+  _validateCompressorOutput = ajv.compile(getSchema('future/history-compressor-output.schema.json'));
   return _validateCompressorOutput;
 }
 
@@ -143,12 +110,8 @@ let _validateModelSelectorOutput: ValidateFn | null = null;
  */
 export function getModelSelectorOutputValidator(): ValidateFn {
   if (_validateModelSelectorOutput !== null) return _validateModelSelectorOutput;
-  const futureSchemaBase = resolveFutureSchemaBase();
   const ajv = getFutureHarnessAjv();
-  const schema = _require(
-    resolve(futureSchemaBase, 'model-selector-output.schema.json'),
-  ) as Record<string, unknown>;
-  _validateModelSelectorOutput = ajv.compile(schema);
+  _validateModelSelectorOutput = ajv.compile(getSchema('future/model-selector-output.schema.json'));
   return _validateModelSelectorOutput;
 }
 
