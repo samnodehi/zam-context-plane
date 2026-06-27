@@ -8,6 +8,10 @@ coverage/
 *.js.map
 *.tsbuildinfo
 
+# Generated, bundler-safe schema/version modules (scripts/gen-embedded-schemas.mjs;
+# regenerated in prepare/pretest/build). Source of truth: schemas/ + package.json.
+src/generated/
+
 # Claude Code machine-local settings (per-machine permissions; not shared)
 .claude/settings.local.json
 

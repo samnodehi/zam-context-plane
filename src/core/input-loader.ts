@@ -16,7 +16,6 @@
 
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import {
   ACTIVE_IDS_DEFAULT,
@@ -25,20 +24,7 @@ import {
   POLICY_DEFAULT,
 } from './class-b-defaults.js';
 
-import { createRequire as _createRequire } from 'node:module';
-const _require = _createRequire(import.meta.url);
-// AJV draft 2020-12 — loaded via createRequire because ajv/dist/2020 is CJS.
-// ValidateFn is the type of a compiled validator function.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const AjvCtor = (_require('ajv/dist/2020') as any).default as new (opts?: Record<string, unknown>) => AjvInstance;
-type AjvInstance = {
-  addSchema(schema: unknown): AjvInstance;
-  compile(schema: unknown): ValidateFn;
-};
-type ValidateFn = {
-  (data: unknown): boolean;
-  errors?: Array<{ instancePath: string; message?: string }>;
-};
+import { createAjv2020, getSchema, type AjvInstance, type ValidateFn } from './schema-store.js';
 
 import type {
   LoadedInputs,
@@ -101,35 +87,15 @@ export interface PlanOptions {
  * network.
  */
 function buildAjv(): AjvInstance {
-  const schemaBase = resolveSchemaBase();
-
-  const enumsSchema = _require(resolve(schemaBase, 'shared/enums.shared.schema.json')) as Record<string, unknown>;
-  const promptFamilySchema = _require(resolve(schemaBase, 'shared/prompt-family.schema.json')) as Record<string, unknown>;
-  const warningCodeSchema = _require(resolve(schemaBase, 'shared/warning-code.schema.json')) as Record<string, unknown>;
-
-  const ajv = new AjvCtor({ strict: false, allErrors: false });
+  const ajv = createAjv2020({ strict: false, allErrors: false });
 
   // Pre-load shared schemas so $ref resolutions within input schemas succeed
   // without network fetches.
-  ajv.addSchema(enumsSchema);
-  ajv.addSchema(promptFamilySchema);
-  ajv.addSchema(warningCodeSchema);
+  ajv.addSchema(getSchema('shared/enums.shared.schema.json'));
+  ajv.addSchema(getSchema('shared/prompt-family.schema.json'));
+  ajv.addSchema(getSchema('shared/warning-code.schema.json'));
 
   return ajv;
-}
-
-/**
- * Resolve the path to the schemas/ directory regardless of whether we are
- * running via tsx from src/ or from compiled dist/. The schemas/ directory
- * is always at the project root, two levels above src/ or dist/.
- */
-function resolveSchemaBase(): string {
-  // fileURLToPath correctly handles Windows paths and URL-encoded characters
-  // (e.g. spaces encoded as %20 in import.meta.url).
-  // dist/core/input-loader.js is 2 levels below project root, same as src/core/.
-  const thisFile = fileURLToPath(import.meta.url);
-  const thisDir = resolve(thisFile, '..');
-  return resolve(thisDir, '../../schemas');
 }
 
 // Lazily built singleton AJV instance
@@ -209,9 +175,7 @@ function getValidator(schemaFile: string): ValidateFn {
   if (_compiledValidators.has(schemaFile)) {
     return _compiledValidators.get(schemaFile)!;
   }
-  const schemaBase = resolveSchemaBase();
-  const schema = _require(resolve(schemaBase, `inputs/${schemaFile}`)) as Record<string, unknown>;
-  const validate = getAjv().compile(schema);
+  const validate = getAjv().compile(getSchema(`inputs/${schemaFile}`));
   _compiledValidators.set(schemaFile, validate);
   return validate;
 }
@@ -571,12 +535,10 @@ export function loadAnalyzerOutput(
   // Validate against schemas/future/analyzer-output.schema.json using AJV.
   // Uses a standalone AJV instance for the future schema — does not share
   // the MVP input-loader AJV instance (isolation invariant).
-  const futureSchemaBase = resolve(resolveSchemaBase(), '../future');
-  const futureAjv = new AjvCtor({ strict: false, allErrors: false });
+  const futureAjv = createAjv2020({ strict: false, allErrors: false });
   let validateAnalyzerOutput: ValidateFn;
   try {
-    const schema = _require(resolve(futureSchemaBase, 'analyzer-output.schema.json')) as Record<string, unknown>;
-    validateAnalyzerOutput = futureAjv.compile(schema);
+    validateAnalyzerOutput = futureAjv.compile(getSchema('future/analyzer-output.schema.json'));
   } catch {
     warn(
       warnings,

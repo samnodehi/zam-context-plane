@@ -19,11 +19,7 @@
  * Canonical refs: docs/05 §8, §10, §11; docs/04 §7.1; docs/06 §2; docs/11 §8 I-04–I-07.
  */
 
-import { fileURLToPath } from 'node:url';
-import { resolve } from 'node:path';
-import { createRequire as _createRequire } from 'node:module';
-
-const _require = _createRequire(import.meta.url);
+import { getSchema } from './schema-store.js';
 
 import type { RawComponentRegistry } from '../types/inputs.js';
 import type {
@@ -33,18 +29,6 @@ import type {
   QuarantinedComponent,
   RegistryValidationWarning,
 } from '../types/registry.js';
-
-/**
- * Resolve the path to the schemas/ directory regardless of whether we are
- * running via tsx from src/ or from compiled dist/. Identical to the helper
- * in input-loader.ts — schemas/ is always at the project root, two levels
- * above src/ or dist/.
- */
-function resolveSchemaBase(): string {
-  const thisFile = fileURLToPath(import.meta.url);
-  const thisDir = resolve(thisFile, '..');
-  return resolve(thisDir, '../../schemas');
-}
 
 // ---------------------------------------------------------------------------
 // RegistryFatalError
@@ -106,11 +90,11 @@ function isHardProtected(raw: Record<string, unknown>): boolean {
  * Canonical promptFamily enum values.
  * Read from schemas/shared/prompt-family.schema.json, which is the authoritative
  * source (canonical owner: docs/06 §2.2, AC-11).
- * These are loaded via the same createRequire mechanism used by Phase 1 AJV.
+ * These are inlined via the shared schema-store (getSchema) — no runtime disk I/O.
  * Do not inline-guess values — always derive from the schema file.
  */
 const VALID_PROMPT_FAMILIES: ReadonlySet<string> = new Set(
-  (_require(resolve(resolveSchemaBase(), 'shared/prompt-family.schema.json')) as { enum: string[] }).enum,
+  (getSchema('shared/prompt-family.schema.json') as { enum: string[] }).enum,
 );
 
 /**
