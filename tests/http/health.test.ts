@@ -6,7 +6,7 @@
  * Test strategy (docs/31 §3 DQ-7):
  *   - Verify the health endpoint returns 200 with correct { status, version } shape.
  *   - Verify version matches package.json (not hardcoded).
- *   - Verify /health bypasses X-ZAM-API-Key authentication when a key is set.
+ *   - Verify /health requires the X-ZAM-API-Key when a key is set (no bypass).
  *   - Verify response Content-Type is application/json.
  *   - Verify unsupported HTTP methods return 404.
  *   - The 651-test MVP baseline (tests/phase12/) is NOT modified.
@@ -90,12 +90,12 @@ describe('GET /health — unauthenticated mode', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Suite 2: authenticated server (ZAM_API_KEY set) — /health must bypass auth
+// Suite 2: authenticated server (ZAM_API_KEY set) — /health requires the key
 // ---------------------------------------------------------------------------
 
 describe('GET /health — authenticated mode (ZAM_API_KEY set)', () => {
   let server: FastifyInstance;
-  const TEST_API_KEY = 'test-key-for-health-bypass';
+  const TEST_API_KEY = 'test-key-for-health-auth';
 
   beforeAll(async () => {
     process.env['ZAM_API_KEY'] = TEST_API_KEY;
@@ -108,24 +108,30 @@ describe('GET /health — authenticated mode (ZAM_API_KEY set)', () => {
     await server.close();
   });
 
-  it('GET /health returns 200 WITHOUT X-ZAM-API-Key header (auth bypassed)', async () => {
-    // This request intentionally sends NO authentication header.
-    // /health must be reachable by Docker/Kubernetes health checks that cannot
-    // provide credentials. The auth bypass is enforced in src/http/server.ts.
+  it('GET /health returns 401 WITHOUT the X-ZAM-API-Key header (no bypass)', async () => {
+    // When a key is set it is required on EVERY route, including /health.
     const response = await server.inject({
       method: 'GET',
       url: '/health',
       // No 'x-zam-api-key' header
     });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(401);
+  });
 
+  it('GET /health returns 200 WITH the correct X-ZAM-API-Key header', async () => {
+    const response = await server.inject({
+      method: 'GET',
+      url: '/health',
+      headers: { 'x-zam-api-key': TEST_API_KEY },
+    });
+
+    expect(response.statusCode).toBe(200);
     const body = JSON.parse(response.body) as Record<string, unknown>;
     expect(body['status']).toBe('ok');
   });
 
-  it('GET /plan returns 401 WITHOUT X-ZAM-API-Key (auth enforced on other routes)', async () => {
-    // Verifies that the /health bypass does not affect other routes.
+  it('GET /plan returns 401 WITHOUT the X-ZAM-API-Key header', async () => {
     const response = await server.inject({
       method: 'POST',
       url: '/plan',

@@ -6,7 +6,7 @@
  *     DNS-rebinding and cross-origin browser access to the loopback service
  *   - API key authentication (X-ZAM-API-Key header) when ZAM_API_KEY env is set
  *   - Standard JSON request/response handling
- *   - GET /health route registration (bypasses auth — used by Docker health checks)
+ *   - GET /health route registration (subject to auth when ZAM_API_KEY is set)
  *   - POST /plan route registration
  *   - POST /trace route registration
  *   - POST /evaluate route registration
@@ -85,13 +85,25 @@ function hostnameFromHostHeader(host: string): string {
 }
 
 /**
+ * Whether a *bind* host (the listen interface, not a request Host header) is a
+ * loopback interface. Used by the entrypoint to refuse a non-loopback bind by
+ * default. e.g. "127.0.0.1" / "localhost" / "::1" → true; "0.0.0.0" / "::" / a
+ * public IP → false. Canonical: docs/18 §4.1.
+ */
+export function isLoopbackBindHost(host: string): boolean {
+  const h = host.trim().toLowerCase().replace(/^\[|\]$/g, '');
+  return h === 'localhost' || h === '::1' || h.startsWith('127.');
+}
+
+/**
  * Build and return a configured Fastify instance.
  *
- * Authentication behavior (docs/21 §2 IQ-3):
- *   - If process.env.ZAM_API_KEY is set: require X-ZAM-API-Key header on every
- *     request except GET /health. Mismatched or absent key → 401. The key value
- *     is never logged.
- *   - If process.env.ZAM_API_KEY is not set: no auth check (local-only mode).
+ * Authentication behavior (docs/21 §2 IQ-3; docs/18 §4.1):
+ *   - If process.env.ZAM_API_KEY is set: require the X-ZAM-API-Key header on
+ *     EVERY route, including GET /health. Mismatched or absent key → 401. The
+ *     key value is never logged.
+ *   - If process.env.ZAM_API_KEY is not set: no auth check (local-only mode);
+ *     all routes (incl. /health) are reachable without a key.
  *
  * @param opts Optional configuration overrides (used in tests to disable logging).
  * @param opts.logger Fastify logger option. Pass `false` to disable (tests),
@@ -149,10 +161,9 @@ export async function buildServer(opts: { logger?: boolean | { level: string } }
     fastify.addHook(
       'onRequest',
       async (request: FastifyRequest, reply: FastifyReply) => {
-        // Health endpoint bypasses authentication so Docker/Kubernetes health
-        // checks can reach it without credentials. (docs/31 §3 DQ-7)
-        if (request.url === '/health') return;
-
+        // When a key is set it is required on EVERY route, including /health
+        // (no bypass). With no key set this hook is not registered, so all
+        // routes stay open — the OSS default. Canonical: docs/18 §4.1.
         const providedKey = request.headers['x-zam-api-key'];
         // Key value intentionally not logged (docs/21 §2 IQ-3).
         // Comparison is constant-time to avoid leaking the key via timing.

@@ -5,14 +5,13 @@
  * and reporting its version. This endpoint intentionally exposes no internal
  * state, schema data, or trace information.
  *
- * This endpoint bypasses X-ZAM-API-Key authentication by design, so that
- * Docker health checks and Kubernetes readiness probes can reach it without
- * credentials. The auth bypass is enforced in src/http/server.ts.
+ * Auth follows the service default: reachable without a key when no ZAM_API_KEY
+ * is set; requires the key (like every route) when ZAM_API_KEY is set.
  *
  * Response shape: { status: 'ok', version: string }
  * Version is inlined from package.json at build time (src/generated/version.ts).
  *
- * Canonical: docs/31_PRODUCT_DISTRIBUTION_AND_PACKAGING.md §3 DQ-7.
+ * Canonical: docs/18 §4.1; docs/31 §3 DQ-7 (historical).
  */
 
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
