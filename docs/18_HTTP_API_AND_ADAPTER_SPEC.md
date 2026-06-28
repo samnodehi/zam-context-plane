@@ -94,6 +94,7 @@ The HTTP Service wrapper sits strictly **outside** the core boundary defined in 
 - The HTTP service is **stateless** — it does not maintain session state. Session/history state is provided by the caller per-request.
 - Error responses follow a standard structure (§4.5).
 - No provider-specific fields appear in any request or response.
+- **Local-network guard (loopback-only by default).** The service binds to `127.0.0.1` (configurable via `ZAM_HOST`). Every request passes a Host/Origin check: a request whose `Host` is not loopback (allow-list extendable via `ZAM_ALLOWED_HOSTS`), or that carries a cross-origin browser `Origin` (allow-list `ZAM_ALLOWED_ORIGINS`, default none), is rejected with `403 FORBIDDEN`. This defeats DNS-rebinding and cross-origin browser access to the local service; non-browser callers (the agent runtime, `curl`) send no `Origin` and a loopback `Host`, so they pass. It is independent of, and additional to, the optional `X-ZAM-API-Key` auth.
 
 ### 4.2 `POST /plan`
 
