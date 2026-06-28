@@ -9,7 +9,7 @@
 import { describe, it, expect, beforeEach, afterAll } from 'vitest';
 import type { FastifyInstance } from 'fastify';
 
-import { buildServer } from '../../src/http/server.js';
+import { buildServer, isLoopbackBindHost } from '../../src/http/server.js';
 
 describe('HTTP local-network guard (Host/Origin)', () => {
   // Start each test from a clean env so no auth/allow-list bleeds across tests.
@@ -121,5 +121,37 @@ describe('HTTP local-network guard (Host/Origin)', () => {
     const body = JSON.parse(res.body) as { error: { code: string } };
     expect(body.error.code).toBe('FORBIDDEN');
     await server.close();
+  });
+
+  it('allow-lists Tauri webview origins via ZAM_ALLOWED_ORIGINS', async () => {
+    // A desktop (Tauri/Electron) host that lets its webview call ZAM directly
+    // opts in its webview origins; the public default still rejects all Origins.
+    process.env['ZAM_ALLOWED_ORIGINS'] = 'tauri://localhost,https://tauri.localhost,null';
+    const server = await fresh();
+    for (const origin of ['tauri://localhost', 'https://tauri.localhost', 'null']) {
+      const res = await server.inject({ method: 'GET', url: '/health', headers: { origin } });
+      expect(res.statusCode).toBe(200);
+    }
+    const blocked = await server.inject({
+      method: 'GET',
+      url: '/health',
+      headers: { origin: 'https://evil.example' },
+    });
+    expect(blocked.statusCode).toBe(403);
+    await server.close();
+  });
+});
+
+describe('isLoopbackBindHost (bind-interface guard)', () => {
+  it('returns true for loopback bind hosts', () => {
+    for (const h of ['127.0.0.1', 'localhost', '::1', '[::1]', '127.5.6.7', 'LOCALHOST']) {
+      expect(isLoopbackBindHost(h)).toBe(true);
+    }
+  });
+
+  it('returns false for non-loopback bind hosts', () => {
+    for (const h of ['0.0.0.0', '::', '1.2.3.4', '10.0.0.5', 'example.com']) {
+      expect(isLoopbackBindHost(h)).toBe(false);
+    }
   });
 });
