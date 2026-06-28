@@ -2,6 +2,8 @@
  * Fastify server factory for the ZAM HTTP Service.
  *
  * Creates and configures a Fastify instance with:
+ *   - Local-network guard (Host + Origin checks) on every request — defeats
+ *     DNS-rebinding and cross-origin browser access to the loopback service
  *   - API key authentication (X-ZAM-API-Key header) when ZAM_API_KEY env is set
  *   - Standard JSON request/response handling
  *   - GET /health route registration (bypasses auth — used by Docker health checks)
@@ -46,6 +48,42 @@ function timingSafeKeyMatch(provided: string, expected: string): boolean {
   return timingSafeEqual(providedDigest, expectedDigest);
 }
 
+// ---------------------------------------------------------------------------
+// Local-network hardening (anti DNS-rebinding / cross-origin) — docs/18 §4.1
+// ---------------------------------------------------------------------------
+
+/**
+ * Loopback hostnames always allowed in the Host header. The service binds to
+ * 127.0.0.1 by default, so legitimate traffic carries one of these; a
+ * DNS-rebinding attack reaches the loopback port via the browser with the
+ * attacker's domain as Host, so rejecting a non-loopback Host blocks it.
+ */
+const LOOPBACK_HOSTS: ReadonlySet<string> = new Set(['127.0.0.1', 'localhost', '::1']);
+
+/** Parse a comma-separated env list into a trimmed, lower-cased string set. */
+function parseEnvSet(value: string | undefined): Set<string> {
+  return new Set(
+    (value ?? '')
+      .split(',')
+      .map((s) => s.trim().toLowerCase())
+      .filter((s) => s.length > 0),
+  );
+}
+
+/**
+ * Extract the hostname from a Host header, dropping the optional port and IPv6
+ * brackets. e.g. "127.0.0.1:3000" → "127.0.0.1"; "[::1]:3000" → "::1".
+ */
+function hostnameFromHostHeader(host: string): string {
+  const trimmed = host.trim();
+  if (trimmed.startsWith('[')) {
+    const end = trimmed.indexOf(']');
+    return (end > 0 ? trimmed.slice(1, end) : trimmed.slice(1)).toLowerCase();
+  }
+  const colon = trimmed.indexOf(':');
+  return (colon >= 0 ? trimmed.slice(0, colon) : trimmed).toLowerCase();
+}
+
 /**
  * Build and return a configured Fastify instance.
  *
@@ -65,6 +103,42 @@ export async function buildServer(opts: { logger?: boolean | { level: string } }
     // Disable logger in tests for clean output; enable in production
     logger: opts.logger ?? false,
   });
+
+  // -------------------------------------------------------------------------
+  // Local-network guard (anti DNS-rebinding / cross-origin) — always on, runs
+  // before auth. Rejects (403) a non-loopback Host (allow-list ZAM_ALLOWED_HOSTS)
+  // or a cross-origin browser Origin (allow-list ZAM_ALLOWED_ORIGINS, default
+  // none). Non-browser local callers send no Origin + a loopback Host → pass.
+  // Canonical: docs/18 §4.1.
+  // -------------------------------------------------------------------------
+  const allowedHosts = new Set<string>([
+    ...LOOPBACK_HOSTS,
+    ...parseEnvSet(process.env['ZAM_ALLOWED_HOSTS']),
+  ]);
+  const allowedOrigins = parseEnvSet(process.env['ZAM_ALLOWED_ORIGINS']);
+
+  fastify.addHook(
+    'onRequest',
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      // A present Host that isn't allow-listed → reject. A missing Host cannot
+      // carry a rebound domain, so it is not the DNS-rebinding attack vector.
+      const hostHeader = request.headers.host;
+      if (typeof hostHeader === 'string' && hostHeader.length > 0) {
+        if (!allowedHosts.has(hostnameFromHostHeader(hostHeader))) {
+          return reply.status(403).send(buildError('FORBIDDEN', 'Host not allowed.'));
+        }
+      }
+      // A present, non-allow-listed Origin (a cross-origin browser) → reject.
+      const origin = request.headers.origin;
+      if (
+        typeof origin === 'string' &&
+        origin.length > 0 &&
+        !allowedOrigins.has(origin.toLowerCase())
+      ) {
+        return reply.status(403).send(buildError('FORBIDDEN', 'Origin not allowed.'));
+      }
+    },
+  );
 
   // -------------------------------------------------------------------------
   // API key authentication hook (docs/21 §2 IQ-3)

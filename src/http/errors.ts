@@ -14,6 +14,7 @@
 export type HttpErrorCode =
   | 'VALIDATION_ERROR'      // 400: request payload schema validation failed
   | 'AUTH_ERROR'            // 401: missing or invalid API key
+  | 'FORBIDDEN'             // 403: rejected by the local-network guard (non-loopback Host / cross-origin Origin)
   | 'UNPROCESSABLE_REQUEST' // 422: valid input but semantically unprocessable (Class A failure)
   | 'PLANNING_ERROR'        // 500: internal planning pipeline error
   | 'INTERNAL_ERROR';       // 500: unexpected internal error
