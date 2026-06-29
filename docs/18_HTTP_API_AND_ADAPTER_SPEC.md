@@ -136,6 +136,10 @@ takes precedence. Canonical shape + defaults: `src/http/body-mapper.ts`; `src/co
 }
 ```
 
+The full 200 envelope validates against `outputs/plan-result.schema.json` — a pure `$ref` composition of
+`prompt-plan.schema.json` + `trace.schema.json` + `summary: string` (`additionalProperties: false`). It gives
+HTTP consumers one frozen artifact for the response contract; it re-declares no fields of its own.
+
 **HTTP Status Codes:**
 
 | Code | Meaning | Error `code` (§4.5) |
