@@ -102,23 +102,29 @@ The HTTP Service wrapper sits strictly **outside** the core boundary defined in 
 
 **Request Body:**
 
-```json
+```jsonc
 {
   "request": {
     "text": "...",
-    "metadata": {}
+    "metadata": { /* [FUTURE-ONLY] optional re-entry signals: reentryTurn / priorPlanId / loopSuspect */ }
   },
-  "registry": { /* component registry JSON, validated against component.schema.json */ },
-  "tools": { /* tools JSON, validated against tools input schema */ },
-  "skills": { /* skills JSON, validated against skills input schema */ },
-  "history": { /* history state JSON, validated against history-state-summary.schema.json */ },
-  "budget": { /* budget constraints JSON, validated against budget input schema */ },
-  "riskPolicy": { /* risk policy JSON, validated against risk policy input schema */ },
-  "userConstraints": { /* user constraints JSON, validated against user-constraints schema */ }
+  "registry": [ /* array of component entries, each validated against component-registry.schema.json */ ],
+  "activeIds":      { /* optional — active-ids.schema.json */ },
+  "runtime":        { /* optional — runtime-capabilities.schema.json */ },
+  "history":        { /* optional — history-state-summary.schema.json */ },
+  "budget":         { /* optional, nullable — budget-state.schema.json */ },
+  "constraints":    { /* optional, nullable — user-constraints.schema.json */ },
+  "policy":         { /* optional — selector-policy.schema.json */ },
+  "requestSignals": { /* optional, nullable — request-signals.schema.json */ }
 }
 ```
 
-All fields except `request` and `registry` are **optional**. Absent optional fields trigger class-B fallback behavior as defined in existing selector specs.
+`request` and `registry` are **required** (Class A); all other fields are **optional** (Class B). An absent
+optional field applies the same Class-B default as the CLI path — several (`runtime`, `history`, `budget`,
+`policy`) also emit a non-fatal planning warning. Tools and skills are **registry components** (`type: tool` /
+`type: skill`), not top-level fields. Two further optional fields — `analyzerOutput` and `modelSelectorOutputs`
+— are **[FUTURE-ONLY]** advisory model-assisted inputs; in MVP they may be supplied but deterministic selection
+takes precedence. Canonical shape + defaults: `src/http/body-mapper.ts`; `src/core/class-b-defaults.ts`.
 
 **Response Body (HTTP 200):**
 
@@ -132,12 +138,14 @@ All fields except `request` and `registry` are **optional**. Absent optional fie
 
 **HTTP Status Codes:**
 
-| Code | Meaning |
-|---|---|
-| `200` | Plan generated successfully |
-| `400` | Request payload validation failed — malformed input |
-| `422` | Request payload valid but semantically unprocessable (e.g., empty registry) |
-| `500` | Internal planning pipeline error |
+| Code | Meaning | Error `code` (§4.5) |
+|---|---|---|
+| `200` | Plan generated successfully | — |
+| `400` | Request payload validation failed — malformed input | `VALIDATION_ERROR` |
+| `401` | Missing or invalid API key (when `ZAM_API_KEY` is set) | `AUTH_ERROR` |
+| `403` | Rejected by the local-network guard — non-loopback `Host` or cross-origin `Origin` (§4.1) | `FORBIDDEN` |
+| `422` | Request payload valid but semantically unprocessable (e.g., empty registry) | `UNPROCESSABLE_REQUEST` |
+| `500` | Internal planning pipeline error | `PLANNING_ERROR` / `INTERNAL_ERROR` |
 
 ### 4.3 `POST /trace`
 
