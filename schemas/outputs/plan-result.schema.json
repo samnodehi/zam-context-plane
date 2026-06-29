@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portable-context-control-plane/schemas/outputs/plan-result.schema.json",
+  "title": "Portable Context Control Plane — POST /plan Result Envelope",
+  "description": "The HTTP 200 response envelope returned by POST /plan. A pure composition of three existing artifacts: the prompt-plan output, the trace output, and a human-readable summary string. This schema introduces no fields of its own — it $refs prompt-plan.schema.json and trace.schema.json so a single artifact pins the full /plan response contract for HTTP consumers (CLI writes the same three to disk: prompt-plan.json, trace.json, summary.md). additionalProperties: false. No raw component text and no raw history content — inherited from the referenced output schemas. Canonical: docs/18 §4.2.",
+  "$comment": "Consolidated response envelope. Source of truth = the two referenced output schemas; this file must never re-declare their fields, only $ref them. schemaVersion of the inner prompt-plan/trace documents is carried on those documents (prompt-plan.schemaVersion, trace.schemaVersion). Canonical: docs/18 §4.2; src/http/routes/plan.ts.",
+
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["promptPlan", "trace", "summary"],
+
+  "properties": {
+    "promptPlan": {
+      "$ref": "https://portable-context-control-plane/schemas/outputs/prompt-plan.schema.json",
+      "description": "The structured prompt plan: the three mutually-exclusive component partitions (selectedComponents / omittedComponents / deferredComponents) plus budgetPlan, estimatedTokens, riskFlags, failOpenReasons, and planningWarnings. Full schema: prompt-plan.schema.json."
+    },
+    "trace": {
+      "$ref": "https://portable-context-control-plane/schemas/outputs/trace.schema.json",
+      "description": "The full, raw-content-free decision trace for this planning run. Full schema: trace.schema.json."
+    },
+    "summary": {
+      "type": "string",
+      "description": "Human-readable run summary (the summary.md content) as a single string. Advisory/UI surface; carries no machine-only fields."
+    }
+  }
+}
