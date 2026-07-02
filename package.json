@@ -60,6 +60,7 @@
     "benchmark": "npm run build && node benchmarks/run.mjs",
     "benchmark:live": "npm run build && node benchmarks/live-run.mjs",
     "demo": "npm run build && node scripts/demo.mjs",
+    "package:standalone": "node scripts/package-standalone.mjs",
     "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {
