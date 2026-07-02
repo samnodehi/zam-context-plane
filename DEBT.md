@@ -53,7 +53,7 @@ only for a genuinely unmatched group. **Fixture 13** (`safety-beats-omit`) reaff
 intended/permanent skip (architecturally unreachable in single-selector MVP; covered by unit test
 SHP-1; docs/34 DQ-4). Verified: phase-8 **85/85**; root **757/757**; 28 E2E fixtures unaffected.
 
-## C3 — Hand-synced duplication across boundaries (Medium) — MITIGATED (Phase 1b-1)
+## C3 — Hand-synced duplication across boundaries (Medium) — CLOSED (Phase 1b-1 + 1b-2)
 The cluster had four items (see `docs/32`):
 - **a (CLOSED)** — `AnalyzerOutput` / `ProposalDecision` re-declared in the runtime. Canonical
   definitions moved to `@zam/types` (`packages/types/index.d.ts`), a hand-authored `.d.ts` consumed
@@ -71,6 +71,10 @@ The cluster had four items (see `docs/32`):
 
 Verified: runtime build + core build green; runtime suite 354/354; the production path smoke-tested
 (`createAgent` without an injected planFn loads core via `import('context-plane')`); root 737/737.
+
+**All four sub-items (a/b/c/d) are resolved → C3 CLOSED.** The detail heading previously lagged at MITIGATED
+(from Phase 1b-1, before sub-item c closed in Phase 1b-2); the summary table already read CLOSED — this aligns
+the two.
 
 ## C4 — No version control (High) — CLOSED in Phase 1a
 Repo was Google-Drive-synced only. **Resolved:** `git init` + baseline commit; `.gitignore`
